@@ -13,12 +13,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--name', required=True)
     parser.add_argument('--timeout', type=float, required=True)
+    parser.add_argument('--require-result', type=Path, help='Fresh success artifact required even if Isaac exits with status zero')
     parser.add_argument('--output-root', type=Path, default=Path(__file__).resolve().parents[3] / 'artifacts')
     parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ['--'] else args.command
     if not command:
         parser.error('a command is required')
+    if args.require_result and args.require_result.exists():
+        parser.error('required result already exists; use a fresh path')
     output = args.output_root / args.name
     output.mkdir(parents=True, exist_ok=False)
     (output / 'command.json').write_text(json.dumps({'cwd': os.getcwd(), 'argv': command}, indent=2))
@@ -53,7 +56,15 @@ def main():
         finally:
             stop.set()
             monitor.join(timeout=10)
-    summary = {'exit_code': code, 'timed_out': timed_out, 'wall_seconds': time.monotonic() - start,
+    log_text = (output / 'console.log').read_text(errors='replace')
+    failure_evidence = []
+    if 'Traceback (most recent call last):' in log_text:
+        failure_evidence.append('Python traceback in child log')
+    if args.require_result and not args.require_result.is_file():
+        failure_evidence.append('Required result artifact missing')
+    if failure_evidence and code == 0:
+        code = 1
+    summary = {'exit_code': code, 'failure_evidence': failure_evidence, 'timed_out': timed_out, 'wall_seconds': time.monotonic() - start,
                'peak_gpu_memory_mib': max((x['gpu_memory_mib'] for x in samples), default=None),
                'gpu_samples': samples}
     (output / 'result.json').write_text(json.dumps(summary, indent=2))
