@@ -28,6 +28,7 @@ parser.add_argument("--ankle-stiffness", type=float, default=0.)
 parser.add_argument("--palm-height", type=float, default=.12)
 parser.add_argument("--palm-up", action="store_true")
 parser.add_argument("--balance-feedback", action="store_true")
+parser.add_argument("--waist-compensation", action="store_true")
 parser.add_argument("--output", type=Path, default=ROOT.parent / "artifacts/p2_settling_sweep.json")
 args = parser.parse_args()
 DATA = args.data.resolve()
@@ -163,7 +164,7 @@ try:
             for side in ("left","right"):
                 jac = pin.computeFrameJacobian(model,pdata,desired,model.getFrameId(side+"_sphere_hand_link",pin.FrameType.BODY),pin.LOCAL_WORLD_ALIGNED)
                 g += jac.T@np.array([0.,0.,mass*9.81/2,0.,0.,0.])
-            g[:15] = 0
+            g[:12 if args.waist_compensation else 15] = 0
             arm_compensation.append(g*(i%4)*.5)
         sim.dof_pos[:] = target_q
         sim.set_actor_states(["object"], ids, obj)
@@ -203,6 +204,8 @@ try:
     both_contact = torch.zeros(env.num_envs, device=env.device)
     support = torch.zeros(env.num_envs, device=env.device)
     rows = []
+    force_history = torch.zeros(5, env.num_envs, 2, 3, device=env.device)
+    averaged_contacts = torch.zeros(env.num_envs, device=env.device)
     hand_ids = [sim.body_names.index(f"{side}_wrist_yaw_link") for side in ("left", "right")]
     ref_hand = cmd.motion.body_pos_w[frames][:, hand_ids] + sim.scene.env_origins[:, None]
     for step in range(100):
@@ -218,6 +221,8 @@ try:
         env._physics_step()
         sim.refresh_sim_tensors()
         forces = sim.hand_box_forces()
+        force_history[step % 5] = forces
+        average_forces = force_history.mean(0)
         assert torch.isfinite(forces).all()
         root = sim.robot_root_states[:]
         box = sim._object.data.root_state_w
@@ -227,6 +232,7 @@ try:
         if step >= 10:
             both_contact += (torch.linalg.vector_norm(forces, dim=-1) > 0.5).all(dim=1)
             support += (-forces[:, :, 2].sum(dim=1)).clamp_min(0)
+            averaged_contacts += (torch.linalg.vector_norm(average_forces, dim=-1) > .5).all(dim=1)
         if step in (0, 4, 9, 24, 49, 99):
             rows.append({"time_s": (step+1)*env.dt, "root_z": root[:, 2].tolist(),
                          "box_z": box[:, 2].tolist(), "hand_forces_w": forces.tolist(),
@@ -245,12 +251,14 @@ try:
               "best_env": best, "best_original_frame": int(frames[best])+95,
               "min_root_z": min_root.tolist(), "max_box_drop": max_drop.tolist(),
               "both_contact_fraction_after_0_2s": (both_contact/90).tolist(),
+              "averaged_both_contact_fraction": (averaged_contacts/90).tolist(),
               "mean_upward_box_support_n": (support/90).tolist(), "samples": rows,
               "box_mass_kg": sim._object.root_physx_view.get_masses().tolist()}
     result.update({"initial_joint_pos": target_q.tolist(), "initial_root_xyzw": initial_root.tolist(),
         "gain_scale": args.gain_scale,
         "ankle_stiffness": args.ankle_stiffness,
         "balance_feedback": args.balance_feedback,
+        "waist_compensation": args.waist_compensation,
         "palm_up": args.palm_up,
         "p_gains": env.p_gains.tolist(), "d_gains": env.d_gains.tolist(),
         "pd_target_joint_pos": pd_targets.tolist(),
