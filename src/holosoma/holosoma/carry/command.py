@@ -1,5 +1,7 @@
 """Hybrid imitation with reference-free external commands and continuous Gen time."""
 import torch
+import json
+from pathlib import Path
 from holosoma.managers.command.terms.wbt import HybridMotionCommand, MotionCommand
 from holosoma.utils.rotations import quat_apply, quat_inverse, quat_mul, quat_rotate_inverse, yaw_quat
 from holosoma.carry.sampling import sample_commands, smooth_commands
@@ -12,6 +14,12 @@ class CarryCommand(HybridMotionCommand):
         self.hold_frame = int(cfg.params.get("hold_frame", 5))
         self.curriculum_episodes = 0
         self.curriculum_successes = 0
+        pose_path = Path(cfg.params["reset_pose_file"])
+        if not pose_path.is_file():
+            raise FileNotFoundError(f"Carry requires a verified physical reset pose: {pose_path}")
+        self.reset_pose = json.loads(pose_path.read_text())
+        if not self.reset_pose.get("physics_verified", False):
+            raise ValueError("Carry reset pose has not passed physical settling validation")
 
     def init_buffers(self):
         super().init_buffers()
@@ -55,9 +63,14 @@ class CarryCommand(HybridMotionCommand):
         # Gen uses an already-carrying pose and zero initial velocities.
         if gen_ids.numel():
             sim = self._env.simulator
-            sim.robot_root_states[gen_ids, 7:] = 0
+            root = torch.tensor(self.reset_pose["root_xyzw"], device=self.device).repeat(len(gen_ids), 1)
+            root[:, :3] += sim.scene.env_origins[gen_ids]
+            root[:, 7:] = 0
+            sim.robot_root_states[gen_ids] = root
+            sim.dof_pos[gen_ids] = torch.tensor(self.reset_pose["joint_pos"], device=self.device)
             sim.dof_vel[gen_ids] = 0
-            state = self._object_reset_states(gen_ids)
+            state = torch.tensor(self.reset_pose["box_xyzw"], device=self.device).repeat(len(gen_ids), 1)
+            state[:, :3] += sim.scene.env_origins[gen_ids]
             state[:, 7:] = 0
             sim.set_actor_states([self.object_name], gen_ids, state)
         self.episode_control_steps[ids] = 0

@@ -18,7 +18,9 @@ def contact_quality(env):
     bilateral = (each.min(dim=-1).values/3.0).clamp(0, 1)
     # Sensor force is on the hand; its negative is the force on the box.
     upward = (-forces[:, :, 2].sum(-1)).clamp_min(0)
-    return bilateral * (upward/(1.5*9.81)).clamp(0, 1)
+    if not hasattr(env, "carry_box_mass"):
+        env.carry_box_mass = env.simulator._object.root_physx_view.get_masses().to(env.device).flatten()
+    return bilateral * (upward/(env.carry_box_mass*9.81)).clamp(0, 1)
 
 
 def carrying_gate(env):

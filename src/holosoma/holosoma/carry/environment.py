@@ -1,8 +1,18 @@
 """Carry-specific lifecycle and checkpoint state on the upstream WBT environment."""
 from holosoma.envs.wbt.wbt_manager import WholeBodyTrackingManager
+import torch
 
 
 class CarryEnv(WholeBodyTrackingManager):
+    def _configure_default_dof_pos(self):
+        super()._configure_default_dof_pos()
+        command = self.command_manager.get_state("motion_command")
+        pose = command.reset_pose
+        if pose["joint_names"] != self.simulator.dof_names:
+            raise ValueError("Verified reset joint order does not match the simulator")
+        self.default_dof_pos_base = torch.tensor(pose["pd_target_joint_pos"], device=self.device).unsqueeze(0)
+        self.default_dof_pos = self.default_dof_pos_base.repeat(self.num_envs, 1).clone()
+
     def _check_termination(self):
         super()._check_termination()
         # Failure wins over coincident time limit: no bootstrap from failed state.
