@@ -116,18 +116,21 @@ try:
         mass = float(sim._object.root_physx_view.get_masses()[0, 0])
         arm_compensation = []
         for i in range(env.num_envs):
-            desired = target_q[i].cpu().numpy().copy()
-            x, y = .40+.02*(i//16), .12+.02*((i//4)%4)
+            desired = target_q[i].cpu().numpy().astype(np.float64)
+            x, y = .36+.02*(i//16), .12+.02*((i//4)%4)
             for side, sign, start in [("left",1,15),("right",-1,22)]:
                 frame = model.getFrameId(side+"_sphere_hand_link", pin.FrameType.BODY)
-                seed = cmd.joint_pos[i, start:start+7].cpu().numpy()
+                seed = cmd.joint_pos[i, start:start+7].cpu().numpy().astype(np.float64)
                 def residual(angles):
                     desired[start:start+7] = angles
                     pin.framesForwardKinematics(model, pdata, desired)
-                    return np.r_[10*(pdata.oMf[frame].translation-np.array([x,sign*y,-.04])), .03*(angles-seed)]
+                    return np.r_[10*(pdata.oMf[frame].translation-np.array([x,sign*y,.12])), .03*(angles-seed)]
                 fit = least_squares(residual, np.clip(seed, model.lowerPositionLimit[start:start+7], model.upperPositionLimit[start:start+7]),
                     bounds=(model.lowerPositionLimit[start:start+7],model.upperPositionLimit[start:start+7]),max_nfev=100)
                 desired[start:start+7] = fit.x
+                residual(fit.x)
+                if np.linalg.norm(pdata.oMf[frame].translation-np.array([x,sign*y,.12])) > .015:
+                    raise RuntimeError(f"Palm IK did not converge for candidate {i}, {side}")
             target_q[i] = torch.tensor(desired, device=env.device)
             pin.framesForwardKinematics(model,pdata,desired)
             palm_top = max((palm_vertices@pdata.oMf[model.getFrameId(side+"_sphere_hand_link",pin.FrameType.BODY)].rotation.T+
