@@ -9,7 +9,7 @@ from holosoma.config_types.env import get_tyro_env_config
 from holosoma.config_types.logger import DisabledLoggerConfig
 from holosoma.config_types.randomization import RandomizationManagerCfg
 from holosoma.config_values.wbt.g1.curriculum import g1_29dof_wbt_curriculum
-from holosoma.config_values.wbt.g1.randomization import robot_state_dr_at_setup, object_state_dr_at_setup
+from holosoma.config_values.wbt.g1.randomization import robot_state_dr_at_setup, object_state_dr_at_setup, base_setup_terms
 from holosoma.train_agent import TrainingContext
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -20,6 +20,8 @@ mc = replace(mc, motion_file=str(next((DATA / "motions").glob("*reframed.npz")))
              enable_terminal_pose_hold=False, load_fixed_scene_from_motion=False,
              hybrid=replace(mc.hybrid, track_ratio=1.0))
 materials = {}
+materials["setup_action_delay_buffers"] = base_setup_terms["setup_action_delay_buffers"]
+materials["actuator_randomizer_state"] = base_setup_terms["actuator_randomizer_state"]
 for name, term in {**robot_state_dr_at_setup, **object_state_dr_at_setup}.items():
     if "material" in name:
         materials[name] = replace(term, params={"enabled": True, "static_friction_range": [0.9, 0.9],
