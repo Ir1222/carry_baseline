@@ -27,7 +27,7 @@ for name, term in {**robot_state_dr_at_setup, **object_state_dr_at_setup}.items(
 config = replace(base,
     training=replace(base.training, num_envs=64, name="carry_settling"),
     logger=DisabledLoggerConfig(base_dir=str(ROOT.parent / "artifacts/training")),
-    simulator=replace(base.simulator, _target_="holosoma.carry.simulator.CarryIsaacSim"),
+    simulator=replace(base.simulator, _target_="holosoma.carry.simulator.IsaacSim"),
     robot=replace(base.robot, object=replace(base.robot.object, object_urdf_path=str(DATA / "carry_box.urdf"))),
     command=replace(base.command, setup_terms={"motion_command": CommandTermCfg(
         func=base.command.setup_terms["motion_command"].func, params={"motion_config": mc})}),

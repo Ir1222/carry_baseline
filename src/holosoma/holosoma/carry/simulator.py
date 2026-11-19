@@ -1,9 +1,9 @@
 """Isaac Sim with separate, object-filtered hand contact force sensors."""
 from isaaclab.sensors import ContactSensor, ContactSensorCfg
-from holosoma.simulator.isaacsim.isaacsim import IsaacSim
+from holosoma.simulator.isaacsim.isaacsim import IsaacSim as UpstreamIsaacSim
 
 
-class CarryIsaacSim(IsaacSim):
+class IsaacSim(UpstreamIsaacSim):
     def _setup_scene(self):
         super()._setup_scene()
         for side in ("left", "right"):
