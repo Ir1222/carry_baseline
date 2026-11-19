@@ -19,6 +19,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--hold-search", action="store_true")
 parser.add_argument("--under-support", action="store_true")
 parser.add_argument("--data", type=Path, default=DATA)
+parser.add_argument("--gravity-compensation", action="store_true")
 parser.add_argument("--output", type=Path, default=ROOT.parent / "artifacts/p2_settling_sweep.json")
 args = parser.parse_args()
 DATA = args.data.resolve()
@@ -102,6 +103,25 @@ try:
     initial_root = sim.robot_root_states[:].clone()
     initial_box = obj.clone()
     actions = (target_q - env.default_dof_pos) / env.action_scales
+    if args.gravity_compensation:
+        import pinocchio as pin
+        import numpy as np
+        model = pin.buildModelFromUrdf(str(ROOT / "src/holosoma/holosoma/data/robots/g1/main_mesh_collision_halfspherehand.urdf"), pin.JointModelFreeFlyer())
+        pdata = model.createData()
+        compensations = []
+        for i in range(env.num_envs):
+            configuration = np.r_[initial_root[i, :7].cpu().numpy(), target_q[i].cpu().numpy()]
+            gravity = pin.computeGeneralizedGravity(model, pdata, configuration).copy()
+            for side in ("left", "right"):
+                j = pin.computeFrameJacobian(model, pdata, configuration, model.getFrameId(side+"_sphere_hand_link"), pin.LOCAL_WORLD_ALIGNED)
+                gravity += j.T @ np.array([0., 0., 1.5*9.81/2, 0., 0., 0.])
+            feet = [pin.computeFrameJacobian(model, pdata, configuration, model.getFrameId(side+"_foot_contact_point"), pin.LOCAL_WORLD_ALIGNED).copy() for side in ("left","right")]
+            contact = np.concatenate(feet, axis=0)
+            wrench = np.linalg.lstsq(contact[:, :6].T, gravity[:6], rcond=None)[0]
+            compensations.append((gravity-contact.T@wrench)[6:])
+        tau = torch.tensor(np.array(compensations), device=env.device, dtype=torch.float32)
+        actions += tau/env.p_gains/env.action_scales
+    pd_targets = env.default_dof_pos + actions*env.action_scales
     initial_obj = sim._object.data.root_pos_w.clone()
     min_root = torch.full((env.num_envs,), 10., device=env.device)
     max_drop = torch.zeros(env.num_envs, device=env.device)
@@ -143,6 +163,7 @@ try:
               "mean_upward_box_support_n": (support/90).tolist(), "samples": rows,
               "box_mass_kg": sim._object.root_physx_view.get_masses().tolist()}
     result.update({"initial_joint_pos": target_q.tolist(), "initial_root_xyzw": initial_root.tolist(),
+        "pd_target_joint_pos": pd_targets.tolist(),
         "initial_box_xyzw": initial_box.tolist(), "origins": sim.scene.env_origins.tolist(),
         "joint_names": sim.dof_names, "body_names": sim.body_names,
         "final_joint_pos": sim.dof_pos.tolist(), "final_root_xyzw": sim.robot_root_states[:].tolist(),
