@@ -23,6 +23,7 @@ parser.add_argument("--gravity-compensation", action="store_true")
 parser.add_argument("--palm-placement", action="store_true")
 parser.add_argument("--arm-only", action="store_true")
 parser.add_argument("--gain-scale", type=float, default=1.)
+parser.add_argument("--stand-check", action="store_true")
 parser.add_argument("--output", type=Path, default=ROOT.parent / "artifacts/p2_settling_sweep.json")
 args = parser.parse_args()
 DATA = args.data.resolve()
@@ -83,6 +84,12 @@ try:
     sim.dof_pos[:] = cmd.joint_pos
     sim.dof_vel[:] = 0
     obj = torch.cat([cmd.object_pos_w, cmd.object_quat_w, torch.zeros(env.num_envs, 6, device=env.device)], -1)
+    if args.stand_check:
+        sim.dof_pos[:] = env.default_dof_pos
+        sim.robot_root_states[:, :3] = sim.scene.env_origins
+        sim.robot_root_states[:, 2] = .76
+        sim.robot_root_states[:, 3:7] = torch.tensor([0.,0.,0.,1.],device=env.device)
+        obj[:, 0] += 2.
     if args.hold_search:
         from holosoma.utils.rotations import quat_apply, quat_inverse, quat_mul, yaw_quat
         old_root = sim.robot_root_states[:].clone()
