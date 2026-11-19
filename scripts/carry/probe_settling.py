@@ -15,7 +15,7 @@ from holosoma.train_agent import TrainingContext
 ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT.parent / "artifacts/carry_reference"
 mc = base.command.setup_terms["motion_command"].params["motion_config"]
-mc = replace(mc, motion_file=str(next((DATA / "motions").glob("*reframed.npz"))), motion_dir=None,
+mc = replace(mc, motion_file=str(next((DATA / "motions").glob("*reframed.npz"))), motion_dir="",
              noise_to_initial_pose=NoiseToInitialPoseConfig(), use_adaptive_timesteps_sampler=False,
              enable_terminal_pose_hold=False, load_fixed_scene_from_motion=False,
              hybrid=replace(mc.hybrid, track_ratio=1.0))
