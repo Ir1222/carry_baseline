@@ -115,7 +115,7 @@ try:
             for side in ("left", "right"):
                 j = pin.computeFrameJacobian(model, pdata, configuration, model.getFrameId(side+"_sphere_hand_link"), pin.LOCAL_WORLD_ALIGNED)
                 gravity += j.T @ np.array([0., 0., 1.5*9.81/2, 0., 0., 0.])
-            feet = [pin.computeFrameJacobian(model, pdata, configuration, model.getFrameId(side+"_foot_contact_point"), pin.LOCAL_WORLD_ALIGNED).copy() for side in ("left","right")]
+            feet = [pin.computeFrameJacobian(model, pdata, configuration, model.getFrameId(side+"_foot_contact_point", pin.FrameType.BODY), pin.LOCAL_WORLD_ALIGNED).copy() for side in ("left","right")]
             contact = np.concatenate(feet, axis=0)
             wrench = np.linalg.lstsq(contact[:, :6].T, gravity[:6], rcond=None)[0]
             compensations.append((gravity-contact.T@wrench)[6:])
