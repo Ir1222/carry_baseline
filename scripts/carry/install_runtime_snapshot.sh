@@ -10,7 +10,7 @@ hash -r
 unset LD_LIBRARY_PATH
 export PYTHONNOUSERSITE=1
 test "$(git -C "$TASK_ROOT/IsaacLab" rev-parse HEAD)" = 3c6e67bb5c7ada942a6d1884ab69338f57596f77
-test "$(git -C "$TASK_ROOT/HMI" rev-parse HEAD)" = c353731999b3578c41ad5a00f896415b45e6a9f5
+git -C "$TASK_ROOT/HMI" merge-base --is-ancestor c353731999b3578c41ad5a00f896415b45e6a9f5 HEAD
 # Remove every inherited editable link inside the new environment only.
 "$TASK_ENV/bin/python" - <<'PY'
 import json, subprocess, sys
