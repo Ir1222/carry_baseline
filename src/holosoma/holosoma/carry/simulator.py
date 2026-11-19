@@ -8,7 +8,7 @@ class IsaacSim(UpstreamIsaacSim):
         super()._setup_scene()
         for side in ("left", "right"):
             cfg = ContactSensorCfg(
-                prim_path=f"/World/envs/env_.*/Robot/{side}_wrist_yaw_link",
+                prim_path=f"/World/envs/env_.*/Robot/{side}_sphere_hand_link",
                 filter_prim_paths_expr=["/World/envs/env_.*/Object/baseLink"],
                 update_period=0.0,
                 history_length=3,
