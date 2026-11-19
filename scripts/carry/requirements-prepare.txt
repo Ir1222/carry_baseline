@@ -1,0 +1,6 @@
+# Additional CPU tools for deterministic FK/reference preparation and checks.
+pin==2.7.0
+numpy==1.26.0
+scipy==1.15.3
+trimesh==4.5.1
+pytest==9.0.2

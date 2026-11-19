@@ -5,6 +5,7 @@ Only reference targets are retargeted: runtime box motion is always free physics
 """
 import argparse
 import hashlib
+import gzip
 import json
 from pathlib import Path
 import shutil
@@ -29,7 +30,10 @@ def main():
     parser.add_argument('--settling-report', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
-    report = json.loads(args.settling_report.read_text())
+    evidence = args.settling_report.read_bytes()
+    if args.settling_report.suffix == '.gz':
+        evidence = gzip.decompress(evidence)
+    report = json.loads(evidence)
     sample = next(s for s in report['samples'] if abs(s['time_s']-.2) < 1e-6)
     box = np.array(sample['box_states_wxyz'])
     forces = np.array(sample['hand_forces_w'])
@@ -55,7 +59,7 @@ def main():
         joint_pos=report['initial_joint_pos'][0], pd_target_joint_pos=report['pd_target_joint_pos'][0],
         joint_names=report['joint_names'], p_gains=report['p_gains'], d_gains=report['d_gains'],
         box_mass_kg=manifest['box_mass_kg'], box_size_m=manifest['box_size_m'],
-        evidence_sha256=hashlib.sha256(args.settling_report.read_bytes()).hexdigest(),
+        evidence_sha256=hashlib.sha256(evidence).hexdigest(),
         initial_settling_metrics=dict(max_drop_m=float(max(drop)), min_root_height_m=float(min(sample['root_z'])),
             min_hand_force_n=float(np.linalg.norm(forces,axis=-1).min()),
             min_support_weight_ratio=float(np.min(support/(mass*9.81)))))
