@@ -21,6 +21,7 @@ parser.add_argument("--under-support", action="store_true")
 parser.add_argument("--data", type=Path, default=DATA)
 parser.add_argument("--gravity-compensation", action="store_true")
 parser.add_argument("--palm-placement", action="store_true")
+parser.add_argument("--arm-only", action="store_true")
 parser.add_argument("--output", type=Path, default=ROOT.parent / "artifacts/p2_settling_sweep.json")
 args = parser.parse_args()
 DATA = args.data.resolve()
@@ -159,17 +160,20 @@ try:
         model = pin.buildModelFromUrdf(str(ROOT / "src/holosoma/holosoma/data/robots/g1/main_mesh_collision_halfspherehand.urdf"), pin.JointModelFreeFlyer())
         pdata = model.createData()
         compensations = []
+        box_mass = float(sim._object.root_physx_view.get_masses()[0, 0])
         for i in range(env.num_envs):
             configuration = np.r_[initial_root[i, :7].cpu().numpy(), target_q[i].cpu().numpy()]
             gravity = pin.computeGeneralizedGravity(model, pdata, configuration).copy()
             for side in ("left", "right"):
                 j = pin.computeFrameJacobian(model, pdata, configuration, model.getFrameId(side+"_sphere_hand_link"), pin.LOCAL_WORLD_ALIGNED)
-                gravity += j.T @ np.array([0., 0., 1.5*9.81/2, 0., 0., 0.])
+                gravity += j.T @ np.array([0., 0., box_mass*9.81/2, 0., 0., 0.])
             feet = [pin.computeFrameJacobian(model, pdata, configuration, model.getFrameId(side+"_foot_contact_point", pin.FrameType.BODY), pin.LOCAL_WORLD_ALIGNED).copy() for side in ("left","right")]
             contact = np.concatenate(feet, axis=0)
             wrench = np.linalg.lstsq(contact[:, :6].T, gravity[:6], rcond=None)[0]
             compensations.append((gravity-contact.T@wrench)[6:])
         tau = torch.tensor(np.array(compensations), device=env.device, dtype=torch.float32)
+        if args.arm_only:
+            tau[:, :15] = 0
         actions += tau/env.p_gains/env.action_scales
     pd_targets = env.default_dof_pos + actions*env.action_scales
     initial_obj = sim._object.data.root_pos_w.clone()
