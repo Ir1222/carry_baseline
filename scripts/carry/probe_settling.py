@@ -26,6 +26,8 @@ parser.add_argument("--gain-scale", type=float, default=1.)
 parser.add_argument("--stand-check", action="store_true")
 parser.add_argument("--ankle-stiffness", type=float, default=0.)
 parser.add_argument("--palm-height", type=float, default=.12)
+parser.add_argument("--palm-up", action="store_true")
+parser.add_argument("--balance-feedback", action="store_true")
 parser.add_argument("--output", type=Path, default=ROOT.parent / "artifacts/p2_settling_sweep.json")
 args = parser.parse_args()
 DATA = args.data.resolve()
@@ -142,7 +144,8 @@ try:
                 def residual(angles):
                     desired[start:start+7] = angles
                     pin.framesForwardKinematics(model, pdata, desired)
-                    return np.r_[10*(pdata.oMf[frame].translation-np.array([x,sign*y,args.palm_height])), .03*(angles-seed)]
+                    orientation = 2*(pdata.oMf[frame].rotation[:, 2]-np.array([0., 0., 1.])) if args.palm_up else np.zeros(0)
+                    return np.r_[10*(pdata.oMf[frame].translation-np.array([x,sign*y,args.palm_height])), orientation, .003*(angles-seed)]
                 fit = least_squares(residual, np.clip(seed, model.lowerPositionLimit[start:start+7], model.upperPositionLimit[start:start+7]),
                     bounds=(model.lowerPositionLimit[start:start+7],model.upperPositionLimit[start:start+7]),max_nfev=100)
                 desired[start:start+7] = fit.x
@@ -203,7 +206,15 @@ try:
     hand_ids = [sim.body_names.index(f"{side}_wrist_yaw_link") for side in ("left", "right")]
     ref_hand = cmd.motion.body_pos_w[frames][:, hand_ids] + sim.scene.env_origins[:, None]
     for step in range(100):
-        env._pre_physics_step(actions)
+        applied_actions = actions.clone()
+        if args.balance_feedback:
+            from scipy.spatial.transform import Rotation
+            angles = torch.tensor(Rotation.from_quat(sim.robot_root_states[:, 3:7].cpu().numpy()).as_euler("xyz"), device=env.device)
+            for side in ("left", "right"):
+                for axis, j in [(0, "roll"), (1, "pitch")]:
+                    index = sim.dof_names.index(f"{side}_ankle_{j}_joint")
+                    applied_actions[:, index] += (.8*angles[:, axis]+.15*sim.robot_root_states[:, 10+axis])/env.action_scales[index]
+        env._pre_physics_step(applied_actions)
         env._physics_step()
         sim.refresh_sim_tensors()
         forces = sim.hand_box_forces()
@@ -223,6 +234,8 @@ try:
                          "hand_reference_w": ref_hand.tolist(),
                          "hand_net_forces_w": sim.contact_forces[:, hand_ids].tolist(),
                          "box_states_wxyz": box.tolist(),
+                         "joint_pos": sim.dof_pos.tolist(),
+                         "joint_vel": sim.dof_vel.tolist(),
                          "joint_error_max": (sim.dof_pos-cmd.joint_pos).abs().amax(-1).tolist()})
             print("CONTACT MAX", step, float(sim.contact_sensor.data.net_forces_w.abs().max()),
                   "sensor shapes", [list(sim.scene.sensors[f"{s}_box_contact"].data.force_matrix_w.shape) for s in ("left","right")], flush=True)
@@ -237,6 +250,9 @@ try:
     result.update({"initial_joint_pos": target_q.tolist(), "initial_root_xyzw": initial_root.tolist(),
         "gain_scale": args.gain_scale,
         "ankle_stiffness": args.ankle_stiffness,
+        "balance_feedback": args.balance_feedback,
+        "palm_up": args.palm_up,
+        "p_gains": env.p_gains.tolist(), "d_gains": env.d_gains.tolist(),
         "pd_target_joint_pos": pd_targets.tolist(),
         "initial_box_xyzw": initial_box.tolist(), "origins": sim.scene.env_origins.tolist(),
         "joint_names": sim.dof_names, "body_names": sim.body_names,
