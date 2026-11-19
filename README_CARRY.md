@@ -1,17 +1,16 @@
-# Continuous G1 Carry — implementation in progress
+# G1 Goal-Conditioned Continuous Carry
 
-**Training is not ready yet.** The original HMI Object PPO smoke passed. The new
-carry interface is implemented, but a stable, freely simulated already-carrying
-reset has not yet passed physical validation. `CarryCommand` intentionally refuses
-to start without `verified_reset.json`. No such file has been approved/generated.
-Do not interpret source availability as a working trained carrying policy.
+**Training/inference integration passed. Stable continuous carrying has not been demonstrated.** The 256-env/100-update pilot completed, but its mean episode was only 0.94 s and curriculum remained at level 0. Full training was not started. See [IMPLEMENTATION_REPORT.md](IMPLEMENTATION_REPORT.md).
 
-Worktree: `/home/han/pyx/g1_carry_baseline_new/HMI`.
+Workspace: `/home/han/pyx/g1_carry_baseline_new/HMI`.
 Branch: `carry/goal-conditioned-continuous`.
 Upstream base: `c353731999b3578c41ad5a00f896415b45e6a9f5`.
-User fork: https://github.com/Ir1222/carry_baseline.
+User repository: https://github.com/Ir1222/carry_baseline.
+`origin` is the user repository; `upstream` is HMI. Original experiments remain available. Environments/runs/checkpoints stay outside Git; small reset assets and measured evidence are committed.
 
-## Validated runtime
+## Activate and verify
+
+The dedicated environment is installed. Do not install into another research env.
 
 ```bash
 source /home/han/miniconda3/etc/profile.d/conda.sh
@@ -20,81 +19,155 @@ export PATH="$CONDA_PREFIX/bin:$PATH"
 unset PYTHONPATH PYTHONHOME VIRTUAL_ENV LD_LIBRARY_PATH
 export PYTHONNOUSERSITE=1 OMNI_KIT_ACCEPT_EULA=1 WANDB_MODE=disabled
 cd /home/han/pyx/g1_carry_baseline_new/HMI
-python -c 'import torch,holosoma; print(torch.__version__, torch.version.cuda, torch.cuda.get_device_name(0), holosoma.__path__)'
-python -m pip check
+python scripts/carry/verify_runtime.py
+python -m pytest -q tests/test_carry_interface.py
 ```
 
-Python 3.11.15; Torch 2.7.0+cu128; Isaac Sim 5.1.0.0; Isaac Lab v2.3.0
-at `3c6e67bb5c7ada942a6d1884ab69338f57596f77`. The Lab package reports
-`isaaclab==0.47.2`, which is the package version shipped at that tag.
-Only three upstream-documented Isaac Sim kernel metadata conflicts remain:
-click, typing_extensions, and websockets. See `scripts/carry/p0_pip_check.txt`.
+Validated: Python 3.11.15, Torch 2.7.0+cu128, CUDA 12.8, Isaac Sim 5.1.0.0, Isaac Lab **v2.3.0** at `3c6e67bb5c7ada942a6d1884ab69338f57596f77` (Python package `isaaclab==0.47.2`), editable Holosoma from this repo. GPU: RTX 4090 D 24 GB, driver 580.178.04. The verifier permits exactly the three Isaac kernel metadata conflicts acknowledged by upstream `setup_isaacsim.sh`: click, typing_extensions and websockets. Other pip conflicts fail verification.
 
-The dedicated environment was copied from locally available matching binaries,
-then all inherited editable registrations were removed and reinstalled from this
-isolated workspace. The source environment and other projects were not changed.
+P0 inspected existing envs and copied matching local binaries with `conda create --offline --prefix .../envs/g1_hmi_carry --clone /home/han/miniconda3/envs/sim51`. The source was unchanged. Inherited editable registrations were removed inside the new env; isolated Lab/HMI packages were installed and upstream flatdict compatibility applied only in the new Lab checkout. The executed install snapshot is `scripts/carry/install_runtime_snapshot.sh`; it assumes the new prefix and isolated Lab checkout exist. It is not an activation command. The initial fresh Conda download was stopped before environment creation; the validated installation used the local clone path. Extra CPU preparation dependencies are in `scripts/carry/requirements-prepare.txt` (already installed).
 
 ## Original Object smoke
 
-This command exercises the upstream experiment with runtime assertions:
+Use fresh run/report names. The runner refuses existing output directories. W&B/video are disabled; TensorBoard remains local.
 
 ```bash
-export HMI_SMOKE_REPORT="$PWD/../artifacts/original_assertions_rerun.json"
-python scripts/carry/run_bounded.py --name original_smoke_rerun --timeout 900 -- \
+export HMI_SMOKE_REPORT="$PWD/../artifacts/original_rerun_assertions.json"
+python scripts/carry/run_bounded.py --name original_rerun --timeout 900 \
+  --require-result "$HMI_SMOKE_REPORT" -- \
   python scripts/carry/smoke_original.py \
   exp:g1-29dof-wbt-hybrid-object logger:disabled \
-  --training.num-envs=64 --training.headless=True \
-  --training.name=original_smoke --algo.config.num-learning-iterations=1 \
-  --algo.config.save-interval=1 \
+  --training.num-envs=64 --training.headless=True --training.name=original_smoke \
+  --algo.config.num-learning-iterations=1 --algo.config.save-interval=1 \
   --logger.base-dir="$PWD/../artifacts/training" \
   --command.setup-terms.motion-command.params.motion-config.motion-dir=holosoma/data/motions/g1_29dof/whole_body_tracking/movebox
 ```
 
-Use a fresh run name/report path on each execution. The actual passed run is
-`../artifacts/p1_original_attempt2`: 32 Track + 32 Gen, actor `[64,111]`, critic
-`[64,316]`, 26 finite physics control steps, one PPO forward/backward update and
-checkpoint/ONNX saving. Wall time 12.94 s, peak whole-GPU memory 3302 MiB,
-reported training throughput 995 environment steps/s (one-iteration startup run).
-There were no logged CUDA/PhysX errors. Asset importer warnings about empty visual
-frames remain; dynamic box collision geometry was explicitly asserted.
+Actual passed run: `../artifacts/p1_original_attempt2`, 32 Track + 32 Gen, actor `[64,111]`, critic `[64,316]`, 26 finite control steps, one PPO update, checkpoint/ONNX saved. Wall 12.94 s, peak whole-GPU memory 3302 MiB.
 
-## Carry data and fast interface checks
+## Prepare and inspect references
+
+Ready data exists at `../artifacts/carry_reference_ready`. Reproduce in fresh directories:
 
 ```bash
-python scripts/carry/prepare_reference.py --output ../artifacts/carry_reference_fresh
-python -m pytest -q tests/test_carry_interface.py
+python scripts/carry/prepare_reference.py --output ../artifacts/carry_crop_rebuilt \
+  --primitive-box --box-mass .5 --box-size .28 .40 .30
+python scripts/carry/finalize_reference.py \
+  --source ../artifacts/carry_crop_rebuilt \
+  --settling-report assets/carry/initial_settling_64env.json.gz \
+  --output ../artifacts/carry_ready_rebuilt
+cat ../artifacts/carry_ready_rebuilt/manifest.json
+export HMI_CARRY_DATA="$PWD/../artifacts/carry_ready_rebuilt"
 ```
 
-The crop is original frames `[95,205)` (110 frames at 50 Hz), including the
-mirrored clip. It excludes pickup/place. Commands are measured reference heading
-velocity, world-Z yaw angular velocity, and pelvis height, without clipping to Gen
-curriculum ranges. Source hashes and command bounds are recorded in `manifest.json`.
-The current fast test result is **3 passed**: actor heading-frame invariance,
-independent command sampling, and smooth independent yaw/height command changes.
+Unset `HMI_CARRY_DATA` to use the default. Both scripts refuse existing outputs. The compressed evidence reproduced every motion array exactly in a separate test.
 
-New actor: three 116-dimensional physical-state/command frames, oldest first,
-zero-padded after reset; total 348 dimensions. No phase, clip ID, future reference,
-or terminal goal appears in the actor. The four commands are
-`[vx (m/s), vy (m/s), yaw_rate (rad/s), pelvis_height (m)]`.
+Original/mirrored clips are cropped to `[95,205)` at 50 Hz (2.2 s), excluding pickup/place. Root/leg trajectories remain; torso/arms and object reference targets are retargeted to the measured palm-support posture. Tracked body poses/velocities are regenerated by URDF FK. A 4 s static reset imitation target is added. The MVP explicitly changes the original large carton to a **0.28 × 0.40 × 0.30 m, 0.5 kg cuboid**. Moving references are kinematic targets; sustained dynamic feasibility is not certified.
 
-## Current physical validation blocker
+Initial settling: 64 replicated resets, fixed joint PD targets, gravity, free box, no ankle feedback, no state writes after initialization. First 0.2 s: max drop 1.44 cm, min hand force 1.44 N, min upward support 68.4% of weight. At 0.5 s some resets already dropped 10.1 cm. This validates initial contact only. Longer diagnostic holds used ankle feedback, which is **absent from RL**. See [asset provenance](assets/carry/README.md).
 
-Raw carry-frame PD holds lose the box. Bounded tests are checking collision
-clearance, actuator settings, and reset posture. All tests leave the box dynamic,
-with gravity, no weld/attachment, and no pose-following updates after reset.
-The hand sensors target the actual `*_sphere_hand_link` bodies. Total filtered
-support includes PhysX tangential friction; Isaac Lab's normal-force tensor alone
-does not measure side-grip support correctly.
+## Task and Actor contract
 
-Diagnostic example (two simulated seconds, 64 candidates; no PPO training):
+Only task command: `[vx, vy, yaw_rate, pelvis_height]`: heading-frame m/s, heading-frame m/s, world-Z angular velocity rad/s, root height above ground m. No terminal destination/orientation goal, phase, clip ID or reference trajectory enters the Actor. Current box pose/velocity are physical observations.
+
+One frame has 116 values: heading root velocity/angular velocity (6), local gravity (3), pelvis height (1), joint position relative to PD target (29), scaled joint velocity (29), previous action (29), relative box position (3), box rotation 6D (6), rotating-heading relative box velocity (3), relative box angular velocity (3), command (4). Three frames oldest-first and zero-padded after reset give **348 Actor values** in both stages. Critic: 116 physical + 68 privileged values, all 68 exactly zero in Gen. Deployment API quaternions are **xyzw**.
+
+Track extracts commands from reference and retains adaptive reset sampling and robot/object imitation plus task rewards. Track clip ends are timeouts. Gen uses independent command sampling, task/safety rewards only (no upstream imitation constant), no clip-end teleport/reset and no reference-relative failure. Ordinary Gen horizon is 20 s. Falls, drops/separation, prolonged support loss and excessive instability are physical failures; failure overrides simultaneous timeout and is not bootstrapped.
+
+Commands dwell 3–6 s and interpolate over 0.5 s with a smooth cubic. Curriculum: hold → forward 0–0.12 m/s → backward/lateral → independent yaw → height. Final bounds: vx −0.15…0.30, vy ±0.15, yaw ±0.35, height 0.735±0.025; 25% explicit hold. Advancement requires 100 completed Gen episodes with ≥70% meeting tracking/support criteria for at least 5 s. The pilot did not advance.
+
+Control: joint PD targets, original effort limits, 4× upstream stiffness, 2× damping; ankle Kp=300/Kd=15. Measured gravity-compensating offsets are in the default target. No external support force is applied. Box state is written only at episode reset. Support uses actual filtered normal plus friction forces, averaged per physics substep with a 50 ms time constant.
+
+## Carry smoke and manual full training
+
+Track-only smoke:
 
 ```bash
-python scripts/carry/run_bounded.py --name settling_fresh --timeout 240 -- \
-  python scripts/carry/probe_settling.py \
-  --data ../artifacts/carry_reference --output ../artifacts/settling_fresh.json
+export HMI_SMOKE_REPORT="$PWD/../artifacts/carry_stage1_rerun_assertions.json"
+python scripts/carry/run_bounded.py --name carry_stage1_rerun --timeout 240 \
+  --require-result "$HMI_SMOKE_REPORT" -- \
+  python scripts/carry/smoke_carry.py exp:g1-29dof-wbt-hybrid-carry logger:disabled \
+  --training.num-envs=64 --training.headless=True --training.name=carry_stage1_smoke \
+  --algo.config.num-learning-iterations=1 --algo.config.save-interval=1 \
+  --command.setup-terms.motion-command.params.motion-config.hybrid.track-ratio=1.0
 ```
 
-New-task PPO smoke, Stage 1→Stage 2 checkpoint verification, reference-free
-simulation evaluation, and the 256-env/100-iteration pilot have **not yet run**.
-Full training commands will be finalized only after the physical reset and these
-integration checks pass. No full training has been started.
+Mixed smoke: use fresh run/report names, ratio `0.5`, and `--training.checkpoint=/absolute/path/to/stage1/model.pt`. Assertions exercise real PPO, reward masks, Gen clip independence, no physical reset on command changes, failure/timeout precedence, stored bootstrap rewards, history reset, checkpoint loading and PyTorch/ONNX equivalence. Controlled timeout/fall injection occurs only in the smoke wrapper.
+
+The following **full-training commands were not executed**. 10,000 iterations is an initial budget, not a convergence guarantee. Use 256 environments until further scaling is measured. Each invocation writes a separate timestamped run with indexed checkpoints.
+
+Stage 1 — Track-only from scratch:
+
+```bash
+python -m holosoma.train_agent exp:g1-29dof-wbt-hybrid-carry logger:disabled \
+  --training.num-envs=256 --training.headless=True --training.name=carry_stage1 \
+  --logger.base-dir="$PWD/../artifacts/full_training" \
+  --algo.config.num-learning-iterations=10000 --algo.config.save-interval=500 \
+  --algo.config.latest-save-interval=0 \
+  --command.setup-terms.motion-command.params.motion-config.hybrid.track-ratio=1.0
+```
+
+Evaluate Stage 1 holding/tracking before Stage 2. Select the latest **completed full Stage 1** in its separate log root, then resume:
+
+```bash
+STAGE1_CKPT="$(python - <<'PY'
+from pathlib import Path
+paths = list(Path('../artifacts/full_training/WholeBodyTracking').glob('*-carry_stage1-locomotion/model.pt'))
+assert paths, 'No completed full Stage 1 found'
+print(max(paths, key=lambda p: p.stat().st_mtime).resolve())
+PY
+)"
+test -f "$STAGE1_CKPT"
+python -m holosoma.train_agent exp:g1-29dof-wbt-hybrid-carry logger:disabled \
+  --training.num-envs=256 --training.headless=True --training.name=carry_stage2 \
+  --training.checkpoint="$STAGE1_CKPT" \
+  --logger.base-dir="$PWD/../artifacts/full_training" \
+  --algo.config.num-learning-iterations=10000 --algo.config.save-interval=500 \
+  --algo.config.latest-save-interval=0 \
+  --command.setup-terms.motion-command.params.motion-config.hybrid.track-ratio=0.5
+```
+
+HMI treats iteration count as **additional** updates on resume. Actor, Critic, normalizers, optimizer and curriculum resume together. Original Object checkpoints have an incompatible Actor schema.
+
+## Evaluate, command and view without references
+
+This local pilot Actor is for interface inspection, not successful carrying. Replace `POLICY` with a trained checkpoint's adjacent ONNX; keep its `.actor.json` sidecar.
+
+```bash
+POLICY="$PWD/../artifacts/training/WholeBodyTracking/20261119_105923-carry_pilot256_100-locomotion/model.onnx"
+python scripts/carry/evaluate.py --policy "$POLICY" --steps 1500 \
+  --forbid-motion-loading --metrics ../artifacts/eval_scripted_fresh.jsonl
+python scripts/carry/evaluate.py --policy "$POLICY" --view --steps 15000 \
+  --interactive --forbid-motion-loading --metrics ../artifacts/eval_interactive_fresh.jsonl
+```
+
+Interactive input: four numbers per line, e.g. `0 0 0 0.735`, `0.1 0 0 0.735`, `0 0.08 0 0.735`, `0 0 0.2 0.735`, `0 0 0 0.715`. `--view` opens local Isaac Sim rendering; default is headless. First tested viewer run included shader/startup work and took 80 s overall. Scripted commands switch every 150 steps: hold, forward, stop, backward, lateral ±, yaw ±, height low/high. Commands never reset physical state; actual failures still reset and appear in `done`.
+
+Deployment constructs `DeploymentCommand` without loading motion files. The explicit guard makes either upstream motion-loader constructor raise. Simulation needs robot/box assets and a **static reset JSON**. The Actor itself needs only ONNX+metadata and physical measurements:
+
+```python
+from holosoma.carry.inference import CarryActor
+actor = CarryActor(policy_path, num_envs=N, device="cuda:0")
+actions = actor.act(root_xyzw, joint_positions, joint_velocities,
+                    box_xyzw, commands_4d, ground_height)
+# root/box [N,13]: position(3), xyzw(4), world linear(3), angular velocity(3)
+# joints [N,29]; commands [N,4]; ground_height [N]; SI units
+actor.reset(done_environment_ids)
+```
+
+The helper maintains history/previous action and uses CPU ONNX Runtime for small evaluation batches. Export: one input `actor_obs[1,348]`, one output `action[1,29]`, no embedded motion. Map actions through exported default targets, action scales and gains while retaining effort limits. Real-robot deployment is not validated.
+
+## Metrics, debugging and behavioral acceptance
+
+```bash
+tensorboard --logdir ../artifacts/training --host 127.0.0.1 --port 6006
+cat ../artifacts/p3_pilot256_100/result.json
+rg 'Traceback|CUDA error|PhysX error|Learning iteration|Computation:' \
+  ../artifacts/p3_pilot256_100/console.log
+```
+
+TensorBoard has `Env/carry/error_*`, contact quality, curriculum level, episode lengths and termination breakdowns. Evaluation JSONL records commands, errors, heights, support and resets. The runner stores exact argv/logs/GPU samples and rejects tracebacks even if Isaac shutdown masks process status. Also check `passed: true` in smoke JSON.
+
+Pilot: 100 updates, 614,400 transitions, 156.3 s wall, peak 3448 MiB, median 4333 env steps/s (last 20: 4421). No 8192-env configuration was attempted.
+
+Before claiming a usable policy: require ≥20 s episodes across independent hold, translation, yaw and height commands, bilateral support, no drops and no resets at command switches. Initial targets: |vx/vy error|<0.10 m/s, |yaw error|<0.15 rad/s, |height error|<0.03 m for ≥90% of steady-command time, across ≥10 seeds. **These behavioral targets have not passed.** No pickup, placing, external-force robustness or human collaboration is claimed.
