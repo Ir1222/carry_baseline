@@ -22,6 +22,7 @@ parser.add_argument("--data", type=Path, default=DATA)
 parser.add_argument("--gravity-compensation", action="store_true")
 parser.add_argument("--palm-placement", action="store_true")
 parser.add_argument("--arm-only", action="store_true")
+parser.add_argument("--gain-scale", type=float, default=1.)
 parser.add_argument("--output", type=Path, default=ROOT.parent / "artifacts/p2_settling_sweep.json")
 args = parser.parse_args()
 DATA = args.data.resolve()
@@ -41,7 +42,9 @@ config = replace(base,
     training=replace(base.training, num_envs=64, name="carry_settling"),
     logger=DisabledLoggerConfig(base_dir=str(ROOT.parent / "artifacts/training")),
     simulator=replace(base.simulator, _target_="holosoma.carry.simulator.IsaacSim"),
-    robot=replace(base.robot, object=replace(base.robot.object, object_urdf_path=str(DATA / "carry_box.urdf"))),
+    robot=replace(base.robot, object=replace(base.robot.object, object_urdf_path=str(DATA / "carry_box.urdf")),
+        control=replace(base.robot.control, stiffness={k:v*args.gain_scale for k,v in base.robot.control.stiffness.items()},
+            damping={k:v*args.gain_scale**.5 for k,v in base.robot.control.damping.items()})),
     command=replace(base.command, setup_terms={"motion_command": CommandTermCfg(
         func=base.command.setup_terms["motion_command"].func, params={"motion_config": mc})}),
     randomization=RandomizationManagerCfg(setup_terms=materials), curriculum=g1_29dof_wbt_curriculum)
@@ -217,6 +220,7 @@ try:
               "mean_upward_box_support_n": (support/90).tolist(), "samples": rows,
               "box_mass_kg": sim._object.root_physx_view.get_masses().tolist()}
     result.update({"initial_joint_pos": target_q.tolist(), "initial_root_xyzw": initial_root.tolist(),
+        "gain_scale": args.gain_scale,
         "pd_target_joint_pos": pd_targets.tolist(),
         "initial_box_xyzw": initial_box.tolist(), "origins": sim.scene.env_origins.tolist(),
         "joint_names": sim.dof_names, "body_names": sim.body_names,
