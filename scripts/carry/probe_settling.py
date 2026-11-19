@@ -33,7 +33,9 @@ config = replace(base,
         func=base.command.setup_terms["motion_command"].func, params={"motion_config": mc})}),
     randomization=RandomizationManagerCfg(setup_terms=materials), curriculum=g1_29dof_wbt_curriculum)
 
-with TrainingContext(config):
+context = TrainingContext(config)
+context.__enter__()
+try:
     import torch
     from holosoma.envs.wbt.wbt_manager import WholeBodyTrackingManager
     env = WholeBodyTrackingManager(get_tyro_env_config(config), device="cuda:0")
@@ -88,3 +90,9 @@ with TrainingContext(config):
               "box_mass_kg": sim._object.root_physx_view.get_masses().tolist()}
     (ROOT.parent / "artifacts/p2_settling_sweep.json").write_text(json.dumps(result, indent=2))
     print("SETTLING BEST", best, int(frames[best])+95, float(min_root[best]), float(max_drop[best]), float(both_contact[best]/90))
+except BaseException:
+    import traceback
+    traceback.print_exc()
+    raise
+finally:
+    context.__exit__(None, None, None)
