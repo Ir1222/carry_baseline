@@ -48,6 +48,17 @@ try:
     cmd.motion_ids[:] = 0
     cmd.time_steps[:] = frames
     sim = env.simulator
+    print("BOX BOUNDS", sim.get_actor_local_collision_bounds("object"), flush=True)
+    print("ALL SENSOR BODIES", sim.contact_sensor.body_names, flush=True)
+    from pxr import Usd, UsdPhysics, UsdGeom
+    import omni.usd
+    stage = omni.usd.get_context().get_stage()
+    for body in ["Robot/left_wrist_yaw_link", "Robot/right_wrist_yaw_link", "Object/baseLink"]:
+        prim = stage.GetPrimAtPath("/World/envs/env_0/"+body)
+        for p in Usd.PrimRange(prim, Usd.TraverseInstanceProxies()):
+            if p.HasAPI(UsdPhysics.CollisionAPI):
+                print("COLLIDER", p.GetPath(), "enabled", UsdPhysics.CollisionAPI(p).GetCollisionEnabledAttr().Get(),
+                    "approx", UsdPhysics.MeshCollisionAPI(p).GetApproximationAttr().Get() if p.IsA(UsdGeom.Mesh) else "primitive", flush=True)
     sim.robot_root_states[:, :3] = cmd.root_pos_w
     sim.robot_root_states[:, 3:7] = cmd.root_quat_w
     sim.robot_root_states[:, 7:] = 0
@@ -89,6 +100,8 @@ try:
                          "hand_net_forces_w": sim.contact_forces[:, hand_ids].tolist(),
                          "box_states_wxyz": box.tolist(),
                          "joint_error_max": (sim.dof_pos-cmd.joint_pos).abs().amax(-1).tolist()})
+            print("CONTACT MAX", step, float(sim.contact_sensor.data.net_forces_w.abs().max()),
+                  "sensor shapes", [list(sim.scene.sensors[f"{s}_box_contact"].data.force_matrix_w.shape) for s in ("left","right")], flush=True)
     score = (both_contact/90) - 3*max_drop - 2*(0.65-min_root).clamp_min(0)
     best = int(score.argmax())
     result = {"frames_in_crop": frames.tolist(), "original_frames": (frames+95).tolist(),
