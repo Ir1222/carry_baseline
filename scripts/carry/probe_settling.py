@@ -65,6 +65,8 @@ try:
     both_contact = torch.zeros(env.num_envs, device=env.device)
     support = torch.zeros(env.num_envs, device=env.device)
     rows = []
+    hand_ids = [sim.body_names.index(f"{side}_wrist_yaw_link") for side in ("left", "right")]
+    ref_hand = cmd.motion.body_pos_w[frames][:, hand_ids] + sim.scene.env_origins[:, None]
     for step in range(100):
         env._pre_physics_step(actions)
         env._physics_step()
@@ -79,9 +81,14 @@ try:
         if step >= 10:
             both_contact += (torch.linalg.vector_norm(forces, dim=-1) > 0.5).all(dim=1)
             support += (-forces[:, :, 2].sum(dim=1)).clamp_min(0)
-        if step in (9, 24, 49, 99):
+        if step in (0, 4, 9, 24, 49, 99):
             rows.append({"time_s": (step+1)*env.dt, "root_z": root[:, 2].tolist(),
-                         "box_z": box[:, 2].tolist(), "hand_forces_w": forces.tolist()})
+                         "box_z": box[:, 2].tolist(), "hand_forces_w": forces.tolist(),
+                         "hand_positions_w": sim._rigid_body_pos[:, hand_ids].tolist(),
+                         "hand_reference_w": ref_hand.tolist(),
+                         "hand_net_forces_w": sim.contact_forces[:, hand_ids].tolist(),
+                         "box_states_wxyz": box.tolist(),
+                         "joint_error_max": (sim.dof_pos-cmd.joint_pos).abs().amax(-1).tolist()})
     score = (both_contact/90) - 3*max_drop - 2*(0.65-min_root).clamp_min(0)
     best = int(score.argmax())
     result = {"frames_in_crop": frames.tolist(), "original_frames": (frames+95).tolist(),
@@ -91,7 +98,7 @@ try:
               "mean_upward_box_support_n": (support/90).tolist(), "samples": rows,
               "box_mass_kg": sim._object.root_physx_view.get_masses().tolist()}
     (ROOT.parent / "artifacts/p2_settling_sweep.json").write_text(json.dumps(result, indent=2))
-    print("SETTLING BEST", best, int(frames[best])+95, float(min_root[best]), float(max_drop[best]), float(both_contact[best]/90))
+    print("SETTLING BEST", best, int(frames[best])+95, float(min_root[best]), float(max_drop[best]), float(both_contact[best]/90), flush=True)
 except BaseException:
     import traceback
     traceback.print_exc()
