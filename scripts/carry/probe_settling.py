@@ -105,8 +105,10 @@ try:
         import pinocchio as pin
         import numpy as np
         from scipy.optimize import least_squares
+        import trimesh
         model = pin.buildModelFromUrdf(str(ROOT / "src/holosoma/holosoma/data/robots/g1/main_mesh_collision_halfspherehand.urdf"))
         pdata = model.createData()
+        palm_vertices = trimesh.load(ROOT / "src/holosoma/holosoma/data/robots/g1/meshes/half_sphere.obj", force="mesh").vertices
         target_q[:] = env.default_dof_pos
         sim.robot_root_states[:, :3] = sim.scene.env_origins
         sim.robot_root_states[:, 2] = .76
@@ -115,7 +117,7 @@ try:
         arm_compensation = []
         for i in range(env.num_envs):
             desired = target_q[i].cpu().numpy().copy()
-            x, y = .28+.02*(i//16), .12+.02*((i//4)%4)
+            x, y = .40+.02*(i//16), .12+.02*((i//4)%4)
             for side, sign, start in [("left",1,15),("right",-1,22)]:
                 frame = model.getFrameId(side+"_sphere_hand_link", pin.FrameType.BODY)
                 seed = cmd.joint_pos[i, start:start+7].cpu().numpy()
@@ -127,7 +129,10 @@ try:
                     bounds=(model.lowerPositionLimit[start:start+7],model.upperPositionLimit[start:start+7]),max_nfev=100)
                 desired[start:start+7] = fit.x
             target_q[i] = torch.tensor(desired, device=env.device)
-            obj[i, :3] = sim.scene.env_origins[i]+torch.tensor([x,0.,.76-.04+.035+.204],device=env.device)
+            pin.framesForwardKinematics(model,pdata,desired)
+            palm_top = max((palm_vertices@pdata.oMf[model.getFrameId(side+"_sphere_hand_link",pin.FrameType.BODY)].rotation.T+
+                pdata.oMf[model.getFrameId(side+"_sphere_hand_link",pin.FrameType.BODY)].translation)[:,2].max() for side in ("left","right"))
+            obj[i, :3] = sim.scene.env_origins[i]+torch.tensor([x,0.,.76+palm_top+.204+.003],device=env.device)
             obj[i, 3:7] = torch.tensor([0.,0.,0.,1.],device=env.device)
             g = pin.computeGeneralizedGravity(model,pdata,desired).copy()
             for side in ("left","right"):
