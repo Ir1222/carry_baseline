@@ -60,6 +60,7 @@ class CarryCommand(HybridMotionCommand):
             self.curriculum_episodes += int(completed.numel())
             self.curriculum_successes += int(good.sum())
         super().reset(ids)
+        self._env.simulator.clear_carry_contacts(ids)
         # Gen uses an already-carrying pose and zero initial velocities.
         if gen_ids.numel():
             sim = self._env.simulator

@@ -13,7 +13,11 @@ from holosoma.config_types.randomization import RandomizationManagerCfg
 from holosoma.config_types.termination import TerminationManagerCfg, TerminationTermCfg
 from holosoma.config_types.logger import DisabledLoggerConfig
 
-DATA = Path(os.environ.get("HMI_CARRY_DATA", Path(__file__).resolve().parents[5] / "artifacts/carry_reference"))
+DATA = Path(os.environ.get("HMI_CARRY_DATA", Path(__file__).resolve().parents[5] / "artifacts/carry_reference_ready"))
+_stiffness = {k: v*4 for k,v in base.robot.control.stiffness.items()}
+_damping = {k: v*2 for k,v in base.robot.control.damping.items()}
+for _joint in ("ankle_pitch", "ankle_roll"):
+    _stiffness[_joint], _damping[_joint] = 300., 15.
 _motion = base.command.setup_terms["motion_command"].params["motion_config"]
 _motion = replace(_motion, motion_dir=str(DATA / "motions"), motion_file="",
     noise_to_initial_pose=NoiseToInitialPoseConfig(), enable_terminal_pose_hold=False,
@@ -40,7 +44,8 @@ g1_29dof_wbt_hybrid_carry = replace(base,
         config=replace(base.algo.config, init_at_random_ep_len=False, save_interval=500, init_noise_std=.3)),
     simulator=replace(base.simulator, _target_="holosoma.carry.simulator.IsaacSim",
         config=replace(base.simulator.config, sim=replace(base.simulator.config.sim, max_episode_length_s=20.))),
-    robot=replace(base.robot, object=replace(base.robot.object, object_urdf_path=str(DATA / "carry_box.urdf"))),
+    robot=replace(base.robot, object=replace(base.robot.object, object_urdf_path=str(DATA / "carry_box.urdf")),
+        control=replace(base.robot.control, stiffness=_stiffness, damping=_damping)),
     command=CommandManagerCfg(setup_terms={"motion_command": CommandTermCfg(func=_command,
         params={"motion_config": _motion, "hold_frame": 5, "curriculum_level": 0,
                 "reset_pose_file": str(DATA / "verified_reset.json")})},

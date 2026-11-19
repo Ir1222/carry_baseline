@@ -33,6 +33,7 @@ class DeploymentCommand(CommandTermBase):
         if not len(ids):
             return
         sim = self.env.simulator
+        sim.clear_carry_contacts(ids)
         root = torch.tensor(self.reset_pose["root_xyzw"], device=self.device).repeat(len(ids), 1)
         box = torch.tensor(self.reset_pose["box_xyzw"], device=self.device).repeat(len(ids), 1)
         root[:, :3] += sim.scene.env_origins[ids]

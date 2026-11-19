@@ -15,11 +15,11 @@ def task_errors(env):
 def contact_quality(env):
     forces = env.simulator.hand_box_forces()
     each = torch.linalg.vector_norm(forces, dim=-1)
-    bilateral = (each.min(dim=-1).values/3.0).clamp(0, 1)
     # Sensor force is on the hand; its negative is the force on the box.
     upward = (-forces[:, :, 2].sum(-1)).clamp_min(0)
     if not hasattr(env, "carry_box_mass"):
         env.carry_box_mass = env.simulator._object.root_physx_view.get_masses().to(env.device).flatten()
+    bilateral = (each.min(dim=-1).values/(.35*env.carry_box_mass*9.81)).clamp(0, 1)
     return bilateral * (upward/(env.carry_box_mass*9.81)).clamp(0, 1)
 
 
@@ -50,7 +50,7 @@ def stable_carry(env):
     rel = box[:, :3]-root[:, :3]
     omega = torch.zeros_like(root[:, 10:13]); omega[:, 2] = root[:, 12]
     v = box[:, 7:10]-root[:, 7:10]-torch.linalg.cross(omega, rel)
-    height_error = (rel[:, 2]-.1).abs().sub(.15).clamp_min(0)
+    height_error = (rel[:, 2]-.25).abs().sub(.25).clamp_min(0)
     return torch.exp(-v.square().sum(-1)/.5**2-height_error.square()/.1**2)*carrying_gate(env)
 
 
