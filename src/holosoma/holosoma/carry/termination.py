@@ -24,8 +24,9 @@ class CarryFailure(TerminationTermBase):
         self.causes = {}
 
     def reset(self, env_ids=None):
-        self.unsupported[:] = 0 if env_ids is None else self.unsupported
-        if env_ids is not None:
+        if env_ids is None:
+            self.unsupported.zero_()
+        else:
             self.unsupported[env_ids] = 0
 
     def __call__(self, env, **kwargs):
