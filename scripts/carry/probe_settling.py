@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[2]
 DATA = ROOT.parent / "artifacts/carry_reference"
 parser = argparse.ArgumentParser()
 parser.add_argument("--hold-search", action="store_true")
+parser.add_argument("--under-support", action="store_true")
 parser.add_argument("--output", type=Path, default=ROOT.parent / "artifacts/p2_settling_sweep.json")
 args = parser.parse_args()
 mc = base.command.setup_terms["motion_command"].params["motion_config"]
@@ -52,6 +53,8 @@ try:
     frames = torch.linspace(0, 109, env.num_envs, device=env.device).long()
     if args.hold_search:
         frames = torch.linspace(0, 109, 8, device=env.device).long().repeat_interleave(8)
+        if args.under_support:
+            frames = torch.tensor([5, 35, 65, 95], device=env.device).repeat_interleave(16)
     cmd.motion_ids[:] = 0
     cmd.time_steps[:] = frames
     sim = env.simulator
@@ -83,6 +86,9 @@ try:
         obj[:, 3:7] = quat_mul(delta_q, obj[:, 3:7], w_last=True)
         sim.dof_pos[:, :12] = env.default_dof_pos[:, :12]
         squeeze = torch.linspace(-.12, .30, 8, device=env.device).repeat(8)
+        if args.under_support:
+            squeeze = torch.tensor([0., .04, .08, .12], device=env.device).repeat(16)
+            obj[:, 2] += torch.tensor([.08, .12, .16, .2], device=env.device).repeat_interleave(4).repeat(4)
         sim.dof_pos[:, sim.dof_names.index("left_shoulder_roll_joint")] -= squeeze
         sim.dof_pos[:, sim.dof_names.index("right_shoulder_roll_joint")] += squeeze
         sim.dof_pos[:] = torch.clamp(sim.dof_pos, env.dof_pos_limits[:, 0], env.dof_pos_limits[:, 1])
