@@ -32,6 +32,10 @@ for _name, _term in {**robot_state_dr_at_setup, **object_state_dr_at_setup}.item
         _materials[_name] = replace(_term, params={"enabled": True,
             "static_friction_range": [0.9, 0.9], "dynamic_friction_range": [0.8, 0.8], "restitution_range": [0., 0.]})
 _rewards = {k: v for k, v in base.reward.terms.items() if "reached_once" not in k}
+for _name, _term in list(_rewards.items()):
+    if "hybrid_" in str(_term.func):
+        _rewards[_name] = replace(_term, func="holosoma.carry.rewards:track_imitation",
+            params={"reward_function": _term.func, **_term.params})
 for _name, _weight in {"velocity_tracking": 3., "yaw_tracking": 1., "height_tracking": 1.,
                        "stable_carry": 1., "hand_support": 2., "box_orientation": .5}.items():
     _rewards[_name] = RewardTermCfg(func=f"holosoma.carry.rewards:{_name}", weight=_weight)

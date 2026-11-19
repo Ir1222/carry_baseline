@@ -1,7 +1,23 @@
 """Continuous task rewards; no destination or one-time success bonus."""
 import torch
+import importlib
+from functools import lru_cache
 from holosoma.carry.observations import simulator_box_state
 from holosoma.utils.rotations import quat_rotate_inverse, quaternion_to_matrix, yaw_quat
+
+
+@lru_cache(None)
+def _resolve_reward(name):
+    module, function = name.split(":")
+    return getattr(importlib.import_module(module), function)
+
+
+def track_imitation(env, reward_function, **kwargs):
+    # Upstream hybrid rewards add a constant 0.5 in Gen. Carry Gen gets
+    # exclusively task/safety rewards, including no imitation survival bonus.
+    value = _resolve_reward(reward_function)(env, **kwargs)
+    mask = env.command_manager.get_state("motion_command").track_env_mask
+    return torch.where(mask, value, torch.zeros_like(value))
 
 
 def task_errors(env):

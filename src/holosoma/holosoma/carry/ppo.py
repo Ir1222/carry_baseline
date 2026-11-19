@@ -16,7 +16,8 @@ class CarryPPO(PPO):
                     "frame_dim": 116, "history_length": 3, "history_order": "oldest_first_zero_padded",
                     "quaternion_order": "xyzw", "joint_names": self.env.simulator.dof_names,
                     "default_joint_pos": self.env.default_dof_pos[0].tolist(),
-                    "action_scales": self.env.action_scales.tolist(), "control_dt": self.env.dt}
+                    "action_scales": self.env.action_scales.tolist(), "control_dt": self.env.dt,
+                    "p_gains": self.env.p_gains.tolist(), "d_gains": self.env.d_gains.tolist()}
         attach_onnx_metadata(onnx_file_path, metadata)
         Path(onnx_file_path).with_suffix(".actor.json").write_text(json.dumps(metadata, indent=2))
         self.logging_helper.save_to_wandb(onnx_file_path)

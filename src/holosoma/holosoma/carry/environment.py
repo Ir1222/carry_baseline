@@ -4,6 +4,15 @@ import torch
 
 
 class CarryEnv(WholeBodyTrackingManager):
+    def get_video_overlay_text(self, env_id=0):
+        command = self.command_manager.get_state("motion_command").task_command[env_id].tolist()
+        return "Carry vx={:.2f} vy={:.2f} yaw={:.2f} height={:.3f}".format(*command)
+
+    def _draw_debug_vis(self):
+        # Upstream overlays show reference/terminal-goal objects. Carry viewers
+        # display the actual robot/box and the four-command text overlay.
+        pass
+
     def _configure_default_dof_pos(self):
         super()._configure_default_dof_pos()
         command = self.command_manager.get_state("motion_command")

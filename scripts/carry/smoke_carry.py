@@ -31,6 +31,13 @@ def instrumented_get_class(target):
                 assert all(torch.isfinite(v).all() for v in obs.values())
                 assert torch.isfinite(rewards).all()
                 assert (obs['critic_obs'][cmd.gen_env_mask,-68:] == 0).all()
+                for name, term in self.reward_manager.cfg.terms.items():
+                    assert 'reached_once' not in name
+                    if term.func == 'holosoma.carry.rewards:track_imitation':
+                        from holosoma.carry.rewards import track_imitation
+                        values = track_imitation(self, **term.params)
+                        assert (values[cmd.gen_env_mask] == 0).all()
+                report['reward_masks_checked'] = True
                 assert not (infos['time_outs'] & ~dones.bool()).any()
                 report['physics_steps'] += 1
                 report['shapes'] = {k:list(v.shape) for k,v in obs.items()}
