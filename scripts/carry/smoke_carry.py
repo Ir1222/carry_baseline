@@ -73,6 +73,23 @@ def instrumented_get_class(target):
         return CheckedEnv
     if target.endswith('CarryPPO'):
         class CheckedPPO(cls):
+            def export(self, onnx_file_path):
+                import torch
+                import numpy as np
+                import onnxruntime as ort
+                super().export(onnx_file_path)
+                session = ort.InferenceSession(str(onnx_file_path), providers=['CPUExecutionProvider'])
+                assert [i.name for i in session.get_inputs()] == ['actor_obs']
+                assert [o.name for o in session.get_outputs()] == ['action']
+                x = torch.randn(1,348,device=self.device)
+                with torch.no_grad():
+                    expected = self.actor_onnx_wrapper(x).cpu().numpy()
+                actual = session.run(['action'], {'actor_obs':x.cpu().numpy()})[0]
+                np.testing.assert_allclose(actual,expected,rtol=2e-4,atol=2e-5)
+                report['onnx_actor_equivalence_checked'] = True
+                report['onnx_max_abs_error'] = float(np.max(np.abs(actual-expected)))
+                save()
+
             def _training_step(self):
                 import torch
                 before = [p.detach().clone() for p in self.actor.parameters()]
