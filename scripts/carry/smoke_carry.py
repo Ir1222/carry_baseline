@@ -73,6 +73,48 @@ def instrumented_get_class(target):
         return CheckedEnv
     if target.endswith('CarryPPO'):
         class CheckedPPO(cls):
+            def _rollout_step(self, obs_dict):
+                import torch
+                env = self.env
+                cmd = env.command_manager.get_state('motion_command')
+                ids = torch.where(cmd.gen_env_mask)[0]
+                if report.get('bootstrap_semantics_checked') or len(ids) < 2:
+                    return super()._rollout_step(obs_dict)
+                # One real time limit and one simultaneous fall/time limit.
+                timeout_id, failure_id = ids[:2]
+                env.episode_length_buf[ids[:2]] = int(env.max_episode_length)
+                env.simulator.robot_root_states[failure_id, 2] = .25
+                env.simulator.set_actor_root_state_tensor(ids[1:2], env.simulator.all_root_states)
+                env.simulator.refresh_sim_tensors()
+                expected = []
+                original_step = env.step
+                def checked_step(state):
+                    result = original_step(state)
+                    obs, rewards, done, info = result
+                    if not expected:
+                        assert done[timeout_id] and info['time_outs'][timeout_id]
+                        assert done[failure_id] and not info['time_outs'][failure_id]
+                        assert 'final_observations' in info
+                        assert (obs['actor_obs'][ids[:2],:232] == 0).all()
+                        assert torch.isfinite(info['final_observations']['critic_obs'][ids[:2]]).all()
+                    value = torch.zeros_like(rewards)
+                    if info['time_outs'].any():
+                        final = torch.cat([info['final_observations'][k] for k in self.critic_obs_keys],dim=1)
+                        value = self.critic.evaluate({'critic_obs':self._normalize_critic_obs(final,update=False)}).squeeze(1)
+                    expected.append((rewards+self.config.gamma*value*info['time_outs']).clone())
+                    return result
+                env.step = checked_step
+                try:
+                    result = super()._rollout_step(obs_dict)
+                    torch.testing.assert_close(self.storage['rewards'].squeeze(-1),torch.stack(expected))
+                    report['bootstrap_semantics_checked'] = True
+                    report['failure_overrides_timeout_checked'] = True
+                    report['reset_history_cleared_checked'] = True
+                    save()
+                    return result
+                finally:
+                    env.step = original_step
+
             def export(self, onnx_file_path):
                 import torch
                 import numpy as np

@@ -12,6 +12,7 @@ parser.add_argument("--steps", type=int, default=1500)
 parser.add_argument("--num-envs", type=int, default=1)
 parser.add_argument("--view", action="store_true")
 parser.add_argument("--interactive", action="store_true")
+parser.add_argument("--forbid-motion-loading", action="store_true", help="Fail if any reference loader is constructed")
 parser.add_argument("--metrics", type=Path, required=True)
 args = parser.parse_args()
 if args.metrics.exists():
@@ -42,6 +43,12 @@ try:
     from holosoma.carry.inference import CarryActor
     from holosoma.carry.observations import simulator_box_state
     from holosoma.carry.rewards import task_errors, contact_quality
+    if args.forbid_motion_loading:
+        from holosoma.managers.command.terms import wbt
+        def forbidden(*args, **kwargs):
+            raise AssertionError("Reference motion loading is forbidden during deployment")
+        wbt.MotionLoader.__init__ = forbidden
+        wbt.MultiMotionLoader.__init__ = forbidden
     env = CarryEnv(get_tyro_env_config(config), device="cuda:0")
     env.reset_all()
     actor = CarryActor(args.policy, args.num_envs, "cuda:0")
