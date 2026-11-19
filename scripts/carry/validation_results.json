@@ -1,0 +1,175 @@
+{
+  "date": "2026-11-19",
+  "training_code_milestone": "2d35b87",
+  "status": "integration passed; sustained carrying unverified; full training not started",
+  "runs": {
+    "p1_original_attempt2": {
+      "exit_code": 0,
+      "timed_out": false,
+      "wall_seconds": 12.935041547985747,
+      "peak_gpu_memory_mib": 3302
+    },
+    "p3_stage1_attempt1": {
+      "exit_code": 0,
+      "failure_evidence": [],
+      "timed_out": false,
+      "wall_seconds": 12.288523800903931,
+      "peak_gpu_memory_mib": 3300,
+      "assertions": {
+        "passed": true,
+        "physics_steps": 26,
+        "ppo_updates": 1,
+        "shapes": {
+          "actor_obs": [
+            64,
+            348
+          ],
+          "critic_obs": [
+            64,
+            184
+          ]
+        },
+        "track_envs": 64,
+        "gen_envs": 0,
+        "box_gravity_enabled": true,
+        "losses": {
+          "Value": 0.5314375594258308,
+          "Surrogate": -0.0798810594889801,
+          "Entropy": 6.237114095687867,
+          "KL": 0.04003795091994107,
+          "actor_loss": -0.0923552883323282,
+          "critic_loss": 0.5314375594258308,
+          "symmetry_actor_loss": 0.0,
+          "symmetry_critic_loss": 0.0,
+          "actor_learning_rate": 1e-05,
+          "critic_learning_rate": 1e-05
+        },
+        "cuda_peak_allocated_mib": 41.48095703125,
+        "cuda_peak_reserved_mib": 44.0
+      }
+    },
+    "p3_stage2_attempt2": {
+      "exit_code": 0,
+      "failure_evidence": [],
+      "timed_out": false,
+      "wall_seconds": 12.685147623997182,
+      "peak_gpu_memory_mib": 3326,
+      "assertions": {
+        "passed": true,
+        "physics_steps": 26,
+        "ppo_updates": 1,
+        "reward_masks_checked": true,
+        "shapes": {
+          "actor_obs": [
+            64,
+            348
+          ],
+          "critic_obs": [
+            64,
+            184
+          ]
+        },
+        "track_envs": 32,
+        "gen_envs": 32,
+        "box_gravity_enabled": true,
+        "command_no_reset_checked": true,
+        "gen_clip_end_independence_checked": true,
+        "checkpoint_loaded": true,
+        "losses": {
+          "Value": 0.39936858266592024,
+          "Surrogate": -0.061961378715932366,
+          "Entropy": 6.235073709487915,
+          "KL": 0.015531262546573998,
+          "actor_loss": -0.07443152740597725,
+          "critic_loss": 0.39936858266592024,
+          "symmetry_actor_loss": 0.0,
+          "symmetry_critic_loss": 0.0,
+          "actor_learning_rate": 1e-05,
+          "critic_learning_rate": 1e-05
+        },
+        "cuda_peak_allocated_mib": 43.74658203125,
+        "cuda_peak_reserved_mib": 46.0,
+        "onnx_actor_equivalence_checked": true,
+        "onnx_max_abs_error": 8.344650268554688e-07
+      }
+    },
+    "p3_stage2_attempt3": {
+      "exit_code": 0,
+      "failure_evidence": [],
+      "timed_out": false,
+      "wall_seconds": 15.492647571023554,
+      "peak_gpu_memory_mib": 6142,
+      "assertions": {
+        "passed": true,
+        "physics_steps": 26,
+        "ppo_updates": 1,
+        "reward_masks_checked": true,
+        "shapes": {
+          "actor_obs": [
+            64,
+            348
+          ],
+          "critic_obs": [
+            64,
+            184
+          ]
+        },
+        "track_envs": 32,
+        "gen_envs": 32,
+        "box_gravity_enabled": true,
+        "command_no_reset_checked": true,
+        "gen_clip_end_independence_checked": true,
+        "checkpoint_loaded": true,
+        "bootstrap_semantics_checked": true,
+        "failure_overrides_timeout_checked": true,
+        "reset_history_cleared_checked": true,
+        "losses": {
+          "Value": 0.3915071189403534,
+          "Surrogate": -0.06213562372140587,
+          "Entropy": 6.237255358695984,
+          "KL": 0.01686400353908084,
+          "actor_loss": -0.07461013551801443,
+          "critic_loss": 0.3915071189403534,
+          "symmetry_actor_loss": 0.0,
+          "symmetry_critic_loss": 0.0,
+          "actor_learning_rate": 1e-05,
+          "critic_learning_rate": 1e-05
+        },
+        "cuda_peak_allocated_mib": 43.78466796875,
+        "cuda_peak_reserved_mib": 46.0,
+        "onnx_actor_equivalence_checked": true,
+        "onnx_max_abs_error": 1.3113021850585938e-06
+      }
+    },
+    "p3_deploy_attempt1": {
+      "exit_code": 0,
+      "failure_evidence": [],
+      "timed_out": false,
+      "wall_seconds": 63.42167463200167,
+      "peak_gpu_memory_mib": 6160
+    },
+    "p3_pilot256_100": {
+      "exit_code": 0,
+      "failure_evidence": [],
+      "timed_out": false,
+      "wall_seconds": 156.32560011092573,
+      "peak_gpu_memory_mib": 3448
+    },
+    "p3_view_attempt1": {
+      "exit_code": 0,
+      "failure_evidence": [],
+      "timed_out": false,
+      "wall_seconds": 80.31513672391884,
+      "peak_gpu_memory_mib": 6238
+    }
+  },
+  "pilot": {
+    "updates": 100,
+    "envs": 256,
+    "transitions": 614400,
+    "throughput_median": 4333.0,
+    "throughput_last20_median": 4421.0,
+    "mean_episode_seconds": 0.9358,
+    "curriculum_level": 0
+  }
+}
