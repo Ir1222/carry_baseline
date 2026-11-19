@@ -19,6 +19,7 @@ def main():
     parser.add_argument("--start", type=int, default=95)
     parser.add_argument("--stop", type=int, default=205)
     parser.add_argument("--primitive-box", action="store_true")
+    parser.add_argument("--box-mass", type=float, default=1.5)
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     motions = args.output / "motions"
@@ -42,12 +43,13 @@ def main():
             "fps": float(crop["fps"].item()), "command_min": command.min(axis=0).tolist(),
             "command_max": command.max(axis=0).tolist(), "box_z_min": float(crop["object_pos_w"][:, 2].min())})
     tree = ET.parse(SOURCE / "objects_largebox.urdf")
-    tree.find(".//mass").set("value", "1.5")
+    assert args.box_mass > 0
+    tree.find(".//mass").set("value", str(args.box_mass))
     # Consistent cuboid inertia approximation for the supplied ~0.47 x 0.46 x 0.41 m mesh.
     inertia = tree.find(".//inertia")
     dx, dy, dz = 0.471, 0.459, 0.408
-    for key, value in {"ixx": 1.5*(dy*dy+dz*dz)/12, "iyy": 1.5*(dx*dx+dz*dz)/12,
-                       "izz": 1.5*(dx*dx+dy*dy)/12}.items():
+    for key, value in {"ixx": args.box_mass*(dy*dy+dz*dz)/12, "iyy": args.box_mass*(dx*dx+dz*dz)/12,
+                       "izz": args.box_mass*(dx*dx+dy*dy)/12}.items():
         inertia.set(key, str(value))
     for mesh in tree.findall(".//mesh"):
         mesh.set("filename", str(SOURCE / "largebox.obj"))
@@ -56,7 +58,7 @@ def main():
             geometry.clear()
             ET.SubElement(geometry, "box", size=f"{dx} {dy} {dz}")
     tree.write(args.output / "carry_box.urdf", encoding="unicode", xml_declaration=True)
-    manifest["box_mass_kg"] = 1.5
+    manifest["box_mass_kg"] = args.box_mass
     manifest["box_geometry"] = "cuboid" if args.primitive_box else "upstream_mesh"
     (args.output / "manifest.json").write_text(json.dumps(manifest, indent=2))
     print(json.dumps(manifest, indent=2))

@@ -20,6 +20,7 @@ parser.add_argument("--hold-search", action="store_true")
 parser.add_argument("--under-support", action="store_true")
 parser.add_argument("--data", type=Path, default=DATA)
 parser.add_argument("--gravity-compensation", action="store_true")
+parser.add_argument("--palm-placement", action="store_true")
 parser.add_argument("--output", type=Path, default=ROOT.parent / "artifacts/p2_settling_sweep.json")
 args = parser.parse_args()
 DATA = args.data.resolve()
@@ -100,9 +101,50 @@ try:
     sim.set_dof_state_tensor(ids, sim.dof_state)
     sim.refresh_sim_tensors()
     target_q = sim.dof_pos.clone()
+    if args.palm_placement:
+        import pinocchio as pin
+        import numpy as np
+        from scipy.optimize import least_squares
+        model = pin.buildModelFromUrdf(str(ROOT / "src/holosoma/holosoma/data/robots/g1/main_mesh_collision_halfspherehand.urdf"))
+        pdata = model.createData()
+        target_q[:] = env.default_dof_pos
+        sim.robot_root_states[:, :3] = sim.scene.env_origins
+        sim.robot_root_states[:, 2] = .76
+        sim.robot_root_states[:, 3:7] = torch.tensor([0.,0.,0.,1.], device=env.device)
+        mass = float(sim._object.root_physx_view.get_masses()[0, 0])
+        arm_compensation = []
+        for i in range(env.num_envs):
+            desired = target_q[i].cpu().numpy().copy()
+            x, y = .28+.02*(i//16), .12+.02*((i//4)%4)
+            for side, sign, start in [("left",1,15),("right",-1,22)]:
+                frame = model.getFrameId(side+"_sphere_hand_link", pin.FrameType.BODY)
+                seed = cmd.joint_pos[i, start:start+7].cpu().numpy()
+                def residual(angles):
+                    desired[start:start+7] = angles
+                    pin.framesForwardKinematics(model, pdata, desired)
+                    return np.r_[10*(pdata.oMf[frame].translation-np.array([x,sign*y,-.04])), .03*(angles-seed)]
+                fit = least_squares(residual, np.clip(seed, model.lowerPositionLimit[start:start+7], model.upperPositionLimit[start:start+7]),
+                    bounds=(model.lowerPositionLimit[start:start+7],model.upperPositionLimit[start:start+7]),max_nfev=100)
+                desired[start:start+7] = fit.x
+            target_q[i] = torch.tensor(desired, device=env.device)
+            obj[i, :3] = sim.scene.env_origins[i]+torch.tensor([x,0.,.76-.04+.035+.204],device=env.device)
+            obj[i, 3:7] = torch.tensor([0.,0.,0.,1.],device=env.device)
+            g = pin.computeGeneralizedGravity(model,pdata,desired).copy()
+            for side in ("left","right"):
+                jac = pin.computeFrameJacobian(model,pdata,desired,model.getFrameId(side+"_sphere_hand_link",pin.FrameType.BODY),pin.LOCAL_WORLD_ALIGNED)
+                g += jac.T@np.array([0.,0.,mass*9.81/2,0.,0.,0.])
+            g[:15] = 0
+            arm_compensation.append(g*(i%4)*.5)
+        sim.dof_pos[:] = target_q
+        sim.set_actor_states(["object"], ids, obj)
+        sim.set_actor_root_state_tensor(ids, sim.all_root_states)
+        sim.set_dof_state_tensor(ids, sim.dof_state)
+        sim.refresh_sim_tensors()
     initial_root = sim.robot_root_states[:].clone()
     initial_box = obj.clone()
     actions = (target_q - env.default_dof_pos) / env.action_scales
+    if args.palm_placement:
+        actions += torch.tensor(np.array(arm_compensation),device=env.device,dtype=torch.float32)/env.p_gains/env.action_scales
     if args.gravity_compensation:
         import pinocchio as pin
         import numpy as np
