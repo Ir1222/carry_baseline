@@ -48,7 +48,6 @@ try:
     cmd.motion_ids[:] = 0
     cmd.time_steps[:] = frames
     sim = env.simulator
-    print("BOX BOUNDS", sim.get_actor_local_collision_bounds("object"), flush=True)
     print("ALL SENSOR BODIES", sim.contact_sensor.body_names, flush=True)
     from pxr import Usd, UsdPhysics, UsdGeom
     import omni.usd
@@ -59,6 +58,7 @@ try:
             if p.HasAPI(UsdPhysics.CollisionAPI):
                 print("COLLIDER", p.GetPath(), "enabled", UsdPhysics.CollisionAPI(p).GetCollisionEnabledAttr().Get(),
                     "approx", UsdPhysics.MeshCollisionAPI(p).GetApproximationAttr().Get() if p.IsA(UsdGeom.Mesh) else "primitive", flush=True)
+                print("EXTENT", UsdGeom.Boundable(p).GetExtentAttr().Get(), flush=True)
     sim.robot_root_states[:, :3] = cmd.root_pos_w
     sim.robot_root_states[:, 3:7] = cmd.root_quat_w
     sim.robot_root_states[:, 7:] = 0
