@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-TASK_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
+TASK_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../.." && pwd)
 TASK_ENV="$TASK_ROOT/envs/g1_hmi_carry"
 source /home/han/miniconda3/etc/profile.d/conda.sh
 conda activate "$TASK_ENV"

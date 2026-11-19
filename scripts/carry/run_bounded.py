@@ -13,7 +13,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--name', required=True)
     parser.add_argument('--timeout', type=float, required=True)
-    parser.add_argument('--output-root', type=Path, default=Path(__file__).resolve().parents[1] / 'artifacts')
+    parser.add_argument('--output-root', type=Path, default=Path(__file__).resolve().parents[3] / 'artifacts')
     parser.add_argument('command', nargs=argparse.REMAINDER)
     args = parser.parse_args()
     command = args.command[1:] if args.command[:1] == ['--'] else args.command
