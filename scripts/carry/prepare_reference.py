@@ -20,6 +20,7 @@ def main():
     parser.add_argument("--stop", type=int, default=205)
     parser.add_argument("--primitive-box", action="store_true")
     parser.add_argument("--box-mass", type=float, default=1.5)
+    parser.add_argument("--box-size", nargs=3, type=float, default=[.471,.459,.408])
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     motions = args.output / "motions"
@@ -47,7 +48,8 @@ def main():
     tree.find(".//mass").set("value", str(args.box_mass))
     # Consistent cuboid inertia approximation for the supplied ~0.47 x 0.46 x 0.41 m mesh.
     inertia = tree.find(".//inertia")
-    dx, dy, dz = 0.471, 0.459, 0.408
+    dx, dy, dz = args.box_size
+    assert min(dx,dy,dz) > 0
     for key, value in {"ixx": args.box_mass*(dy*dy+dz*dz)/12, "iyy": args.box_mass*(dx*dx+dz*dz)/12,
                        "izz": args.box_mass*(dx*dx+dy*dy)/12}.items():
         inertia.set(key, str(value))
@@ -59,6 +61,7 @@ def main():
             ET.SubElement(geometry, "box", size=f"{dx} {dy} {dz}")
     tree.write(args.output / "carry_box.urdf", encoding="unicode", xml_declaration=True)
     manifest["box_mass_kg"] = args.box_mass
+    manifest["box_size_m"] = args.box_size
     manifest["box_geometry"] = "cuboid" if args.primitive_box else "upstream_mesh"
     (args.output / "manifest.json").write_text(json.dumps(manifest, indent=2))
     print(json.dumps(manifest, indent=2))

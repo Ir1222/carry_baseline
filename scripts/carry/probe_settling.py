@@ -24,6 +24,8 @@ parser.add_argument("--palm-placement", action="store_true")
 parser.add_argument("--arm-only", action="store_true")
 parser.add_argument("--gain-scale", type=float, default=1.)
 parser.add_argument("--stand-check", action="store_true")
+parser.add_argument("--ankle-stiffness", type=float, default=0.)
+parser.add_argument("--palm-height", type=float, default=.12)
 parser.add_argument("--output", type=Path, default=ROOT.parent / "artifacts/p2_settling_sweep.json")
 args = parser.parse_args()
 DATA = args.data.resolve()
@@ -49,6 +51,11 @@ config = replace(base,
     command=replace(base.command, setup_terms={"motion_command": CommandTermCfg(
         func=base.command.setup_terms["motion_command"].func, params={"motion_config": mc})}),
     randomization=RandomizationManagerCfg(setup_terms=materials), curriculum=g1_29dof_wbt_curriculum)
+if args.ankle_stiffness:
+    stiffness, damping = dict(config.robot.control.stiffness), dict(config.robot.control.damping)
+    for key in ("ankle_pitch", "ankle_roll"):
+        stiffness[key], damping[key] = args.ankle_stiffness, 15.
+    config = replace(config, robot=replace(config.robot, control=replace(config.robot.control, stiffness=stiffness, damping=damping)))
 
 context = TrainingContext(config)
 context.__enter__()
@@ -135,18 +142,19 @@ try:
                 def residual(angles):
                     desired[start:start+7] = angles
                     pin.framesForwardKinematics(model, pdata, desired)
-                    return np.r_[10*(pdata.oMf[frame].translation-np.array([x,sign*y,.12])), .03*(angles-seed)]
+                    return np.r_[10*(pdata.oMf[frame].translation-np.array([x,sign*y,args.palm_height])), .03*(angles-seed)]
                 fit = least_squares(residual, np.clip(seed, model.lowerPositionLimit[start:start+7], model.upperPositionLimit[start:start+7]),
                     bounds=(model.lowerPositionLimit[start:start+7],model.upperPositionLimit[start:start+7]),max_nfev=100)
                 desired[start:start+7] = fit.x
                 residual(fit.x)
-                if np.linalg.norm(pdata.oMf[frame].translation-np.array([x,sign*y,.12])) > .015:
+                if np.linalg.norm(pdata.oMf[frame].translation-np.array([x,sign*y,args.palm_height])) > .015:
                     raise RuntimeError(f"Palm IK did not converge for candidate {i}, {side}")
             target_q[i] = torch.tensor(desired, device=env.device)
             pin.framesForwardKinematics(model,pdata,desired)
             palm_top = max((palm_vertices@pdata.oMf[model.getFrameId(side+"_sphere_hand_link",pin.FrameType.BODY)].rotation.T+
                 pdata.oMf[model.getFrameId(side+"_sphere_hand_link",pin.FrameType.BODY)].translation)[:,2].max() for side in ("left","right"))
-            obj[i, :3] = sim.scene.env_origins[i]+torch.tensor([x,0.,.76+palm_top+.204+.003],device=env.device)
+            box_half_height = json.loads((DATA / "manifest.json").read_text()).get("box_size_m", [.471,.459,.408])[2]/2
+            obj[i, :3] = sim.scene.env_origins[i]+torch.tensor([x,0.,.76+palm_top+box_half_height+.003],device=env.device)
             obj[i, 3:7] = torch.tensor([0.,0.,0.,1.],device=env.device)
             g = pin.computeGeneralizedGravity(model,pdata,desired).copy()
             for side in ("left","right"):
@@ -228,6 +236,7 @@ try:
               "box_mass_kg": sim._object.root_physx_view.get_masses().tolist()}
     result.update({"initial_joint_pos": target_q.tolist(), "initial_root_xyzw": initial_root.tolist(),
         "gain_scale": args.gain_scale,
+        "ankle_stiffness": args.ankle_stiffness,
         "pd_target_joint_pos": pd_targets.tolist(),
         "initial_box_xyzw": initial_box.tolist(), "origins": sim.scene.env_origins.tolist(),
         "joint_names": sim.dof_names, "body_names": sim.body_names,
