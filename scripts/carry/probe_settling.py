@@ -29,6 +29,9 @@ parser.add_argument("--palm-height", type=float, default=.12)
 parser.add_argument("--palm-up", action="store_true")
 parser.add_argument("--balance-feedback", action="store_true")
 parser.add_argument("--waist-compensation", action="store_true")
+parser.add_argument("--replay", type=Path)
+parser.add_argument("--candidate", type=int, default=14)
+parser.add_argument("--steps", type=int, default=100)
 parser.add_argument("--output", type=Path, default=ROOT.parent / "artifacts/p2_settling_sweep.json")
 args = parser.parse_args()
 DATA = args.data.resolve()
@@ -198,6 +201,27 @@ try:
             tau[:, :15] = 0
         actions += tau/env.p_gains/env.action_scales
     pd_targets = env.default_dof_pos + actions*env.action_scales
+    if args.replay:
+        replay = json.loads(args.replay.read_text())
+        index = args.candidate
+        root = torch.tensor(replay["initial_root_xyzw"][index], device=env.device).repeat(env.num_envs, 1)
+        root[:, :3] -= torch.tensor(replay["origins"][index], device=env.device)
+        root[:, :3] += sim.scene.env_origins
+        sim.robot_root_states[:] = root
+        target_q[:] = torch.tensor(replay["initial_joint_pos"][index], device=env.device)
+        sim.dof_pos[:] = target_q
+        sim.dof_vel[:] = 0
+        obj = torch.tensor(replay["initial_box_xyzw"][index], device=env.device).repeat(env.num_envs, 1)
+        obj[:, :3] -= torch.tensor(replay["origins"][index], device=env.device)
+        obj[:, :3] += sim.scene.env_origins
+        sim.set_actor_states(["object"], ids, obj)
+        sim.set_actor_root_state_tensor(ids, sim.all_root_states)
+        sim.set_dof_state_tensor(ids, sim.dof_state)
+        sim.refresh_sim_tensors()
+        initial_root, initial_box = root.clone(), obj.clone()
+        pd_targets[:] = torch.tensor(replay["pd_target_joint_pos"][index], device=env.device)
+        actions = (pd_targets-env.default_dof_pos)/env.action_scales
+    sim.clear_carry_contacts(ids)
     initial_obj = sim._object.data.root_pos_w.clone()
     min_root = torch.full((env.num_envs,), 10., device=env.device)
     max_drop = torch.zeros(env.num_envs, device=env.device)
@@ -208,7 +232,7 @@ try:
     averaged_contacts = torch.zeros(env.num_envs, device=env.device)
     hand_ids = [sim.body_names.index(f"{side}_wrist_yaw_link") for side in ("left", "right")]
     ref_hand = cmd.motion.body_pos_w[frames][:, hand_ids] + sim.scene.env_origins[:, None]
-    for step in range(100):
+    for step in range(args.steps):
         applied_actions = actions.clone()
         if args.balance_feedback:
             from scipy.spatial.transform import Rotation
@@ -233,7 +257,7 @@ try:
             both_contact += (torch.linalg.vector_norm(forces, dim=-1) > 0.5).all(dim=1)
             support += (-forces[:, :, 2].sum(dim=1)).clamp_min(0)
             averaged_contacts += (torch.linalg.vector_norm(average_forces, dim=-1) > .5).all(dim=1)
-        if step in (0, 4, 9, 24, 49, 99):
+        if step in (0, 4, 9, 24, 49, 99, args.steps-1):
             rows.append({"time_s": (step+1)*env.dt, "root_z": root[:, 2].tolist(),
                          "box_z": box[:, 2].tolist(), "hand_forces_w": forces.tolist(),
                          "hand_positions_w": sim._rigid_body_pos[:, hand_ids].tolist(),
@@ -245,14 +269,15 @@ try:
                          "joint_error_max": (sim.dof_pos-cmd.joint_pos).abs().amax(-1).tolist()})
             print("CONTACT MAX", step, float(sim.contact_sensor.data.net_forces_w.abs().max()),
                   "sensor shapes", [list(sim.scene.sensors[f"{s}_box_contact"].data.force_matrix_w.shape) for s in ("left","right")], flush=True)
-    score = (both_contact/90) - 3*max_drop - 2*(0.65-min_root).clamp_min(0)
+    count = max(1, args.steps-10)
+    score = (both_contact/count) - 3*max_drop - 2*(0.65-min_root).clamp_min(0)
     best = int(score.argmax())
     result = {"frames_in_crop": frames.tolist(), "original_frames": (frames+95).tolist(),
               "best_env": best, "best_original_frame": int(frames[best])+95,
               "min_root_z": min_root.tolist(), "max_box_drop": max_drop.tolist(),
-              "both_contact_fraction_after_0_2s": (both_contact/90).tolist(),
-              "averaged_both_contact_fraction": (averaged_contacts/90).tolist(),
-              "mean_upward_box_support_n": (support/90).tolist(), "samples": rows,
+              "both_contact_fraction_after_0_2s": (both_contact/count).tolist(),
+              "averaged_both_contact_fraction": (averaged_contacts/count).tolist(),
+              "mean_upward_box_support_n": (support/count).tolist(), "samples": rows,
               "box_mass_kg": sim._object.root_physx_view.get_masses().tolist()}
     result.update({"initial_joint_pos": target_q.tolist(), "initial_root_xyzw": initial_root.tolist(),
         "gain_scale": args.gain_scale,

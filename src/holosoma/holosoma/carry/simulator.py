@@ -17,7 +17,7 @@ class IsaacSim(UpstreamIsaacSim):
             )
             self.scene.sensors[f"{side}_box_contact"] = ContactSensor(cfg)
 
-    def hand_box_forces(self):
+    def raw_hand_box_forces(self):
         import torch
         # Isaac Lab's force_matrix_w contains NORMAL forces only. Side grips
         # support the box through tangential friction, which must be included.
@@ -35,3 +35,22 @@ class IsaacSim(UpstreamIsaacSim):
             tangent = torch.where((offsets < counts[..., None])[..., None], values, 0.).sum(dim=(1, 2))
             results.append(normal+tangent)
         return torch.stack(results, dim=1)
+
+    def simulate_at_each_physics_step(self):
+        super().simulate_at_each_physics_step()
+        # Contacts can alternate between hands/substeps for a light carton.
+        # Average actual forces over physics time, not just the last PPO substep.
+        raw = self.raw_hand_box_forces()
+        if not hasattr(self, "_carry_contact_force"):
+            self._carry_contact_force = raw.clone()
+        alpha = 1.0 - __import__("math").exp(-self.sim_dt / .05)
+        self._carry_contact_force.lerp_(raw, alpha)
+
+    def hand_box_forces(self):
+        if hasattr(self, "_carry_contact_force"):
+            return self._carry_contact_force
+        return self.raw_hand_box_forces()
+
+    def clear_carry_contacts(self, env_ids):
+        if hasattr(self, "_carry_contact_force"):
+            self._carry_contact_force[env_ids] = 0
