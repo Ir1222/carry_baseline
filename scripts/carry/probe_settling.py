@@ -117,7 +117,7 @@ try:
         arm_compensation = []
         for i in range(env.num_envs):
             desired = target_q[i].cpu().numpy().astype(np.float64)
-            x, y = .36+.02*(i//16), .12+.02*((i//4)%4)
+            x, y = .35+.01*(i//16), .12+.02*((i//4)%4)
             for side, sign, start in [("left",1,15),("right",-1,22)]:
                 frame = model.getFrameId(side+"_sphere_hand_link", pin.FrameType.BODY)
                 seed = cmd.joint_pos[i, start:start+7].cpu().numpy().astype(np.float64)
