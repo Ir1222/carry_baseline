@@ -18,8 +18,10 @@ DATA = ROOT.parent / "artifacts/carry_reference"
 parser = argparse.ArgumentParser()
 parser.add_argument("--hold-search", action="store_true")
 parser.add_argument("--under-support", action="store_true")
+parser.add_argument("--data", type=Path, default=DATA)
 parser.add_argument("--output", type=Path, default=ROOT.parent / "artifacts/p2_settling_sweep.json")
 args = parser.parse_args()
+DATA = args.data.resolve()
 mc = base.command.setup_terms["motion_command"].params["motion_config"]
 mc = replace(mc, motion_file=str(next((DATA / "motions").glob("*reframed.npz"))), motion_dir="",
              noise_to_initial_pose=NoiseToInitialPoseConfig(), use_adaptive_timesteps_sampler=False,

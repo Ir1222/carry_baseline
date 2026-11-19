@@ -18,6 +18,7 @@ def main():
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
     parser.add_argument("--start", type=int, default=95)
     parser.add_argument("--stop", type=int, default=205)
+    parser.add_argument("--primitive-box", action="store_true")
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     motions = args.output / "motions"
@@ -50,8 +51,13 @@ def main():
         inertia.set(key, str(value))
     for mesh in tree.findall(".//mesh"):
         mesh.set("filename", str(SOURCE / "largebox.obj"))
+    if args.primitive_box:
+        for geometry in tree.findall(".//geometry"):
+            geometry.clear()
+            ET.SubElement(geometry, "box", size=f"{dx} {dy} {dz}")
     tree.write(args.output / "carry_box.urdf", encoding="unicode", xml_declaration=True)
     manifest["box_mass_kg"] = 1.5
+    manifest["box_geometry"] = "cuboid" if args.primitive_box else "upstream_mesh"
     (args.output / "manifest.json").write_text(json.dumps(manifest, indent=2))
     print(json.dumps(manifest, indent=2))
 
