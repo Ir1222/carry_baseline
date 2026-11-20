@@ -65,6 +65,8 @@ class FullBodySupervisor(legacy.Supervisor):
         self.job(stage+'_evaluation',args,self.config['evaluation_timeout_s'],stage=stage)
         result=legacy.read_json(dest/'evaluation.json')
         if not result or not result['terminal_state_before_reset']:raise RuntimeError('No pre-reset physical evidence')
+        from analyze_fullbody import analyze
+        result['motion_quality']=analyze(dest,BASE/'reference_v1')
         trials=result['trials']
         survival=statistics.mean(min(1,r['survival_s']/(13 if stage=='stage1' else 24)) for r in trials)
         contact=statistics.mean(r['contact_continuity'] for r in trials)
@@ -88,7 +90,7 @@ class FullBodySupervisor(legacy.Supervisor):
     def retain(self,checkpoint,stage,result,force=False):
         super().retain(checkpoint,stage,result,force)
         best=self.state.get('best_'+stage)
-        if best and Path(checkpoint['path']).parent.joinpath('holosoma_config.yaml').exists():
+        if best and best['sha256']==checkpoint['sha256'] and Path(checkpoint['path']).parent.joinpath('holosoma_config.yaml').exists():
             shutil.copy2(Path(checkpoint['path']).parent/'holosoma_config.yaml',Path(best['path']).parent/'holosoma_config.yaml')
 
     def accept_final(self,checkpoint,stage,result):

@@ -64,3 +64,27 @@ def test_no_gen_clip_end_or_state_writes():
         source=inspect.getsource(method)
         assert 'set_actor_states' not in source and 'write_root' not in source
         assert '.reset(' not in source
+
+
+def test_gen_continues_after_clip_end_and_height_switches_in_episode():
+    from holosoma.carry.fullbody_command import FullBodyCommand
+    cmd=FullBodyCommand.__new__(FullBodyCommand)
+    cmd.num_envs=2;cmd.device='cpu';cmd.limits=LIMITS
+    cmd._env=NS(dt=.02,episode_length_buf=torch.ones(2,dtype=torch.long))
+    cmd.motion_cfg=NS(use_adaptive_timesteps_sampler=False)
+    cmd.motion=NS(motion_end_idx=torch.tensor([10]));cmd.motion_ids=torch.zeros(2,dtype=torch.long)
+    cmd.track_env_mask=torch.tensor([True,False]);cmd.gen_env_mask=~cmd.track_env_mask
+    cmd.time_steps=torch.tensor([0,5]);cmd.dwell_remaining=torch.full((2,),1000.)
+    cmd.external_command=torch.ones(2,dtype=torch.bool)
+    cmd.task_command=torch.tensor([[0.,0.,0.,.72688],[0.,0.,0.,.72688]])
+    cmd.command_start=cmd.task_command.clone();cmd.command_target=cmd.task_command.clone()
+    cmd.command_elapsed=torch.zeros(2);cmd.height_command_rate=torch.zeros(2)
+    cmd._update_track_commands=lambda:None;cmd._update_relative_reference=lambda:None
+    cmd.set_command([0.,0.,0.,.60688])
+    for _ in range(250):cmd.step()
+    assert abs(float(cmd.task_command[1,3])-.60688)<1e-6
+    assert cmd.time_steps.tolist()==[9,5]
+    cmd.set_command([0.,0.,0.,.72688])
+    for _ in range(250):cmd.step()
+    assert abs(float(cmd.task_command[1,3])-.72688)<1e-6
+    assert cmd.time_steps.tolist()==[9,5] and cmd._env.episode_length_buf.tolist()==[1,1]
