@@ -55,6 +55,19 @@ def test_original_largebox_and_control_contract():
     assert p.command.setup_terms['motion_command'].params['reset_pose_file'].endswith('verified_side_grasp_reset.json')
 
 
+def test_physical_acceptance_rejects_false_grip_success():
+    from holosoma.carry.acceptance import physical_failures
+    good=dict(survived=True,contact_continuity=1.,max_hand_slip_m=.001,min_box_clearance_m=.53,
+        friction_weight_ratio_mean=.96,normal_vertical_fraction_max=.04,
+        contact_height_above_bottom_min_m=.12,nonhand_box_contact_max_n=0.)
+    assert not physical_failures(good)
+    for field,fault in [('survived',False),('contact_continuity',.98),('max_hand_slip_m',.03),
+                        ('min_box_clearance_m',.0),('friction_weight_ratio_mean',0.),
+                        ('normal_vertical_fraction_max',1.),('contact_height_above_bottom_min_m',0.),
+                        ('nonhand_box_contact_max_n',10.)]:
+        assert physical_failures({**good,field:fault}),field
+
+
 def test_no_gen_clip_end_or_state_writes():
     import inspect
     from holosoma.carry.fullbody_command import FullBodyCommand

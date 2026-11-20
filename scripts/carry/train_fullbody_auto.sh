@@ -36,3 +36,23 @@ systemd-run --user --unit=g1-fullbody-carry --collect \
     PYTHONNOUSERSITE=1 OMNI_KIT_ACCEPT_EULA=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 WANDB_MODE=disabled \
     "PATH=$PATH" "$fullbody_python" scripts/carry/fullbody_auto.py run --root "$root"
 echo "$root"
+# Do not let a prior STOPPED state make the report watcher exit before resume.
+"$fullbody_python" - "$root" <<'PY'
+import json,sys,time
+from pathlib import Path
+path=Path(sys.argv[1])/'training_status.json'
+for _ in range(50):
+ state=json.loads(path.read_text())
+ if state.get('status') in ('STARTING','RUNNING') and not state.get('supervisor_exited',False):break
+ time.sleep(.2)
+else:raise SystemExit('Controller did not enter RUNNING; inspect supervisor.log')
+PY
+if ! systemctl --user is-active --quiet g1-fullbody-finalizer.service; then
+  systemd-run --user --unit=g1-fullbody-finalizer --collect \
+    --property="StandardOutput=append:$root/finalizer.log" \
+    --property="StandardError=append:$root/finalizer.log" \
+    --working-directory="$repo" \
+    /usr/bin/env -u PYTHONPATH -u PYTHONHOME -u VIRTUAL_ENV -u LD_LIBRARY_PATH \
+      PYTHONNOUSERSITE=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+      "$fullbody_python" scripts/carry/finalize_fullbody.py --watch --root "$root"
+fi

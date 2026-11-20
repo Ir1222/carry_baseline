@@ -65,6 +65,7 @@ bash scripts/carry/train_fullbody_auto.sh stop
 
 ```bash
 python -m tensorboard.main --logdir ../artifacts/fullbody_goal_carry --host 127.0.0.1 --port 6011
+python scripts/carry/monitor_training.py --watch
 journalctl --user -u g1-fullbody-carry.service -n 50 --no-pager
 ```
 
@@ -129,6 +130,8 @@ Track 复用 HMI 全身/物体模仿奖励。Gen 包含速度3、yaw1、高度3�
 
 Style 用高度、升降趋势、正向速度和匹配时间连续性选Reference姿态，匹配29DoF与手箱协同。越出Reference分布时降低权重。它只影响训练Reward，部署不加载Reference。Stage 1通过后自动执行同初始Checkpoint、同seed、同128次更新预算的开/关对照；未完成对照时不得宣称Style改善了动作。
 
-真实失败包括箱底距地<3cm、跌倒、双手接触中断超过20ms（初始100ms接触建立单独记录）、非手掌支撑及非有限状态。合法低位不因固定箱体中心高度被误判。失败优先于Timeout。评估读取自动reset之前的物理状态，保留所有失败种子。
+真实失败包括箱底距地<3cm、跌倒、双手接触中断超过20ms（初始100ms接触建立单独记录）、非手掌支撑及非有限状态。验收还检查向上摩擦支撑/箱重≥0.8、法向竖直分量≤0.35、接触点高于箱底≥5cm、手箱漂移≤2.5cm；不能以掌心承托替代侧向夹持。合法低位不因固定箱体中心高度被误判。失败优先于Timeout。评估读取自动reset之前的物理状态，保留所有失败种子。
+
+启动脚本同时启动有限等待的报告监督服务。训练正常结束或有证据阻塞后，会重新生成包含实际指标的 `FULLBODY_GOAL_CARRY_FINAL_REPORT.md` 并自动commit；不会自动push。报告在 RUNNING 状态下是进度报告。
 
 最终文件和能力以 `FULLBODY_GOAL_CARRY_FINAL_REPORT.md` 及run内评估为准。未通过的最佳模型只保存在 `best_stage*/`，不标记为最终可用Policy。Forward准入失败的完整数据在 `forward_probe_001_data` 和 `forward_hold_diagnosis_003_data`；后者9组均未通过，不能通过增加夹紧力或只看接触率将其准入。

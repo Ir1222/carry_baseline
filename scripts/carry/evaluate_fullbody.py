@@ -37,7 +37,7 @@ def main():
     from holosoma.config_types.observation import ObservationManagerCfg
     from holosoma.config_types.termination import TerminationManagerCfg
     from holosoma.config_types.env import get_tyro_env_config
-    from holosoma.train_agent import TrainingContext
+    from holosoma.config_types.video import CartesianCameraConfig
     limits=json.loads((DATA/'goal_limits.json').read_text())
     if a.suite=='stage1':
         term=base.command.setup_terms['motion_command'];m=term.params['motion_config']
@@ -56,7 +56,8 @@ def main():
         reward=replace(base.reward,terms={k:v for k,v in base.reward.terms.items() if k in
             ('velocity_tracking','yaw_tracking','height_tracking','stable_carry','grasp','hand_slip','box_orientation','nonhand_contact')}),
         logger=replace(base.logger,base_dir=str(a.output),headless_recording=a.video,
-            video=replace(base.logger.video,enabled=a.video,interval=1,trigger='episode',clip_duration_s=a.seconds)))
+            video=replace(base.logger.video,enabled=a.video,interval=1,trigger='episode',clip_duration_s=a.seconds,
+                camera=CartesianCameraConfig(offset=[1.6,-1.6,.8],target_offset=[.2,0.,0.],smoothing=0.,tracking_body_name='pelvis'))))
     from holosoma.carry.runtime import simulation_context
     with simulation_context(config,a.output/'exception.txt'):
         import numpy as np
@@ -165,15 +166,22 @@ def main():
                     pelvis_amplitude_m=float(np.ptp(height)),
                     normal_forces_mean_n=[float(arrays[k][mask,i].mean()) for k in ('left_hand_normal_n','right_hand_normal_n')],
                     friction_weight_ratio_mean=float(arrays['upward_friction_weight_ratio'][mask,i].mean()),
+                    normal_vertical_fraction_max=float(arrays['normal_vertical_fraction'][mask,i].max()),
+                    contact_height_above_bottom_min_m=float(arrays['min_contact_height_above_bottom_m'][mask,i].min()),
                     nonhand_box_contact_max_n=float(arrays['nonhand_box_contact_n'][mask,i].max()),
                     foot_slip_speed_mean_m_s=float(arrays['foot_slip_speed'][mask,i].mean()),
                     joint_speed_rms=float(np.sqrt(np.mean(arrays['qd'][mask,i]**2))),
                     failures=sorted(causes[i]))
-                row['success']=bool(survived and contact>=.99 and slip<=.025 and row['min_box_clearance_m']>=.03)
+                # Same side-grasp/friction gates as P0; normal-force magnitude
+                # alone must not admit palm-up support.
+                from holosoma.carry.acceptance import physical_failures
+                row['failures']+=physical_failures(row)
+                row['success']=not row['failures']
                 if a.suite=='stage1':
                     row['robot_tracking_error_m']=float(arrays['robot_tracking_error_m'][mask,i].mean())
                     row['object_tracking_error_m']=float(arrays['object_tracking_error_m'][mask,i].mean())
-                    row['success'] &= row['robot_tracking_error_m']<.10 and row['object_tracking_error_m']<.04 and row['pelvis_amplitude_m']>.10
+                    row['object_tracking_error_rad_max']=float(arrays['object_tracking_error_rad'][mask,i].max())
+                    row['success'] &= row['robot_tracking_error_m']<.10 and row['object_tracking_error_m']<.04 and row['pelvis_amplitude_m']>.10 and row['object_tracking_error_rad_max']<=.20
                 else:
                     row['success'] &= bool(steady_mae[0]<.10 and steady_mae[3]<.03)
                     requires_forward=name.startswith('forward') or name=='goal_switching'

@@ -7,6 +7,13 @@ from holosoma.carry.checkpoints import digest
 
 
 class FullBodyCarryEnv(CarryEnv):
+    def get_video_overlay_text(self,env_id=0):
+        from holosoma.carry.rewards import task_errors
+        goal=self.command_manager.get_state('motion_command').task_command[env_id]
+        actual=goal+task_errors(self)[env_id]
+        return 'Goal vx={:.2f} h={:.3f} | Actual vx={:.2f} h={:.3f}'.format(
+            float(goal[0]),float(goal[3]),float(actual[0]),float(actual[3]))
+
     def get_checkpoint_state(self):
         state=super().get_checkpoint_state()
         cmd=self.command_manager.get_state('motion_command')

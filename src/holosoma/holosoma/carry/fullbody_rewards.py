@@ -34,11 +34,18 @@ def physical_metrics(env):
         velocity=sim._robot.data.body_lin_vel_w[:,index]-box[:,7:10]-torch.linalg.cross(box[:,10:13],pos-box[:,:3])
         slip.append(torch.linalg.vector_norm(velocity,dim=-1))
     other=sim.scene.sensors['box_other'].data.force_matrix_w
+    bottom=box_bottom(env)
+    points=torch.stack([sim.scene.sensors[s+'_box_contact'].data.contact_pos_w[:,0,0] for s in ('left','right')],1)
+    contact_height=points[:,:,2]-env.simulator.scene.env_origins[:,2:3]-bottom[:,None]
+    contact_height=torch.nan_to_num(contact_height,nan=0.)
+    vertical=(normal[:,:,2].abs()/mag.clamp_min(1e-6)).max(-1).values
     return dict(bilateral_contact=getattr(sim,'carry_bilateral',(mag>.5).all(-1).float()),
         left_hand_normal_n=mag[:,0],right_hand_normal_n=mag[:,1],
         upward_friction_weight_ratio=(-friction[:,:,2].sum(-1))/(mass*9.81),
         hand_slip_speed_m_s=torch.stack(slip,-1).max(-1).values,
-        box_clearance_m=box_bottom(env),nonhand_box_contact_n=torch.linalg.vector_norm(other,dim=-1).sum((1,2)))
+        box_clearance_m=bottom,normal_vertical_fraction=vertical,
+        min_contact_height_above_bottom_m=contact_height.min(-1).values,
+        nonhand_box_contact_n=torch.linalg.vector_norm(other,dim=-1).sum((1,2)))
 
 
 def carrying_gate(env):
@@ -55,7 +62,8 @@ def grasp(env):
     m=physical_metrics(env)
     bilateral=(torch.minimum(m['left_hand_normal_n'],m['right_hand_normal_n'])/20.).clamp(0,1)
     excess=(torch.maximum(m['left_hand_normal_n'],m['right_hand_normal_n'])-45.).clamp_min(0)
-    return bilateral*m['upward_friction_weight_ratio'].clamp(0,1)*torch.exp(-excess.square()/30.**2)*carrying_gate(env)
+    side=(m['normal_vertical_fraction']<.35)&(m['min_contact_height_above_bottom_m']>.05)
+    return bilateral*side*m['upward_friction_weight_ratio'].clamp(0,1)*torch.exp(-excess.square()/30.**2)*carrying_gate(env)
 
 
 def stable_carry(env):
