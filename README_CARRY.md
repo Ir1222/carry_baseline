@@ -1,6 +1,6 @@
 # G1 Goal-Conditioned Continuous Carry
 
-**Training/inference integration passed. Stable continuous carrying has not been demonstrated.** The 256-env/100-update pilot completed, but its mean episode was only 0.94 s and curriculum remained at level 0. Full training was not started. See [IMPLEMENTATION_REPORT.md](IMPLEMENTATION_REPORT.md).
+**Training/inference integration passed. Stable continuous carrying has not been demonstrated.** The original 256-env/100-update pilot had mean episode 0.94 s and remained at level 0. The autonomous pipeline and its current runtime status are described in [AUTO_TRAIN_README.md](AUTO_TRAIN_README.md); its durable state is `../artifacts/auto_training/current/training_status.json`. See [IMPLEMENTATION_REPORT.md](IMPLEMENTATION_REPORT.md) for the earlier pilot.
 
 Workspace: `/home/han/pyx/g1_carry_baseline_new/HMI`.
 Branch: `carry/goal-conditioned-continuous`.
@@ -112,9 +112,15 @@ Evaluate Stage 1 holding/tracking before Stage 2. Select the latest **completed 
 ```bash
 STAGE1_CKPT="$(python - <<'PY'
 from pathlib import Path
-paths = list(Path('../artifacts/full_training/WholeBodyTracking').glob('*-carry_stage1-locomotion/model.pt'))
-assert paths, 'No completed full Stage 1 found'
-print(max(paths, key=lambda p: p.stat().st_mtime).resolve())
+from holosoma.carry.checkpoints import newest_valid
+valid = []
+for run in Path('../artifacts/full_training/WholeBodyTracking').glob('*-carry_stage1-locomotion'):
+    try:
+        valid.append(newest_valid(run, require_export=True)[0])
+    except ValueError:
+        pass
+assert valid, 'No validated Stage 1 full checkpoint with adjacent Actor export'
+print(max(valid, key=lambda c: c['completed_updates'])['path'])
 PY
 )"
 test -f "$STAGE1_CKPT"
@@ -127,7 +133,7 @@ python -m holosoma.train_agent exp:g1-29dof-wbt-hybrid-carry logger:disabled \
   --command.setup-terms.motion-command.params.motion-config.hybrid.track-ratio=0.5
 ```
 
-HMI treats iteration count as **additional** updates on resume. Actor, Critic, normalizers, optimizer and curriculum resume together. Original Object checkpoints have an incompatible Actor schema.
+HMI treats iteration count as **additional** updates on resume. Carry resumes after the last completed iteration. Actor, Critic, normalizers, optimizer and curriculum resume together. Indexed `model_XXXXX.pt` files are discovered and checksum-validated; a `.ready.json` commit record is required. `latest-save-interval=0` does not create `model.pt`. Original Object checkpoints have an incompatible Actor schema. Manual Stage 2 use still requires physical Stage 1 qualification; the autonomous controller enforces this gate.
 
 ## Evaluate, command and view without references
 

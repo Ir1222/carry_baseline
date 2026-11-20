@@ -3,7 +3,7 @@ import torch
 import json
 from pathlib import Path
 from holosoma.managers.command.terms.wbt import HybridMotionCommand, MotionCommand
-from holosoma.utils.rotations import quat_apply, quat_inverse, quat_mul, quat_rotate_inverse, yaw_quat
+from holosoma.utils.rotations import quat_apply, quat_inverse, quat_mul, quat_rotate_inverse, yaw_quat, quaternion_to_matrix
 from holosoma.carry.sampling import sample_commands, smooth_commands
 
 
@@ -14,6 +14,7 @@ class CarryCommand(HybridMotionCommand):
         self.hold_frame = int(cfg.params.get("hold_frame", 5))
         self.curriculum_episodes = 0
         self.curriculum_successes = 0
+        self.carry_level_history = []
         pose_path = Path(cfg.params["reset_pose_file"])
         if not pose_path.is_file():
             raise FileNotFoundError(f"Carry requires a verified physical reset pose: {pose_path}")
@@ -57,6 +58,9 @@ class CarryCommand(HybridMotionCommand):
         if completed.numel():
             lengths = self.episode_control_steps[completed]
             good = (lengths*self._env.dt >= 5.) & (self.episode_good_steps[completed]/lengths > 0.7)
+            # A long episode ending in a fall/drop must not teach the curriculum
+            # that the command was mastered. Require a physical timeout.
+            good &= self._env.time_out_buf[completed] & ~self._env.termination_manager.terminated[completed]
             self.curriculum_episodes += int(completed.numel())
             self.curriculum_successes += int(good.sum())
         super().reset(ids)
@@ -159,11 +163,23 @@ class CarryCommand(HybridMotionCommand):
             self.metrics[f"carry/error_{name}"] = errors[:, i].abs()
             self.metrics[f"carry/command_{name}"] = self.task_command[:, i]
         self.metrics["carry/contact_quality"] = contact
+        forces = self._env.simulator.hand_box_forces()
+        hand_norm = torch.linalg.vector_norm(forces,dim=-1)
+        box = self._env.simulator._object.data.root_state_w
+        ground = self._env.simulator.scene.env_origins[:,2]
+        self.metrics['carry/left_hand_force_n'] = hand_norm[:,0]
+        self.metrics['carry/right_hand_force_n'] = hand_norm[:,1]
+        self.metrics['carry/bilateral_contact'] = (hand_norm>.5).all(-1).float()
+        self.metrics['carry/upward_support_weight_ratio'] = (-forces[:,:,2].sum(-1)).clamp_min(0)/(self._env.carry_box_mass*9.81)
+        self.metrics['carry/box_height_m'] = box[:,2]-ground
+        self.metrics['carry/box_tilt_rad'] = torch.acos(quaternion_to_matrix(box[:,3:7],w_last=True)[:,2,2].abs().clamp(0,1))
         self.metrics["carry/curriculum_level"] = torch.tensor(float(self.carry_level), device=self.device)
 
     def on_training_step(self, training_step, **kwargs):
         super().on_training_step(training_step, **kwargs)
         if self.curriculum_episodes >= 100:
+            self.carry_level_history.append(dict(level=self.carry_level, iteration=training_step,
+                episodes=self.curriculum_episodes,successes=self.curriculum_successes))
             if self.curriculum_successes/self.curriculum_episodes >= 0.7:
                 self.carry_level = min(4, self.carry_level+1)
             self.curriculum_episodes = self.curriculum_successes = 0

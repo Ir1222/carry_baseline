@@ -32,9 +32,15 @@ class CarryEnv(WholeBodyTrackingManager):
 
     def get_checkpoint_state(self):
         command = self.command_manager.get_state("motion_command")
-        return {"carry_schema_version": 1, "carry_level": command.carry_level,
+        state = {"carry_schema_version": 1, "carry_level": command.carry_level,
                 "carry_curriculum_episodes": command.curriculum_episodes,
                 "carry_curriculum_successes": command.curriculum_successes}
+        state['carry_level_history'] = getattr(command, 'carry_level_history', [])
+        sampler = getattr(command, "adaptive_timesteps_sampler", None)
+        if sampler is not None:
+            state["carry_sampler"] = {name: getattr(sampler, name).clone()
+                for name in ("bin_fail_ema", "pending_visits", "pending_failures")}
+        return state
 
     def load_checkpoint_state(self, state):
         if not state:
@@ -45,3 +51,11 @@ class CarryEnv(WholeBodyTrackingManager):
         command.carry_level = int(state["carry_level"])
         command.curriculum_episodes = int(state.get("carry_curriculum_episodes", 0))
         command.curriculum_successes = int(state.get("carry_curriculum_successes", 0))
+        command.carry_level_history = list(state.get('carry_level_history', []))
+        sampler = getattr(command, "adaptive_timesteps_sampler", None)
+        if sampler is not None:
+            for name, value in state.get("carry_sampler", {}).items():
+                target = getattr(sampler, name)
+                if target.shape != value.shape:
+                    raise ValueError("Incompatible reference sampler shape")
+                target.copy_(value.to(target.device))

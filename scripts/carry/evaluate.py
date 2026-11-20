@@ -1,4 +1,10 @@
 """View/test a policy-only ONNX actor in physics without loading any motion file."""
+import sys
+if '--suite' in sys.argv:
+    from suite_eval import main
+    main()
+    raise SystemExit(0)
+
 import argparse
 from dataclasses import replace
 import json
