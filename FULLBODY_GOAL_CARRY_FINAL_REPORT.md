@@ -1,10 +1,10 @@
 # FullBody Goal Carry — measured experiment report
 
-Status: **RUNNING / BENCHMARK**. This file is a progress report while RUNNING. Only independent physical acceptance grants a usable policy.
+Status: **RUNNING / STAGE1**. This file is a progress report while RUNNING. Only independent physical acceptance grants a usable policy.
 
-Branch: `feature/fullbody-goal-carry-autotrain`. Current source commit: `136ef0d05f425cef54323caa5f584c7e8ebe8128`. P0 preservation commit: `ed106a7`. Initial run source: `136ef0d05f425cef54323caa5f584c7e8ebe8128`. Additional source versions are retained as `source_*.tar`.
+Branch: `feature/fullbody-goal-carry-autotrain`. Current source commit: `b014d74413a42bcb3fa0561b2a8a5ff6bc2b63d2`. P0 preservation commit: `ed106a7`. Initial run source: `90cb7abba96283b98b059ed268e7f9c1b5f2ae40`. Additional source versions are retained as `source_*.tar`.
 
-Run directory: `/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333`. PID, process identity and current command: {"name": "benchmark_8192", "pid": 359072, "identity": "163818672", "output": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/jobs/benchmark_8192_1795153031824246930", "started_at": 1795153031.8270357, "stage": null}
+Run directory: `/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333`. PID, process identity and current command: {"name": "stage1_training", "pid": 367494, "identity": "163886414", "output": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/jobs/stage1_training_1795153709249524023", "started_at": 1795153709.2513907, "stage": "stage1"}
 
 ## P0 and source integrity
 
@@ -12,7 +12,7 @@ Run directory: `/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carr
   "passed": true,
   "policy_success": false,
   "immutable_p0_sources_unchanged": true,
-  "cpu_tests": "18 passed",
+  "cpu_tests": "20 passed",
   "physics_evidence": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/physics_interface_gate_001.json",
   "format_fk_evidence": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/reference_v1/fresh_format_fk_validation.json",
   "fullbody_stage1_smoke": "smoke_stage1_003",
@@ -23,7 +23,11 @@ Run directory: `/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carr
   ],
   "forward_admitted": false,
   "forward_failures": "forward_hold_diagnosis_003_data/validation.json",
-  "note": "Ready for bounded squat/stand PPO training; no policy skill or forward capability established"
+  "note": "Engineering gates passed; independent policy acceptance has NOT passed. Forward still quarantined.",
+  "source_commit": "90cb7abba96283b98b059ed268e7f9c1b5f2ae40",
+  "final_stage1_smoke": "final_gate_stage1_001",
+  "final_stage2_resume_onnx_smoke": "final_gate_stage2_001",
+  "viewer_and_lateral_acceptance_evidence": "viewer_failure_002_data/evaluation.json"
 }
 
 P0 verification is controller-only. Source NPZ checksums and motion family priors are in `../artifacts/fullbody_goal_carry/reference_v1/manifest.json`. Original P0 assets, old resets and checkpoints were preserved.
@@ -510,7 +514,7 @@ Four-dimensional interface [vx,vy,yaw_rate,pelvis_height], 348D Actor and 184D C
   "poll_seconds": 10,
   "report_seconds": 60,
   "max_corrections": 3,
-  "source_commit": "136ef0d05f425cef54323caa5f584c7e8ebe8128"
+  "source_commit": "90cb7abba96283b98b059ed268e7f9c1b5f2ae40"
 }
 
 [
@@ -527,6 +531,23 @@ Four-dimensional interface [vx,vy,yaw_rate,pelvis_height], 348D Actor and 184D C
     "iterations_per_s": 0.09103858785035279,
     "peak_gpu_memory_mib": 5860,
     "evidence": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/jobs/benchmark_4096_1795152814934836057",
+    "physx_errors": 0,
+    "nan_errors": 0,
+    "crash_exit_code": 0
+  },
+  {
+    "num_envs": 8192,
+    "stable": true,
+    "samples_per_iteration": 196608,
+    "minibatches": 128,
+    "epochs": 5,
+    "steps_per_s": 12431.143144491927,
+    "rollout_s": 14.525944530614652,
+    "simulation_s": 13.680859697167762,
+    "update_s": 1.2975117255700752,
+    "iterations_per_s": 0.06319731819710007,
+    "peak_gpu_memory_mib": 8302,
+    "evidence": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/jobs/benchmark_8192_1795153185087080876",
     "physx_errors": 0,
     "nan_errors": 0,
     "crash_exit_code": 0
@@ -567,156 +588,19 @@ Unaccepted models stay in best_stage*/ and must not be presented as usable final
 
 {
   "blocker": null,
-  "gpu_seconds": {},
+  "gpu_seconds": {
+    "stage1": 31.492636112961918
+  },
   "stage1_corrections": null,
   "stage2_corrections": null,
   "last_job": {
-    "output": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/jobs/benchmark_4096_1795152814934836057",
+    "output": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/jobs/stage1_training_1795153506526842935",
     "exit_code": 0,
-    "wall_seconds": 215.81155135692097,
-    "peak_gpu_memory_mib": 5860,
-    "error": null,
+    "wall_seconds": 31.492636112961918,
+    "peak_gpu_memory_mib": 1116,
+    "error": "Stop requested; valid checkpoints retained",
     "failure_evidence": [],
-    "worker": {
-      "passed": true,
-      "updates": 16,
-      "resume_verified": false,
-      "latest": {
-        "iteration": 15,
-        "num_envs": 4096,
-        "samples": 98304,
-        "minibatches": 64,
-        "epochs": 5,
-        "rollout_s": 10.354734911117703,
-        "update_s": 0.6558900729287416,
-        "simulation_s": 9.709628629265353,
-        "steps_per_s": 8928.10354929307,
-        "cuda_reserved_mib": 606.0,
-        "curriculum_level": 0,
-        "losses": {
-          "Value": 0.4224679066799581,
-          "Surrogate": -0.018651142353246542,
-          "Entropy": 5.580766171216965,
-          "KL": 0.010969717610356611,
-          "actor_loss": -0.029812675292487257,
-          "critic_loss": 0.4224679066799581,
-          "symmetry_actor_loss": 0.0,
-          "symmetry_critic_loss": 0.0
-        },
-        "physical": {
-          "action_clip_frac": 0.0,
-          "termination/reset_frac": 0.12548828125,
-          "termination/non_timeout_frac": 0.12255859375,
-          "termination/timeout_frac": 0.0,
-          "termination/clip_timeout_frac": 0.0029296875,
-          "termination/physical_failure_frac": 0.1171875,
-          "termination/physical_failure/fall_frac": 0.0,
-          "termination/physical_failure/drop_frac": 0.0,
-          "termination/physical_failure/separation_frac": 0.0,
-          "termination/physical_failure/loss_of_grasp_frac": 0.10595703125,
-          "termination/physical_failure/body_support_frac": 0.013916015625,
-          "termination/physical_failure/nonfinite_frac": 0.0,
-          "termination/track_failure_frac": 0.005615234375,
-          "termination/track_failure/ref_pos_z_frac": 0.0,
-          "termination/track_failure/ref_ori_frac": 0.0,
-          "termination/track_failure/body_pos_z_frac": 0.0,
-          "termination/track_failure/object_pos_frac": 0.0,
-          "termination/track_failure/object_ori_frac": 0.005615234375,
-          "termination/body_proximity_frac": 0.0,
-          "termination/body_proximity/group_0_frac": 0.0,
-          "hybrid/termination/track/reset_frac": 0.12548828125,
-          "hybrid/termination/gen/reset_frac": 0.0,
-          "fullbody/termination_timeout": 0.0,
-          "fullbody/termination_clip_timeout": 0.0029296875,
-          "fullbody/termination_physical_failure": 0.1171875,
-          "fullbody/termination_track_failure": 0.005615234375,
-          "fullbody/termination_body_proximity": 0.0,
-          "average_episode_length": 8.403282165527344,
-          "carry/error_vx": 0.09263059496879578,
-          "carry/command_vx": -0.0005774041055701673,
-          "carry/error_vy": 0.032782621681690216,
-          "carry/command_vy": -4.106950200366555e-06,
-          "carry/error_yaw_rate": 0.3741019368171692,
-          "carry/command_yaw_rate": -1.4559948795067612e-05,
-          "carry/error_pelvis_height": 0.033726613968610764,
-          "carry/command_pelvis_height": 0.6864051818847656,
-          "carry/bilateral_contact": 0.5497314929962158,
-          "carry/left_hand_normal_n": 7.705808639526367,
-          "carry/right_hand_normal_n": 7.965642929077148,
-          "carry/upward_friction_weight_ratio": 0.6470264196395874,
-          "carry/hand_slip_speed_m_s": 0.40388739109039307,
-          "carry/box_clearance_m": 0.555405855178833,
-          "carry/nonhand_box_contact_n": 0.661733865737915,
-          "carry/curriculum_level": 0.0,
-          "reward/episode/rew_motion_global_ref_position_error_exp": 0.0026474050246179104,
-          "reward/episode/rew_motion_global_ref_orientation_error_exp": 0.0026160674169659615,
-          "reward/episode/rew_motion_relative_body_position_error_exp": 0.005352914333343506,
-          "reward/episode/rew_motion_relative_body_orientation_error_exp": 0.00478110508993268,
-          "reward/episode/rew_motion_global_body_lin_vel": 0.004153974819928408,
-          "reward/episode/rew_motion_global_body_ang_vel": 0.0039831348694860935,
-          "reward/episode/rew_object_global_ref_position_error_exp": 0.005250684916973114,
-          "reward/episode/rew_object_global_ref_orientation_error_exp": 0.0045945653691887856,
-          "reward/episode/rew_action_rate_l2": -0.0027005858719348907,
-          "reward/episode/rew_limits_dof_pos": -2.8372121319009125e-10,
-          "reward/episode/rew_velocity_tracking": 0.012483793310821056,
-          "reward/episode/rew_yaw_tracking": 0.0022897995077073574,
-          "reward/episode/rew_height_tracking": 0.011526200920343399,
-          "reward/episode/rew_grasp": 0.004134987015277147,
-          "reward/episode/rew_stable_carry": 0.001104694209061563,
-          "reward/episode/rew_box_orientation": 0.003999094944447279,
-          "reward/episode/rew_hand_slip": 0.0006614295416511595,
-          "reward/episode/rew_goal_compatible_style_reward": 0.0,
-          "reward/episode/rew_nonhand_contact": -0.00041763941408134997,
-          "reward/episode/termination/timeout": 0.0,
-          "reward/episode/termination/clip_timeout": 0.023346303030848503,
-          "reward/episode/termination/physical_failure": 0.9338521361351013,
-          "reward/episode/termination/physical_failure/fall": 0.0,
-          "reward/episode/termination/physical_failure/drop": 0.0,
-          "reward/episode/termination/physical_failure/separation": 0.0,
-          "reward/episode/termination/physical_failure/loss_of_grasp": 0.844357967376709,
-          "reward/episode/termination/physical_failure/body_support": 0.11089494079351425,
-          "reward/episode/termination/physical_failure/nonfinite": 0.0,
-          "reward/episode/termination/track_failure": 0.04474708065390587,
-          "reward/episode/termination/track_failure/ref_pos_z": 0.0,
-          "reward/episode/termination/track_failure/ref_ori": 0.0,
-          "reward/episode/termination/track_failure/body_pos_z": 0.0,
-          "reward/episode/termination/track_failure/object_pos": 0.0,
-          "reward/episode/termination/track_failure/object_ori": 0.04474708065390587,
-          "reward/episode/termination/body_proximity": 0.0,
-          "reward/episode/termination/body_proximity/group_0": 0.0,
-          "reward/episode/hybrid/reward/track/rew_motion_global_ref_position_error_exp": 0.0026474050246179104,
-          "reward/episode/hybrid/reward/track/rew_motion_global_ref_orientation_error_exp": 0.0026160674169659615,
-          "reward/episode/hybrid/reward/track/rew_motion_relative_body_position_error_exp": 0.005352914333343506,
-          "reward/episode/hybrid/reward/track/rew_motion_relative_body_orientation_error_exp": 0.00478110508993268,
-          "reward/episode/hybrid/reward/track/rew_motion_global_body_lin_vel": 0.004153974819928408,
-          "reward/episode/hybrid/reward/track/rew_motion_global_body_ang_vel": 0.0039831348694860935,
-          "reward/episode/hybrid/reward/track/rew_object_global_ref_position_error_exp": 0.005250684916973114,
-          "reward/episode/hybrid/reward/track/rew_object_global_ref_orientation_error_exp": 0.0045945653691887856,
-          "reward/episode/hybrid/mean_reward/track": 1.9938490390777588,
-          "reward/raw_episode/raw_rew_motion_global_ref_position_error_exp": 0.264740526676178,
-          "reward/raw_episode/raw_rew_motion_global_ref_orientation_error_exp": 0.26160672307014465,
-          "reward/raw_episode/raw_rew_motion_relative_body_position_error_exp": 0.2676457464694977,
-          "reward/raw_episode/raw_rew_motion_relative_body_orientation_error_exp": 0.23905524611473083,
-          "reward/raw_episode/raw_rew_motion_global_body_lin_vel": 0.2076987475156784,
-          "reward/raw_episode/raw_rew_motion_global_body_ang_vel": 0.1991567313671112,
-          "reward/raw_episode/raw_rew_object_global_ref_position_error_exp": 0.2625342309474945,
-          "reward/raw_episode/raw_rew_object_global_ref_orientation_error_exp": 0.22972828149795532,
-          "reward/raw_episode/raw_rew_action_rate_l2": 1.3502929210662842,
-          "reward/raw_episode/raw_rew_limits_dof_pos": 1.418606010439305e-09,
-          "reward/raw_episode/raw_rew_velocity_tracking": 0.20806322991847992,
-          "reward/raw_episode/raw_rew_yaw_tracking": 0.11448997259140015,
-          "reward/raw_episode/raw_rew_height_tracking": 0.1921033412218094,
-          "reward/raw_episode/raw_rew_grasp": 0.068916454911232,
-          "reward/raw_episode/raw_rew_stable_carry": 0.05523470789194107,
-          "reward/raw_episode/raw_rew_box_orientation": 0.19995474815368652,
-          "reward/raw_episode/raw_rew_hand_slip": 0.033071476966142654,
-          "reward/raw_episode/raw_rew_goal_compatible_style_reward": 0.0,
-          "reward/raw_episode/raw_rew_nonhand_contact": 0.010440985672175884
-        },
-        "mean_live_episode_s": 0.09964843839406967
-      },
-      "log_dir": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/benchmark/WholeBodyTracking/20261120_053341-bench4096-locomotion"
-    }
+    "worker": {}
   }
 }
 
