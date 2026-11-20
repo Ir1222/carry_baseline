@@ -190,7 +190,11 @@ def main():
                     row['robot_tracking_error_m']=float(arrays['robot_tracking_error_m'][mask,i].mean())
                     row['object_tracking_error_m']=float(arrays['object_tracking_error_m'][mask,i].mean())
                     row['object_tracking_error_rad_max']=float(arrays['object_tracking_error_rad'][mask,i].max())
-                    row['success'] &= row['robot_tracking_error_m']<.10 and row['object_tracking_error_m']<.04 and row['pelvis_amplitude_m']>.10 and row['object_tracking_error_rad_max']<=.20
+                    start=int(cmd.motion.motion_start_idx[clip]);end=int(cmd.motion.motion_end_idx[clip])
+                    expected_amplitude=float(cmd.motion.body_pos_w[start:end,0,2].max()-cmd.motion.body_pos_w[start:end,0,2].min())
+                    row['reference_pelvis_amplitude_m']=expected_amplitude
+                    row['success'] &= row['robot_tracking_error_m']<.10 and row['object_tracking_error_m']<.04 and row['object_tracking_error_rad_max']<=.20
+                    if expected_amplitude>.08:row['success'] &= row['pelvis_amplitude_m']>.10
                 else:
                     row['success'] &= bool(steady_mae[0]<.10 and steady_mae[3]<.03)
                     requires_forward=name.startswith('forward') or name=='goal_switching'
@@ -201,13 +205,24 @@ def main():
                         row['success'] &= row['pelvis_amplitude_m']>.10
                     # Whole segments, including unsuccessful switches, are retained.
                     row['command_segments']=[]
+                    actual=arrays['goal'][mask,i]+arrays['error'][mask,i]
+                    down=[];up=[]
                     for j,(when,goal) in enumerate(schedule):
                         end=schedule[j+1][0] if j+1<len(schedule) else seconds
                         sm=(t>=when)&(t<end)
-                        hit=sm&(err[:,0]<.1)&(err[:,3]<.03)
+                        target_error=abs(actual-np.array(goal))
+                        hit=sm&(target_error[:,0]<.1)&(target_error[:,3]<.03)
+                        tail=sm&(t>=max(when,end-1.))
+                        reached=bool(tail.any() and target_error[tail,0].mean()<.1 and target_error[tail,3].mean()<.03)
+                        completed=bool(end<=t[-1]+env.dt)
                         row['command_segments'].append(dict(start_s=when,goal=goal,
-                            observed=bool(sm.any()),completed=bool(end<=t[-1]+env.dt),
+                            observed=bool(sm.any()),completed=completed,target_reached=reached,
                             first_tracking_latency_s=float(t[hit][0]-when) if hit.any() else None))
+                        row['success'] &= completed and reached
+                        if j and schedule[j-1][1][3]-goal[3]>.08:down.append(completed and reached)
+                        if j and goal[3]-schedule[j-1][1][3]>.08:up.append(completed and reached)
+                    row['squat_completion_rate']=float(np.mean(down)) if down else None
+                    row['stand_completion_rate']=float(np.mean(up)) if up else None
                 rows.append(row)
             atomic_json(a.output/'trials.json',rows)
         groups={name:dict(success_rate=float(np.mean([r['success'] for r in rows if r['scenario']==name])),
