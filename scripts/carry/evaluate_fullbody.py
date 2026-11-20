@@ -32,6 +32,9 @@ def main():
     p.add_argument('--interactive',action='store_true')
     p.add_argument('--video',action='store_true')
     a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
+    policy_meta=json.loads(a.policy.with_suffix('.actor.json').read_text())
+    if policy_meta.get('fullbody_schema')!=1:
+        raise ValueError('Refusing a legacy palm-support ONNX policy in the FullBody scene')
     from holosoma.carry.fullbody_presets import g1_29dof_fullbody_carry as base,DATA
     from holosoma.config_types.command import CommandManagerCfg,CommandTermCfg
     from holosoma.config_types.observation import ObservationManagerCfg
@@ -75,6 +78,12 @@ def main():
             wbt.MotionLoader.__init__=forbidden;wbt.MultiMotionLoader.__init__=forbidden
         env=FullBodyCarryEnv(get_tyro_env_config(config),device='cuda:0')
         env.set_is_evaluating()
+        if abs(policy_meta['control_dt']-env.dt)>1e-9:
+            raise ValueError('Policy action frequency differs from the physical scene')
+        torch.testing.assert_close(torch.tensor(policy_meta['default_joint_pos'],device=env.device),
+            env.default_dof_pos[0],atol=1e-6,rtol=0)
+        torch.testing.assert_close(torch.tensor(policy_meta['action_scales'],device=env.device),
+            env.action_scales,atol=1e-6,rtol=0)
         cmd=env.command_manager.get_state('motion_command')
         actor=CarryActor(a.policy,a.seeds,'cuda:0')
         if a.suite=='stage1':scenarios={f'clip_{i}':None for i in range(cmd.motion.num_motions)}
