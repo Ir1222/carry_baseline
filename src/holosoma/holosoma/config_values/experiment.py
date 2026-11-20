@@ -14,8 +14,10 @@ from holosoma.config_values.wbt.g1.experiment import (
     g1_29dof_wbt_w_object,
 )
 from holosoma.carry.presets import g1_29dof_wbt_hybrid_carry
+from holosoma.carry.fullbody_presets import g1_29dof_fullbody_carry
 
 DEFAULTS = {
+    "g1_29dof_fullbody_carry": g1_29dof_fullbody_carry,
     "g1_29dof_wbt_hybrid_carry": g1_29dof_wbt_hybrid_carry,
     "g1_29dof": g1_29dof,
     "g1_29dof_fast_sac": g1_29dof_fast_sac,

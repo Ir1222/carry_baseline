@@ -62,6 +62,8 @@ class RobotAssetConfig:
     mesh_root: str | None = None
     density: float | None = None
     disable_gravity: bool | None = None
+    solver_position_iterations: int = 8
+    solver_velocity_iterations: int = 4
 
 
 @dataclass(frozen=True)

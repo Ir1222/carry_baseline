@@ -49,6 +49,7 @@ def instrument(target):
                 value = super().step(state)
                 obs, rewards, _, _ = value
                 assert obs['actor_obs'].shape == (self.num_envs, 348)
+                assert obs['critic_obs'].shape == (self.num_envs, 184)
                 assert all(torch.isfinite(x).all() for x in obs.values())
                 assert torch.isfinite(rewards).all()
                 return value

@@ -80,6 +80,8 @@ class PhysxConfig:
 
     num_velocity_iterations: int
     """Number of velocity iterations per solver step."""
+    min_position_iterations: int = 1
+    min_velocity_iterations: int = 0
 
     num_threads: int = 4
     """Worker thread count used by PhysX."""

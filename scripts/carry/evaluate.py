@@ -1,5 +1,10 @@
 """View/test a policy-only ONNX actor in physics without loading any motion file."""
 import sys
+if '--fullbody' in sys.argv:
+    sys.argv.remove('--fullbody')
+    from evaluate_fullbody import main
+    main()
+    raise SystemExit(0)
 if '--suite' in sys.argv:
     from suite_eval import main
     main()

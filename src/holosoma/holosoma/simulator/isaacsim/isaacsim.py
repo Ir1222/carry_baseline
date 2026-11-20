@@ -81,6 +81,8 @@ class IsaacSim(BaseSimulator):
                 solver_type=self.simulator_config.sim.physx.solver_type,
                 max_position_iteration_count=self.simulator_config.sim.physx.num_position_iterations,
                 max_velocity_iteration_count=self.simulator_config.sim.physx.num_velocity_iterations,
+                min_position_iteration_count=self.simulator_config.sim.physx.min_position_iterations,
+                min_velocity_iteration_count=self.simulator_config.sim.physx.min_velocity_iterations,
                 gpu_max_rigid_patch_count=10 * 2**15,
             ),
             # Global physics material, can be overridden by the individual articulation
@@ -222,8 +224,8 @@ class IsaacSim(BaseSimulator):
         robot_articulation_props = sim_utils.ArticulationRootPropertiesCfg(
             enabled_self_collisions=robot_asset_cfg.enable_self_collisions,
             # NOTE: (4, 0) -> (8, 4) necessary for reproducing FAR-tracking-implementation
-            solver_position_iteration_count=8,
-            solver_velocity_iteration_count=4,
+            solver_position_iteration_count=robot_asset_cfg.solver_position_iterations,
+            solver_velocity_iteration_count=robot_asset_cfg.solver_velocity_iterations,
         )
 
         if robot_asset_cfg.usd_file is None:
