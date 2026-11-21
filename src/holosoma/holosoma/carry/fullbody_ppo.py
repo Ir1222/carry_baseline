@@ -29,13 +29,21 @@ class FullBodyCarryPPO(CarryPPO):
                 reference_manifest_sha256=digest(manifest_file),
                 training_mode='Track-only joint squat/stand and forward carry')
             meta['stage1_reference_protocol']='hard_reset_post_action_v1' if hasattr(cmd,'reference_episode_step') else 'legacy_v1'
+        if getattr(cmd,'manifest',{}).get('schema')=='unified_hoi_v1':
+            from holosoma.carry.checkpoints import digest
+            file=Path(cmd.cfg.params['manifest_file'])
+            meta.update(carry_schema_version=2,unified_schema=1,actor_dim=357,critic_dim=187,
+                task_modes=['pickup','carry','putdown'],task_mode_encoding='three-way one-hot appended to each physical history frame',
+                reference_bundle=str(file.parent.resolve()),reference_manifest_sha256=digest(file),
+                reference_bundle_schema='unified_hoi_v1',training_stage=1,reference_required_at_inference=False,
+                task_mode_source_at_deployment='explicit high-level intention; no reference clock')
         session=ort.InferenceSession(str(path),providers=['CPUExecutionProvider'])
         wrapper=self.actor_onnx_wrapper
         errors=[]
         for seed in range(8):
             # Export may move a copied module; use the actual wrapper's device.
             device=next(wrapper.parameters()).device
-            x=torch.tensor(np.random.default_rng(seed).normal(size=(1,348)),dtype=torch.float32,device=device)
+            x=torch.tensor(np.random.default_rng(seed).normal(size=(1,getattr(self.env,'actor_dim',348))),dtype=torch.float32,device=device)
             with torch.no_grad(): y=wrapper(x).cpu().numpy()
             z=session.run(['action'],{'actor_obs':x.cpu().numpy()})[0]
             np.testing.assert_allclose(y,z,atol=2e-5,rtol=2e-5)

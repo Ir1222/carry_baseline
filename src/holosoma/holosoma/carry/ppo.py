@@ -50,7 +50,7 @@ class CarryPPO(PPO):
                              {"actor_obs": self._get_zero_input()})
         metadata = {"carry_schema_version": 1, "commands": ["vx", "vy", "yaw_rate", "pelvis_height"],
                     "command_units": ["m/s", "m/s", "rad/s", "m"],
-                    "frame_dim": 116, "history_length": 3, "history_order": "oldest_first_zero_padded",
+                    "frame_dim": getattr(self.env,'actor_frame_dim',116), "history_length": 3, "history_order": "oldest_first_zero_padded",
                     "quaternion_order": "xyzw", "joint_names": self.env.simulator.dof_names,
                     "default_joint_pos": self.env.default_dof_pos[0].tolist(),
                     "action_scales": self.env.action_scales.tolist(), "control_dt": self.env.dt,

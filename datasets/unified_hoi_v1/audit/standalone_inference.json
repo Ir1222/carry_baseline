@@ -1,0 +1,1 @@
+{"passed": true, "policy": "../artifacts/unified_hoi_stage1/smoke_003_data/tensorboard/WholeBodyTracking/20261121_100537-unified_hoi_stage1-locomotion/model_00003.onnx", "scope": "interface only, not physical success", "MotionLoader_forbidden": true, "explicit_modes": ["pickup", "carry", "putdown"]}

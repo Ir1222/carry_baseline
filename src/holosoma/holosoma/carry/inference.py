@@ -11,8 +11,9 @@ class CarryActor:
     def __init__(self, policy, num_envs=1, device="cpu"):
         policy = Path(policy)
         self.metadata = json.loads(policy.with_suffix(".actor.json").read_text())
-        if self.metadata["carry_schema_version"] != 1:
+        if self.metadata["carry_schema_version"] not in (1,2):
             raise ValueError("Unsupported carry actor schema")
+        if self.metadata['carry_schema_version']==2 and type(self) is CarryActor:raise ValueError('Unified policy requires UnifiedActor and explicit task_mode')
         self.session = ort.InferenceSession(str(policy), providers=["CPUExecutionProvider"])
         inputs = self.session.get_inputs()
         if len(inputs) != 1 or inputs[0].name != "actor_obs":

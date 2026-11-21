@@ -1,0 +1,2253 @@
+{
+  "kind": "policy_evaluation",
+  "passed": false,
+  "policy_success_claim": false,
+  "independent_scenes": true,
+  "groups": {
+    "A_pickup": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "B_loaded_walk": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "C_single_squat": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "D_repeated_squat": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "E_full_pick_carry_putdown": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "pickup_carry_boundary": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "carry_putdown_boundary": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "release_tail_stability": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "pickup_contact_probe": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "putdown_support_probe": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "release_probe": {
+      "success_rate": 0.0,
+      "trials": 3
+    }
+  },
+  "trials": [
+    {
+      "case": "A_pickup",
+      "seed": 1000,
+      "replica": 0,
+      "steps": 16,
+      "survival_s": 0.32,
+      "failures": [
+        "track_failure/ref_ori"
+      ],
+      "robot_error_m": 0.10442960262298584,
+      "object_error_m": 0.009768903255462646,
+      "object_orientation_error_rad": 0.0442538782954216,
+      "modes_seen": [
+        0
+      ],
+      "pelvis_amplitude": 0.07127374410629272,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 16,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 24.085857391357422,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": -0.0270388200879097,
+            "hand_slip_speed_m_s": 1.0233181715011597,
+            "box_clearance_m": -0.0020977258682250977,
+            "ground_support_weight_ratio": 2.1217973232269287,
+            "object_speed_m_s": 0.1594494730234146,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.00021551724057644606,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 91.93411254882812,
+            "foot_sliding_m_s": 0.004627065733075142
+          }
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "A_pickup",
+      "seed": 1001,
+      "replica": 1,
+      "steps": 16,
+      "survival_s": 0.32,
+      "failures": [
+        "track_failure/ref_ori"
+      ],
+      "robot_error_m": 0.10443304479122162,
+      "object_error_m": 0.00962220411747694,
+      "object_orientation_error_rad": 0.04401863366365433,
+      "modes_seen": [
+        0
+      ],
+      "pelvis_amplitude": 0.07116866111755371,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 16,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 24.353384017944336,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": -0.027743682265281677,
+            "hand_slip_speed_m_s": 1.027007818222046,
+            "box_clearance_m": -0.0020967600867152214,
+            "ground_support_weight_ratio": 2.9018197059631348,
+            "object_speed_m_s": 0.15926185250282288,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.00021551724057644606,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 87.93959045410156,
+            "foot_sliding_m_s": 0.004103320650756359
+          }
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "A_pickup",
+      "seed": 1002,
+      "replica": 2,
+      "steps": 16,
+      "survival_s": 0.32,
+      "failures": [
+        "physical_failure/body_support",
+        "track_failure/ref_ori"
+      ],
+      "robot_error_m": 0.10443028062582016,
+      "object_error_m": 0.009328927844762802,
+      "object_orientation_error_rad": 0.04330477863550186,
+      "modes_seen": [
+        0
+      ],
+      "pelvis_amplitude": 0.07110625505447388,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 16,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 26.82234764099121,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": -0.04902871698141098,
+            "hand_slip_speed_m_s": 1.0203790664672852,
+            "box_clearance_m": -0.002096290700137615,
+            "ground_support_weight_ratio": 2.0267744064331055,
+            "object_speed_m_s": 0.15547789633274078,
+            "nonhand_box_contact_n": 1.5317503213882446,
+            "torque_clip_fraction": 0.0004310344811528921,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 104.22111511230469,
+            "foot_sliding_m_s": 0.005354093387722969
+          }
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "B_loaded_walk",
+      "seed": 1000,
+      "replica": 0,
+      "steps": 12,
+      "survival_s": 0.24,
+      "failures": [
+        "physical_failure/loss_of_grasp",
+        "incomplete_episode",
+        "contact_interruption",
+        "hand_slip",
+        "insufficient_friction_support",
+        "contact_near_box_bottom"
+      ],
+      "robot_error_m": 0.039294272661209106,
+      "object_error_m": 0.08352338522672653,
+      "object_orientation_error_rad": 0.11751160770654678,
+      "modes_seen": [
+        1
+      ],
+      "pelvis_amplitude": 0.02641451358795166,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 12,
+          "metrics": {
+            "bilateral_contact": 0.46250006556510925,
+            "left_hand_normal_n": 4.126685619354248,
+            "right_hand_normal_n": 1.9216009378433228,
+            "upward_friction_weight_ratio": 0.05881780385971069,
+            "hand_slip_speed_m_s": 0.5197257995605469,
+            "box_clearance_m": 0.50030916929245,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.915191650390625,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.00014367816038429737,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 60.45010757446289,
+            "foot_sliding_m_s": 0.016260815784335136
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.46250006556510925,
+        "max_hand_slip_m": 0.05915573984384537,
+        "min_box_clearance_m": 0.38007816672325134,
+        "friction_weight_ratio_mean": 0.05881780385971069,
+        "normal_vertical_fraction_max": 0.09016049653291702,
+        "contact_height_above_bottom_min_m": 0.0,
+        "nonhand_box_contact_max_n": 0.0
+      }
+    },
+    {
+      "case": "B_loaded_walk",
+      "seed": 1001,
+      "replica": 1,
+      "steps": 12,
+      "survival_s": 0.24,
+      "failures": [
+        "physical_failure/loss_of_grasp",
+        "incomplete_episode",
+        "contact_interruption",
+        "hand_slip",
+        "insufficient_friction_support",
+        "contact_near_box_bottom"
+      ],
+      "robot_error_m": 0.039286546409130096,
+      "object_error_m": 0.08340153098106384,
+      "object_orientation_error_rad": 0.11792539805173874,
+      "modes_seen": [
+        1
+      ],
+      "pelvis_amplitude": 0.026465237140655518,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 12,
+          "metrics": {
+            "bilateral_contact": 0.46250006556510925,
+            "left_hand_normal_n": 3.913304090499878,
+            "right_hand_normal_n": 1.9205337762832642,
+            "upward_friction_weight_ratio": 0.06948988139629364,
+            "hand_slip_speed_m_s": 0.5327966213226318,
+            "box_clearance_m": 0.5003800392150879,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.9129301905632019,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 58.74760055541992,
+            "foot_sliding_m_s": 0.017215630039572716
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.46250006556510925,
+        "max_hand_slip_m": 0.058788299560546875,
+        "min_box_clearance_m": 0.380934476852417,
+        "friction_weight_ratio_mean": 0.06948988139629364,
+        "normal_vertical_fraction_max": 0.08602193742990494,
+        "contact_height_above_bottom_min_m": 0.0,
+        "nonhand_box_contact_max_n": 0.0
+      }
+    },
+    {
+      "case": "B_loaded_walk",
+      "seed": 1002,
+      "replica": 2,
+      "steps": 12,
+      "survival_s": 0.24,
+      "failures": [
+        "physical_failure/loss_of_grasp",
+        "incomplete_episode",
+        "contact_interruption",
+        "hand_slip",
+        "insufficient_friction_support",
+        "contact_near_box_bottom"
+      ],
+      "robot_error_m": 0.03928210213780403,
+      "object_error_m": 0.08342169970273972,
+      "object_orientation_error_rad": 0.11777939647436142,
+      "modes_seen": [
+        1
+      ],
+      "pelvis_amplitude": 0.02647852897644043,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 12,
+          "metrics": {
+            "bilateral_contact": 0.46250006556510925,
+            "left_hand_normal_n": 3.990654706954956,
+            "right_hand_normal_n": 1.920510172843933,
+            "upward_friction_weight_ratio": 0.06457012891769409,
+            "hand_slip_speed_m_s": 0.5305708050727844,
+            "box_clearance_m": 0.5003671050071716,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.9125564098358154,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 59.2512092590332,
+            "foot_sliding_m_s": 0.016571154817938805
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.46250006556510925,
+        "max_hand_slip_m": 0.0587971955537796,
+        "min_box_clearance_m": 0.3811330199241638,
+        "friction_weight_ratio_mean": 0.06457012891769409,
+        "normal_vertical_fraction_max": 0.08375013619661331,
+        "contact_height_above_bottom_min_m": 0.0,
+        "nonhand_box_contact_max_n": 0.0
+      }
+    },
+    {
+      "case": "C_single_squat",
+      "seed": 1000,
+      "replica": 0,
+      "steps": 8,
+      "survival_s": 0.16,
+      "failures": [
+        "physical_failure/body_support",
+        "incomplete_episode",
+        "contact_interruption",
+        "insufficient_friction_support",
+        "nonhand_support"
+      ],
+      "robot_error_m": 0.019627772271633148,
+      "object_error_m": 0.04714420065283775,
+      "object_orientation_error_rad": 0.036342401057481766,
+      "modes_seen": [
+        1
+      ],
+      "pelvis_amplitude": 0.020981013774871826,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 8,
+          "metrics": {
+            "bilateral_contact": 0.8250001072883606,
+            "left_hand_normal_n": 2.969374656677246,
+            "right_hand_normal_n": 2.6341381072998047,
+            "upward_friction_weight_ratio": 0.2356605976819992,
+            "hand_slip_speed_m_s": 0.1345013678073883,
+            "box_clearance_m": 0.6018414497375488,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.7689070701599121,
+            "nonhand_box_contact_n": 0.1561233252286911,
+            "torque_clip_fraction": 0.0025862068869173527,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 88.04924011230469,
+            "foot_sliding_m_s": 0.008161846548318863
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.8250001072883606,
+        "max_hand_slip_m": 0.016497256234288216,
+        "min_box_clearance_m": 0.5281626582145691,
+        "friction_weight_ratio_mean": 0.2356605976819992,
+        "normal_vertical_fraction_max": 0.027260012924671173,
+        "contact_height_above_bottom_min_m": 0.119953453540802,
+        "nonhand_box_contact_max_n": 1.2489866018295288
+      }
+    },
+    {
+      "case": "C_single_squat",
+      "seed": 1001,
+      "replica": 1,
+      "steps": 8,
+      "survival_s": 0.16,
+      "failures": [
+        "physical_failure/body_support",
+        "incomplete_episode",
+        "contact_interruption",
+        "insufficient_friction_support",
+        "nonhand_support"
+      ],
+      "robot_error_m": 0.019626520574092865,
+      "object_error_m": 0.047160129994153976,
+      "object_orientation_error_rad": 0.036285195499658585,
+      "modes_seen": [
+        1
+      ],
+      "pelvis_amplitude": 0.020978450775146484,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 8,
+          "metrics": {
+            "bilateral_contact": 0.8187501430511475,
+            "left_hand_normal_n": 2.964437484741211,
+            "right_hand_normal_n": 2.632883310317993,
+            "upward_friction_weight_ratio": 0.23650147020816803,
+            "hand_slip_speed_m_s": 0.13402865827083588,
+            "box_clearance_m": 0.6018296480178833,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.7688234448432922,
+            "nonhand_box_contact_n": 0.2745186984539032,
+            "torque_clip_fraction": 0.0025862068869173527,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 88.16605377197266,
+            "foot_sliding_m_s": 0.007226861082017422
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.8187501430511475,
+        "max_hand_slip_m": 0.016496464610099792,
+        "min_box_clearance_m": 0.5281493067741394,
+        "friction_weight_ratio_mean": 0.23650147020816803,
+        "normal_vertical_fraction_max": 0.027174165472388268,
+        "contact_height_above_bottom_min_m": 0.11995571851730347,
+        "nonhand_box_contact_max_n": 2.1961495876312256
+      }
+    },
+    {
+      "case": "C_single_squat",
+      "seed": 1002,
+      "replica": 2,
+      "steps": 8,
+      "survival_s": 0.16,
+      "failures": [
+        "physical_failure/body_support",
+        "incomplete_episode",
+        "contact_interruption",
+        "insufficient_friction_support",
+        "nonhand_support"
+      ],
+      "robot_error_m": 0.01962731033563614,
+      "object_error_m": 0.047156546264886856,
+      "object_orientation_error_rad": 0.03624129295349121,
+      "modes_seen": [
+        1
+      ],
+      "pelvis_amplitude": 0.020980000495910645,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 8,
+          "metrics": {
+            "bilateral_contact": 0.8187500834465027,
+            "left_hand_normal_n": 2.965851306915283,
+            "right_hand_normal_n": 2.631481647491455,
+            "upward_friction_weight_ratio": 0.23585502803325653,
+            "hand_slip_speed_m_s": 0.13480764627456665,
+            "box_clearance_m": 0.6018325090408325,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.7689012885093689,
+            "nonhand_box_contact_n": 0.1610637754201889,
+            "torque_clip_fraction": 0.0025862068869173527,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 87.9306411743164,
+            "foot_sliding_m_s": 0.007322831079363823
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.8187500834465027,
+        "max_hand_slip_m": 0.016506239771842957,
+        "min_box_clearance_m": 0.5281389355659485,
+        "friction_weight_ratio_mean": 0.23585502803325653,
+        "normal_vertical_fraction_max": 0.02724681980907917,
+        "contact_height_above_bottom_min_m": 0.11993992328643799,
+        "nonhand_box_contact_max_n": 1.2885102033615112
+      }
+    },
+    {
+      "case": "D_repeated_squat",
+      "seed": 1000,
+      "replica": 0,
+      "steps": 8,
+      "survival_s": 0.16,
+      "failures": [
+        "physical_failure/body_support",
+        "incomplete_episode",
+        "contact_interruption",
+        "insufficient_friction_support",
+        "nonhand_support"
+      ],
+      "robot_error_m": 0.019627772271633148,
+      "object_error_m": 0.04714420065283775,
+      "object_orientation_error_rad": 0.036342401057481766,
+      "modes_seen": [
+        1
+      ],
+      "pelvis_amplitude": 0.020981013774871826,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 8,
+          "metrics": {
+            "bilateral_contact": 0.8250001072883606,
+            "left_hand_normal_n": 2.969374656677246,
+            "right_hand_normal_n": 2.6341381072998047,
+            "upward_friction_weight_ratio": 0.2356605976819992,
+            "hand_slip_speed_m_s": 0.1345013678073883,
+            "box_clearance_m": 0.6018414497375488,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.7689070701599121,
+            "nonhand_box_contact_n": 0.1561233252286911,
+            "torque_clip_fraction": 0.0025862068869173527,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 88.04924011230469,
+            "foot_sliding_m_s": 0.008161846548318863
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.8250001072883606,
+        "max_hand_slip_m": 0.016497256234288216,
+        "min_box_clearance_m": 0.5281626582145691,
+        "friction_weight_ratio_mean": 0.2356605976819992,
+        "normal_vertical_fraction_max": 0.027260012924671173,
+        "contact_height_above_bottom_min_m": 0.119953453540802,
+        "nonhand_box_contact_max_n": 1.2489866018295288
+      }
+    },
+    {
+      "case": "D_repeated_squat",
+      "seed": 1001,
+      "replica": 1,
+      "steps": 8,
+      "survival_s": 0.16,
+      "failures": [
+        "physical_failure/body_support",
+        "incomplete_episode",
+        "contact_interruption",
+        "insufficient_friction_support",
+        "nonhand_support"
+      ],
+      "robot_error_m": 0.019626520574092865,
+      "object_error_m": 0.047160129994153976,
+      "object_orientation_error_rad": 0.036285195499658585,
+      "modes_seen": [
+        1
+      ],
+      "pelvis_amplitude": 0.020978450775146484,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 8,
+          "metrics": {
+            "bilateral_contact": 0.8187501430511475,
+            "left_hand_normal_n": 2.964437484741211,
+            "right_hand_normal_n": 2.632883310317993,
+            "upward_friction_weight_ratio": 0.23650147020816803,
+            "hand_slip_speed_m_s": 0.13402865827083588,
+            "box_clearance_m": 0.6018296480178833,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.7688234448432922,
+            "nonhand_box_contact_n": 0.2745186984539032,
+            "torque_clip_fraction": 0.0025862068869173527,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 88.16605377197266,
+            "foot_sliding_m_s": 0.007226861082017422
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.8187501430511475,
+        "max_hand_slip_m": 0.016496464610099792,
+        "min_box_clearance_m": 0.5281493067741394,
+        "friction_weight_ratio_mean": 0.23650147020816803,
+        "normal_vertical_fraction_max": 0.027174165472388268,
+        "contact_height_above_bottom_min_m": 0.11995571851730347,
+        "nonhand_box_contact_max_n": 2.1961495876312256
+      }
+    },
+    {
+      "case": "D_repeated_squat",
+      "seed": 1002,
+      "replica": 2,
+      "steps": 8,
+      "survival_s": 0.16,
+      "failures": [
+        "physical_failure/body_support",
+        "incomplete_episode",
+        "contact_interruption",
+        "insufficient_friction_support",
+        "nonhand_support"
+      ],
+      "robot_error_m": 0.01962731033563614,
+      "object_error_m": 0.047156546264886856,
+      "object_orientation_error_rad": 0.03624129295349121,
+      "modes_seen": [
+        1
+      ],
+      "pelvis_amplitude": 0.020980000495910645,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 8,
+          "metrics": {
+            "bilateral_contact": 0.8187500834465027,
+            "left_hand_normal_n": 2.965851306915283,
+            "right_hand_normal_n": 2.631481647491455,
+            "upward_friction_weight_ratio": 0.23585502803325653,
+            "hand_slip_speed_m_s": 0.13480764627456665,
+            "box_clearance_m": 0.6018325090408325,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.7689012885093689,
+            "nonhand_box_contact_n": 0.1610637754201889,
+            "torque_clip_fraction": 0.0025862068869173527,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 87.9306411743164,
+            "foot_sliding_m_s": 0.007322831079363823
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.8187500834465027,
+        "max_hand_slip_m": 0.016506239771842957,
+        "min_box_clearance_m": 0.5281389355659485,
+        "friction_weight_ratio_mean": 0.23585502803325653,
+        "normal_vertical_fraction_max": 0.02724681980907917,
+        "contact_height_above_bottom_min_m": 0.11993992328643799,
+        "nonhand_box_contact_max_n": 1.2885102033615112
+      }
+    },
+    {
+      "case": "E_full_pick_carry_putdown",
+      "seed": 1000,
+      "replica": 0,
+      "steps": 16,
+      "survival_s": 0.32,
+      "failures": [
+        "track_failure/ref_ori"
+      ],
+      "robot_error_m": 0.10442960262298584,
+      "object_error_m": 0.009768903255462646,
+      "object_orientation_error_rad": 0.0442538782954216,
+      "modes_seen": [
+        0
+      ],
+      "pelvis_amplitude": 0.07127374410629272,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 16,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 24.085857391357422,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": -0.0270388200879097,
+            "hand_slip_speed_m_s": 1.0233181715011597,
+            "box_clearance_m": -0.0020977258682250977,
+            "ground_support_weight_ratio": 2.1217973232269287,
+            "object_speed_m_s": 0.1594494730234146,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.00021551724057644606,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 91.93411254882812,
+            "foot_sliding_m_s": 0.004627065733075142
+          }
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "E_full_pick_carry_putdown",
+      "seed": 1001,
+      "replica": 1,
+      "steps": 16,
+      "survival_s": 0.32,
+      "failures": [
+        "track_failure/ref_ori"
+      ],
+      "robot_error_m": 0.10443304479122162,
+      "object_error_m": 0.00962220411747694,
+      "object_orientation_error_rad": 0.04401863366365433,
+      "modes_seen": [
+        0
+      ],
+      "pelvis_amplitude": 0.07116866111755371,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 16,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 24.353384017944336,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": -0.027743682265281677,
+            "hand_slip_speed_m_s": 1.027007818222046,
+            "box_clearance_m": -0.0020967600867152214,
+            "ground_support_weight_ratio": 2.9018197059631348,
+            "object_speed_m_s": 0.15926185250282288,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.00021551724057644606,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 87.93959045410156,
+            "foot_sliding_m_s": 0.004103320650756359
+          }
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "E_full_pick_carry_putdown",
+      "seed": 1002,
+      "replica": 2,
+      "steps": 16,
+      "survival_s": 0.32,
+      "failures": [
+        "physical_failure/body_support",
+        "track_failure/ref_ori"
+      ],
+      "robot_error_m": 0.10443028062582016,
+      "object_error_m": 0.009328927844762802,
+      "object_orientation_error_rad": 0.04330477863550186,
+      "modes_seen": [
+        0
+      ],
+      "pelvis_amplitude": 0.07110625505447388,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 16,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 26.82234764099121,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": -0.04902871698141098,
+            "hand_slip_speed_m_s": 1.0203790664672852,
+            "box_clearance_m": -0.002096290700137615,
+            "ground_support_weight_ratio": 2.0267744064331055,
+            "object_speed_m_s": 0.15547789633274078,
+            "nonhand_box_contact_n": 1.5317503213882446,
+            "torque_clip_fraction": 0.0004310344811528921,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 104.22111511230469,
+            "foot_sliding_m_s": 0.005354093387722969
+          }
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "pickup_carry_boundary",
+      "seed": 1000,
+      "replica": 0,
+      "steps": 6,
+      "survival_s": 0.12,
+      "failures": [
+        "physical_failure/loss_of_grasp",
+        "incomplete_episode",
+        "contact_interruption",
+        "insufficient_friction_support",
+        "contact_near_box_bottom"
+      ],
+      "robot_error_m": 0.01773800328373909,
+      "object_error_m": 0.023228541016578674,
+      "object_orientation_error_rad": 0.01551356166601181,
+      "modes_seen": [
+        0,
+        1
+      ],
+      "pelvis_amplitude": 0.011150479316711426,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 4,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.8049129247665405,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.05425097420811653,
+            "hand_slip_speed_m_s": 0.2158404141664505,
+            "box_clearance_m": 0.5594086647033691,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.32325097918510437,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 46.56460189819336,
+            "foot_sliding_m_s": 0.011461468413472176
+          }
+        },
+        "carry": {
+          "steps": 2,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.5584591031074524,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.03167752921581268,
+            "hand_slip_speed_m_s": 0.5076717138290405,
+            "box_clearance_m": 0.5364779233932495,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.7305936813354492,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 9.040996551513672,
+            "foot_sliding_m_s": 0.010893016122281551
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.0,
+        "max_hand_slip_m": 0.010068307630717754,
+        "min_box_clearance_m": 0.5297746658325195,
+        "friction_weight_ratio_mean": 0.03167752921581268,
+        "normal_vertical_fraction_max": 0.02921413816511631,
+        "contact_height_above_bottom_min_m": 0.0,
+        "nonhand_box_contact_max_n": 0.0
+      }
+    },
+    {
+      "case": "pickup_carry_boundary",
+      "seed": 1001,
+      "replica": 1,
+      "steps": 6,
+      "survival_s": 0.12,
+      "failures": [
+        "physical_failure/loss_of_grasp",
+        "incomplete_episode",
+        "contact_interruption",
+        "insufficient_friction_support",
+        "contact_near_box_bottom"
+      ],
+      "robot_error_m": 0.017735691741108894,
+      "object_error_m": 0.023228881880640984,
+      "object_orientation_error_rad": 0.015498955734074116,
+      "modes_seen": [
+        0,
+        1
+      ],
+      "pelvis_amplitude": 0.011154890060424805,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 4,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.7997421026229858,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.05385884642601013,
+            "hand_slip_speed_m_s": 0.21576106548309326,
+            "box_clearance_m": 0.5594071745872498,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.323261022567749,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 44.29903030395508,
+            "foot_sliding_m_s": 0.011172296479344368
+          }
+        },
+        "carry": {
+          "steps": 2,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.5635712742805481,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.031980644911527634,
+            "hand_slip_speed_m_s": 0.5076698064804077,
+            "box_clearance_m": 0.5364620685577393,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.7306180000305176,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 8.504167556762695,
+            "foot_sliding_m_s": 0.013336680829524994
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.0,
+        "max_hand_slip_m": 0.010067466646432877,
+        "min_box_clearance_m": 0.5297580361366272,
+        "friction_weight_ratio_mean": 0.031980644911527634,
+        "normal_vertical_fraction_max": 0.029366139322519302,
+        "contact_height_above_bottom_min_m": 0.0,
+        "nonhand_box_contact_max_n": 0.0
+      }
+    },
+    {
+      "case": "pickup_carry_boundary",
+      "seed": 1002,
+      "replica": 2,
+      "steps": 6,
+      "survival_s": 0.12,
+      "failures": [
+        "physical_failure/loss_of_grasp",
+        "incomplete_episode",
+        "contact_interruption",
+        "insufficient_friction_support",
+        "contact_near_box_bottom"
+      ],
+      "robot_error_m": 0.017733005806803703,
+      "object_error_m": 0.023234417662024498,
+      "object_orientation_error_rad": 0.015496852807700634,
+      "modes_seen": [
+        0,
+        1
+      ],
+      "pelvis_amplitude": 0.011150240898132324,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 4,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.7961748242378235,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.05351957678794861,
+            "hand_slip_speed_m_s": 0.21558207273483276,
+            "box_clearance_m": 0.5594033002853394,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.32327213883399963,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 46.283573150634766,
+            "foot_sliding_m_s": 0.011915771290659904
+          }
+        },
+        "carry": {
+          "steps": 2,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.5721864700317383,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.032579824328422546,
+            "hand_slip_speed_m_s": 0.507452666759491,
+            "box_clearance_m": 0.5364473462104797,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.7306226491928101,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 9.523796081542969,
+            "foot_sliding_m_s": 0.016608016565442085
+          }
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.0,
+        "max_hand_slip_m": 0.010067946277558804,
+        "min_box_clearance_m": 0.5297445058822632,
+        "friction_weight_ratio_mean": 0.032579824328422546,
+        "normal_vertical_fraction_max": 0.029390458017587662,
+        "contact_height_above_bottom_min_m": 0.0,
+        "nonhand_box_contact_max_n": 0.0
+      }
+    },
+    {
+      "case": "carry_putdown_boundary",
+      "seed": 1000,
+      "replica": 0,
+      "steps": 6,
+      "survival_s": 0.12,
+      "failures": [
+        "physical_failure/loss_of_grasp",
+        "incomplete_episode",
+        "contact_interruption",
+        "hand_slip",
+        "insufficient_friction_support"
+      ],
+      "robot_error_m": 0.009717635810375214,
+      "object_error_m": 0.027454927563667297,
+      "object_orientation_error_rad": 0.029340848326683044,
+      "modes_seen": [
+        1,
+        2
+      ],
+      "pelvis_amplitude": 0.0034499168395996094,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 4,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.7194907665252686,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.03264880180358887,
+            "hand_slip_speed_m_s": 0.4207361042499542,
+            "box_clearance_m": 0.5631340742111206,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.8315552473068237,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 73.53285217285156,
+            "foot_sliding_m_s": 0.047246333211660385
+          }
+        },
+        "putdown": {
+          "steps": 2,
+          "metrics": {
+            "bilateral_contact": 0.7250001430511475,
+            "left_hand_normal_n": 4.219731330871582,
+            "right_hand_normal_n": 5.173142433166504,
+            "upward_friction_weight_ratio": 0.5113030672073364,
+            "hand_slip_speed_m_s": 0.5489832162857056,
+            "box_clearance_m": 0.5145198106765747,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 1.1486868858337402,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 35.828250885009766,
+            "foot_sliding_m_s": 0.014940166845917702
+          }
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.0,
+        "max_hand_slip_m": 0.02514277584850788,
+        "min_box_clearance_m": 0.5418077707290649,
+        "friction_weight_ratio_mean": 0.03264880180358887,
+        "normal_vertical_fraction_max": 0.021021252498030663,
+        "contact_height_above_bottom_min_m": 0.085105299949646,
+        "nonhand_box_contact_max_n": 0.0
+      }
+    },
+    {
+      "case": "carry_putdown_boundary",
+      "seed": 1001,
+      "replica": 1,
+      "steps": 6,
+      "survival_s": 0.12,
+      "failures": [
+        "physical_failure/loss_of_grasp",
+        "incomplete_episode",
+        "contact_interruption",
+        "hand_slip",
+        "insufficient_friction_support"
+      ],
+      "robot_error_m": 0.009717505425214767,
+      "object_error_m": 0.027458874508738518,
+      "object_orientation_error_rad": 0.029389522969722748,
+      "modes_seen": [
+        1,
+        2
+      ],
+      "pelvis_amplitude": 0.0034518837928771973,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 4,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.7182761430740356,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.032536476850509644,
+            "hand_slip_speed_m_s": 0.42052698135375977,
+            "box_clearance_m": 0.5631334781646729,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.8315710425376892,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 73.38247680664062,
+            "foot_sliding_m_s": 0.04721059277653694
+          }
+        },
+        "putdown": {
+          "steps": 2,
+          "metrics": {
+            "bilateral_contact": 0.7250001430511475,
+            "left_hand_normal_n": 4.2236480712890625,
+            "right_hand_normal_n": 5.170769214630127,
+            "upward_friction_weight_ratio": 0.5112311840057373,
+            "hand_slip_speed_m_s": 0.5492953062057495,
+            "box_clearance_m": 0.5145080089569092,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 1.1488006114959717,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 37.07079315185547,
+            "foot_sliding_m_s": 0.015307964757084846
+          }
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.0,
+        "max_hand_slip_m": 0.02513757348060608,
+        "min_box_clearance_m": 0.5418049097061157,
+        "friction_weight_ratio_mean": 0.032536476850509644,
+        "normal_vertical_fraction_max": 0.020991720259189606,
+        "contact_height_above_bottom_min_m": 0.085102379322052,
+        "nonhand_box_contact_max_n": 0.0
+      }
+    },
+    {
+      "case": "carry_putdown_boundary",
+      "seed": 1002,
+      "replica": 2,
+      "steps": 6,
+      "survival_s": 0.12,
+      "failures": [
+        "physical_failure/loss_of_grasp",
+        "incomplete_episode",
+        "contact_interruption",
+        "hand_slip",
+        "insufficient_friction_support"
+      ],
+      "robot_error_m": 0.009719044901430607,
+      "object_error_m": 0.027483753859996796,
+      "object_orientation_error_rad": 0.02911156229674816,
+      "modes_seen": [
+        1,
+        2
+      ],
+      "pelvis_amplitude": 0.0034437179565429688,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 4,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.7164874076843262,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.03241272270679474,
+            "hand_slip_speed_m_s": 0.4205200672149658,
+            "box_clearance_m": 0.5631223320960999,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 0.8317320346832275,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 73.46141815185547,
+            "foot_sliding_m_s": 0.04716932028532028
+          }
+        },
+        "putdown": {
+          "steps": 2,
+          "metrics": {
+            "bilateral_contact": 0.7000001072883606,
+            "left_hand_normal_n": 4.164696216583252,
+            "right_hand_normal_n": 5.141817092895508,
+            "upward_friction_weight_ratio": 0.509942352771759,
+            "hand_slip_speed_m_s": 0.5521024465560913,
+            "box_clearance_m": 0.5143829584121704,
+            "ground_support_weight_ratio": 0.0,
+            "object_speed_m_s": 1.1504497528076172,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 38.19282913208008,
+            "foot_sliding_m_s": 0.015021990053355694
+          }
+        }
+      },
+      "success": false,
+      "carry_physical": {
+        "survived": false,
+        "contact_continuity": 0.0,
+        "max_hand_slip_m": 0.02513958513736725,
+        "min_box_clearance_m": 0.541782796382904,
+        "friction_weight_ratio_mean": 0.03241272270679474,
+        "normal_vertical_fraction_max": 0.020969098433852196,
+        "contact_height_above_bottom_min_m": 0.08512389659881592,
+        "nonhand_box_contact_max_n": 0.0
+      }
+    },
+    {
+      "case": "release_tail_stability",
+      "seed": 1000,
+      "replica": 0,
+      "steps": 14,
+      "survival_s": 0.28,
+      "failures": [
+        "track_failure/ref_ori"
+      ],
+      "robot_error_m": 0.060467034578323364,
+      "object_error_m": 0.005906897131353617,
+      "object_orientation_error_rad": 0.02699393592774868,
+      "modes_seen": [
+        2
+      ],
+      "pelvis_amplitude": 0.04677605628967285,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 14,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.0,
+            "hand_slip_speed_m_s": 0.6125217080116272,
+            "box_clearance_m": -0.003229160327464342,
+            "ground_support_weight_ratio": 0.938811182975769,
+            "object_speed_m_s": 0.03335456922650337,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0006157635361887515,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 59.483642578125,
+            "foot_sliding_m_s": 0.02529969811439514
+          }
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "release_tail_stability",
+      "seed": 1001,
+      "replica": 1,
+      "steps": 14,
+      "survival_s": 0.28,
+      "failures": [
+        "track_failure/ref_ori"
+      ],
+      "robot_error_m": 0.06047789379954338,
+      "object_error_m": 0.005901779513806105,
+      "object_orientation_error_rad": 0.027003848925232887,
+      "modes_seen": [
+        2
+      ],
+      "pelvis_amplitude": 0.0467761754989624,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 14,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.0,
+            "hand_slip_speed_m_s": 0.6126638054847717,
+            "box_clearance_m": -0.003230823902413249,
+            "ground_support_weight_ratio": 0.9378198385238647,
+            "object_speed_m_s": 0.0333017036318779,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0006157635361887515,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 59.29587173461914,
+            "foot_sliding_m_s": 0.0255107581615448
+          }
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "release_tail_stability",
+      "seed": 1002,
+      "replica": 2,
+      "steps": 14,
+      "survival_s": 0.28,
+      "failures": [
+        "track_failure/ref_ori"
+      ],
+      "robot_error_m": 0.06047547981142998,
+      "object_error_m": 0.005906693637371063,
+      "object_orientation_error_rad": 0.027004480361938477,
+      "modes_seen": [
+        2
+      ],
+      "pelvis_amplitude": 0.04676944017410278,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 14,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.0,
+            "hand_slip_speed_m_s": 0.6127033233642578,
+            "box_clearance_m": -0.0032303854823112488,
+            "ground_support_weight_ratio": 0.937541663646698,
+            "object_speed_m_s": 0.03330763056874275,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0006157635361887515,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 59.257293701171875,
+            "foot_sliding_m_s": 0.025359351187944412
+          }
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "pickup_contact_probe",
+      "seed": 1000,
+      "replica": 0,
+      "steps": 6,
+      "survival_s": 0.12,
+      "failures": [
+        "physical_failure/body_support"
+      ],
+      "robot_error_m": 0.012821047566831112,
+      "object_error_m": 0.010800585150718689,
+      "object_orientation_error_rad": 0.042993348091840744,
+      "modes_seen": [
+        0
+      ],
+      "pelvis_amplitude": 0.024561136960983276,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 6,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.0,
+            "hand_slip_speed_m_s": 0.5406174063682556,
+            "box_clearance_m": -0.0038054559845477343,
+            "ground_support_weight_ratio": 1.2018717527389526,
+            "object_speed_m_s": 0.10474757105112076,
+            "nonhand_box_contact_n": 6.1138482093811035,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 96.3882064819336,
+            "foot_sliding_m_s": 0.009886248968541622
+          }
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "pickup_contact_probe",
+      "seed": 1001,
+      "replica": 1,
+      "steps": 6,
+      "survival_s": 0.12,
+      "failures": [
+        "physical_failure/body_support"
+      ],
+      "robot_error_m": 0.01284024864435196,
+      "object_error_m": 0.010790078900754452,
+      "object_orientation_error_rad": 0.043310899287462234,
+      "modes_seen": [
+        0
+      ],
+      "pelvis_amplitude": 0.024553686380386353,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 6,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.0,
+            "hand_slip_speed_m_s": 0.5433392524719238,
+            "box_clearance_m": -0.0037980799097567797,
+            "ground_support_weight_ratio": 1.173557162284851,
+            "object_speed_m_s": 0.10493511706590652,
+            "nonhand_box_contact_n": 7.31528902053833,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 96.24015045166016,
+            "foot_sliding_m_s": 0.010931618511676788
+          }
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "pickup_contact_probe",
+      "seed": 1002,
+      "replica": 2,
+      "steps": 6,
+      "survival_s": 0.12,
+      "failures": [
+        "physical_failure/body_support"
+      ],
+      "robot_error_m": 0.012831796891987324,
+      "object_error_m": 0.010805928148329258,
+      "object_orientation_error_rad": 0.04300816357135773,
+      "modes_seen": [
+        0
+      ],
+      "pelvis_amplitude": 0.024550974369049072,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 6,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.0,
+            "hand_slip_speed_m_s": 0.5418413877487183,
+            "box_clearance_m": -0.0038045570254325867,
+            "ground_support_weight_ratio": 1.2846113443374634,
+            "object_speed_m_s": 0.1060841754078865,
+            "nonhand_box_contact_n": 8.079818725585938,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 96.84060668945312,
+            "foot_sliding_m_s": 0.010802887380123138
+          }
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 0,
+          "metrics": {}
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "putdown_support_probe",
+      "seed": 1000,
+      "replica": 0,
+      "steps": 7,
+      "survival_s": 0.14,
+      "failures": [
+        "physical_failure/loss_of_grasp"
+      ],
+      "robot_error_m": 0.01851842738687992,
+      "object_error_m": 0.003317777067422867,
+      "object_orientation_error_rad": 0.019929129630327225,
+      "modes_seen": [
+        2
+      ],
+      "pelvis_amplitude": 0.025594234466552734,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 7,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 3.736570119857788,
+            "upward_friction_weight_ratio": -0.24385234713554382,
+            "hand_slip_speed_m_s": 0.5849797129631042,
+            "box_clearance_m": -0.0011709864484146237,
+            "ground_support_weight_ratio": 4.24757719039917,
+            "object_speed_m_s": 0.10178183764219284,
+            "nonhand_box_contact_n": 32.19839096069336,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 130.9109344482422,
+            "foot_sliding_m_s": 0.004917751532047987
+          }
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "putdown_support_probe",
+      "seed": 1001,
+      "replica": 1,
+      "steps": 7,
+      "survival_s": 0.14,
+      "failures": [
+        "physical_failure/loss_of_grasp"
+      ],
+      "robot_error_m": 0.018568947911262512,
+      "object_error_m": 0.00325992819853127,
+      "object_orientation_error_rad": 0.019990330561995506,
+      "modes_seen": [
+        2
+      ],
+      "pelvis_amplitude": 0.025650382041931152,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 7,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 3.40832781791687,
+            "upward_friction_weight_ratio": -0.226167693734169,
+            "hand_slip_speed_m_s": 0.6069276928901672,
+            "box_clearance_m": -0.0012709072325378656,
+            "ground_support_weight_ratio": 4.60650634765625,
+            "object_speed_m_s": 0.10469303280115128,
+            "nonhand_box_contact_n": 34.30315399169922,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 132.3295135498047,
+            "foot_sliding_m_s": 0.004732460714876652
+          }
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "putdown_support_probe",
+      "seed": 1002,
+      "replica": 2,
+      "steps": 7,
+      "survival_s": 0.14,
+      "failures": [
+        "physical_failure/loss_of_grasp"
+      ],
+      "robot_error_m": 0.018528493121266365,
+      "object_error_m": 0.0033379874657839537,
+      "object_orientation_error_rad": 0.020122552290558815,
+      "modes_seen": [
+        2
+      ],
+      "pelvis_amplitude": 0.025549590587615967,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 7,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 3.390777349472046,
+            "upward_friction_weight_ratio": -0.22365863621234894,
+            "hand_slip_speed_m_s": 0.5702252984046936,
+            "box_clearance_m": -0.0012062659952789545,
+            "ground_support_weight_ratio": 5.043422222137451,
+            "object_speed_m_s": 0.08570754528045654,
+            "nonhand_box_contact_n": 38.0251579284668,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 131.28684997558594,
+            "foot_sliding_m_s": 0.004434086848050356
+          }
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "release_probe",
+      "seed": 1000,
+      "replica": 0,
+      "steps": 1,
+      "survival_s": 0.02,
+      "failures": [
+        "physical_failure/fall"
+      ],
+      "robot_error_m": 0.0030224877409636974,
+      "object_error_m": 0.0023859969805926085,
+      "object_orientation_error_rad": 0.00962842907756567,
+      "modes_seen": [
+        2
+      ],
+      "pelvis_amplitude": 0.0,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 1,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.0,
+            "hand_slip_speed_m_s": 0.47609367966651917,
+            "box_clearance_m": -1.1175870895385742e-06,
+            "ground_support_weight_ratio": 0.7710577249526978,
+            "object_speed_m_s": 0.07602911442518234,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 263.05291748046875,
+            "foot_sliding_m_s": 0.41153183579444885
+          }
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "release_probe",
+      "seed": 1001,
+      "replica": 1,
+      "steps": 1,
+      "survival_s": 0.02,
+      "failures": [
+        "physical_failure/fall"
+      ],
+      "robot_error_m": 0.0030239196494221687,
+      "object_error_m": 0.0023833320010453463,
+      "object_orientation_error_rad": 0.009636623784899712,
+      "modes_seen": [
+        2
+      ],
+      "pelvis_amplitude": 0.0,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 1,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.0,
+            "hand_slip_speed_m_s": 0.4756319522857666,
+            "box_clearance_m": -5.364418029785156e-07,
+            "ground_support_weight_ratio": 0.7857701778411865,
+            "object_speed_m_s": 0.07599269598722458,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 263.3200378417969,
+            "foot_sliding_m_s": 0.4120475649833679
+          }
+        }
+      },
+      "success": false
+    },
+    {
+      "case": "release_probe",
+      "seed": 1002,
+      "replica": 2,
+      "steps": 1,
+      "survival_s": 0.02,
+      "failures": [
+        "physical_failure/fall"
+      ],
+      "robot_error_m": 0.0030232693534344435,
+      "object_error_m": 0.002383297076448798,
+      "object_orientation_error_rad": 0.009640317410230637,
+      "modes_seen": [
+        2
+      ],
+      "pelvis_amplitude": 0.0,
+      "stable_putdown": false,
+      "phases": {
+        "pickup": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "carry": {
+          "steps": 0,
+          "metrics": {}
+        },
+        "putdown": {
+          "steps": 1,
+          "metrics": {
+            "bilateral_contact": 0.0,
+            "left_hand_normal_n": 0.0,
+            "right_hand_normal_n": 0.0,
+            "upward_friction_weight_ratio": 0.0,
+            "hand_slip_speed_m_s": 0.47579994797706604,
+            "box_clearance_m": -2.682209014892578e-07,
+            "ground_support_weight_ratio": 0.7837458252906799,
+            "object_speed_m_s": 0.07599330693483353,
+            "nonhand_box_contact_n": 0.0,
+            "torque_clip_fraction": 0.0,
+            "joint_hard_limit_violation": 0.0,
+            "joint_acceleration_rms": 263.5357971191406,
+            "foot_sliding_m_s": 0.4115124046802521
+          }
+        }
+      },
+      "success": false
+    }
+  ],
+  "resets": [
+    {
+      "case": "A_pickup",
+      "q_error": 0.0,
+      "root_error": 0.0,
+      "box_error": 0.0
+    },
+    {
+      "case": "B_loaded_walk",
+      "q_error": 0.0,
+      "root_error": 0.0,
+      "box_error": 0.0
+    },
+    {
+      "case": "C_single_squat",
+      "q_error": 0.0,
+      "root_error": 0.0,
+      "box_error": 0.0
+    },
+    {
+      "case": "D_repeated_squat",
+      "q_error": 0.0,
+      "root_error": 0.0,
+      "box_error": 0.0
+    },
+    {
+      "case": "E_full_pick_carry_putdown",
+      "q_error": 0.0,
+      "root_error": 0.0,
+      "box_error": 0.0
+    },
+    {
+      "case": "pickup_carry_boundary",
+      "q_error": 0.0,
+      "root_error": 0.0,
+      "box_error": 0.0
+    },
+    {
+      "case": "carry_putdown_boundary",
+      "q_error": 0.0,
+      "root_error": 0.0,
+      "box_error": 0.0
+    },
+    {
+      "case": "release_tail_stability",
+      "q_error": 0.0,
+      "root_error": 0.0,
+      "box_error": 0.0
+    },
+    {
+      "case": "pickup_contact_probe",
+      "q_error": 0.0,
+      "root_error": 0.0,
+      "box_error": 0.0
+    },
+    {
+      "case": "putdown_support_probe",
+      "q_error": 0.0,
+      "root_error": 0.0,
+      "box_error": 0.0
+    },
+    {
+      "case": "release_probe",
+      "q_error": 0.0,
+      "root_error": 0.0,
+      "box_error": 0.0
+    }
+  ],
+  "physics": {
+    "mass_kg": [
+      1.100000023841858
+    ],
+    "inertia": [
+      0.02200000174343586,
+      0.0,
+      0.0,
+      0.0,
+      0.02200000174343586,
+      0.0,
+      0.0,
+      0.0,
+      0.02200000174343586
+    ],
+    "robot_material": [
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ],
+      [
+        1.0,
+        0.8999999761581421,
+        0.0
+      ]
+    ],
+    "object_material": [
+      [
+        0.6000000238418579,
+        0.6000000238418579,
+        0.0
+      ]
+    ],
+    "physics_dt": 0.001,
+    "policy_dt": 0.02,
+    "pd_hz": 1000.0,
+    "reference_fps": 50,
+    "decimation": 20,
+    "solver_robot": [
+      16,
+      8
+    ],
+    "torque_limits": [
+      88.0,
+      139.0,
+      88.0,
+      139.0,
+      50.0,
+      50.0,
+      88.0,
+      139.0,
+      88.0,
+      139.0,
+      50.0,
+      50.0,
+      88.0,
+      50.0,
+      50.0,
+      25.0,
+      25.0,
+      25.0,
+      25.0,
+      25.0,
+      5.0,
+      5.0,
+      25.0,
+      25.0,
+      25.0,
+      25.0,
+      25.0,
+      5.0,
+      5.0
+    ],
+    "object_urdf": "holosoma/data/motions/g1_29dof/whole_body_tracking/objects_largebox.urdf",
+    "robot_urdf": "holosoma/data/robots/g1/main_mesh_collision_halfspherehand.urdf",
+    "control": "PPO joint-position offsets with PD each physics substep; no P0 feedforward or WBC"
+  },
+  "ground_sensor_verified": true,
+  "evidence_files": [
+    "../artifacts/unified_hoi_stage1/independent_eval_002/A_pickup/evaluation.json",
+    "../artifacts/unified_hoi_stage1/independent_eval_002/B_loaded_walk/evaluation.json",
+    "../artifacts/unified_hoi_stage1/independent_eval_002/C_single_squat/evaluation.json",
+    "../artifacts/unified_hoi_stage1/independent_eval_002/D_repeated_squat/evaluation.json",
+    "../artifacts/unified_hoi_stage1/independent_eval_002/E_full_pick_carry_putdown/evaluation.json",
+    "../artifacts/unified_hoi_stage1/independent_eval_002/pickup_carry_boundary/evaluation.json",
+    "../artifacts/unified_hoi_stage1/independent_eval_002/carry_putdown_boundary/evaluation.json",
+    "../artifacts/unified_hoi_stage1/independent_eval_002/release_tail_stability/evaluation.json",
+    "../artifacts/unified_hoi_stage1/independent_eval_002/pickup_contact_probe/evaluation.json",
+    "../artifacts/unified_hoi_stage1/independent_eval_002/putdown_support_probe/evaluation.json",
+    "../artifacts/unified_hoi_stage1/independent_eval_002/release_probe/evaluation.json"
+  ],
+  "unavailable": {
+    "F_walk_squat_walk": "No validated continuous transition reference; not silently concatenated"
+  }
+}

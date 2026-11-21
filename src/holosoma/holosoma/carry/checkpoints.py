@@ -74,8 +74,9 @@ def validate(path, require_manifest=True):
         raise ValueError(f'Invalid iteration or nonfinite checkpoint: {path}')
     matrices = [v for v in state['actor_model_state_dict'].values()
                 if isinstance(v, torch.Tensor) and v.ndim == 2]
-    if not matrices or matrices[0].shape[1] != 348 or matrices[-1].shape[0] != 29:
-        raise ValueError(f'Actor must be 348D -> 29D: {path}')
+    expected=357 if state.get('env_state',{}).get('unified_schema')==1 else 348
+    if not matrices or matrices[0].shape[1] != expected or matrices[-1].shape[0] != 29:
+        raise ValueError(f'Actor must be {expected}D -> 29D: {path}')
     if path.stat().st_mtime_ns != stat.st_mtime_ns or path.stat().st_size != stat.st_size:
         raise ValueError(f'Checkpoint changed during validation: {path}')
     return dict(path=str(path.resolve()), sha256=checksum, bytes=stat.st_size,
@@ -107,8 +108,13 @@ def validate_export(path):
     import onnx
     path = Path(path)
     metadata = json.loads(path.with_suffix('.actor.json').read_text())
-    if metadata.get('frame_dim') != 116 or metadata.get('history_length') != 3 or metadata.get('commands') != ['vx','vy','yaw_rate','pelvis_height']:
+    expected=119 if metadata.get('unified_schema')==1 else 116
+    if metadata.get('frame_dim') != expected or metadata.get('history_length') != 3 or metadata.get('commands') != ['vx','vy','yaw_rate','pelvis_height']:
         raise ValueError('Incompatible Actor metadata')
+    if metadata.get('unified_schema')==1 and (metadata.get('carry_schema_version')!=2 or metadata.get('actor_dim')!=357
+        or metadata.get('critic_dim')!=187 or metadata.get('task_modes')!=['pickup','carry','putdown']
+        or metadata.get('action_parameterization')!='joint_delta_v1'):
+        raise ValueError('Incompatible unified task-mode/action metadata')
     onnx.checker.check_model(str(path))
     manifest = path.with_suffix('.export.json')
     if manifest.exists():

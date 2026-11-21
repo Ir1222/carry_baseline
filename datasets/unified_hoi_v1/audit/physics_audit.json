@@ -1,0 +1,123 @@
+{
+  "base_commit": "6c3eed6462ddbcc9a4d4870c1bc06146d54b3dae",
+  "scope": "Actual free 1.1kg LargeBox, no attachments; diagnostic position targets are NOT policies",
+  "canonical_fk_verified": true,
+  "max_fk_error_m": 1.379828980535918e-07,
+  "ground_sensor_verified": true,
+  "ground_filter_paths": [
+    "/World/ground/terrain/GroundPlane/CollisionPlane"
+  ],
+  "reference_probe_results": {
+    "A_pickup": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "B_loaded_walk": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "C_single_squat": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "D_repeated_squat": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "E_full_pick_carry_putdown": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "pickup_contact_probe": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "putdown_support_probe": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "release_probe": {
+      "success_rate": 0.0,
+      "trials": 3
+    }
+  },
+  "policy_smoke_results": {
+    "A_pickup": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "B_loaded_walk": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "C_single_squat": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "D_repeated_squat": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "E_full_pick_carry_putdown": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "pickup_carry_boundary": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "carry_putdown_boundary": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "release_tail_stability": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "pickup_contact_probe": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "putdown_support_probe": {
+      "success_rate": 0.0,
+      "trials": 3
+    },
+    "release_probe": {
+      "success_rate": 0.0,
+      "trials": 3
+    }
+  },
+  "policy_accepted": false,
+  "evidence_root": "../artifacts/unified_hoi_stage1",
+  "evidence_files": [
+    "contact_probe_001/evaluation.json",
+    "contact_probe_002/evaluation.json",
+    "policy_eval_001/evaluation.json",
+    "policy_eval_002/evaluation.json",
+    "independent_eval_001/evaluation.json",
+    "independent_eval_002/evaluation.json",
+    "smoke_001_data",
+    "smoke_002_data/worker/worker_result.json",
+    "smoke_003_data/worker/worker_result.json",
+    "resume_001_data/worker/worker_result.json",
+    "arm_ik_001/ik_diagnosis.json",
+    "arm_ik_002/ik_diagnosis.json"
+  ],
+  "classification": {
+    "body_alignment": "Original body FK differs from collision URDF by about 1cm; canonical export corrects FK only",
+    "original_grasp": "Not validated: reference position probes lose bilateral contact; this does NOT prove infeasibility for every controller",
+    "arm_only_P0_grasp_IK": "Two initial guesses at five frames fail to find near-exact P0 hand SE3 matches while root/legs/waist fixed; no global infeasibility claim",
+    "walk_squat_walk": "No demonstrated continuous reference; absent from evaluation, not teleported"
+  },
+  "full_training_recommended": false,
+  "original_hmi_sequence_physics_validated": false,
+  "squat_source_validation": "P0 independent controller validation retained, unchanged bytes; not this PPO",
+  "independent_evaluation_scenes": true,
+  "tracked_summaries": [
+    "bounded_policy_evaluation.json",
+    "reference_probe_evaluation.json",
+    "training_smoke_summary.json",
+    "fk_validation.json",
+    "standalone_inference.json"
+  ]
+}

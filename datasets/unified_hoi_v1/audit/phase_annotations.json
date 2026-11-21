@@ -1,0 +1,185 @@
+[
+  {
+    "source": "sub3_largebox_003_mj_w_obj.npz",
+    "upstream_commit": "c353731999b3578c41ad5a00f896415b45e6a9f5",
+    "source_sha256": "76077a5035726aabe25b084de5414f3113646c43ac1bfa6ccc0742e46b1a4cea",
+    "upstream_byte_identical": true,
+    "frames": 325,
+    "fps": 50,
+    "duration_s": 6.48,
+    "original_body_fk_max_error_m": 0.010158450388813267,
+    "contact_candidate_frame": 25,
+    "liftoff_candidate_frame": 55,
+    "settled_candidate_frame": 271,
+    "release_candidate_frame": 285,
+    "annotation_status": "kinematic candidates, not measured contact or policy success",
+    "phases": [
+      {
+        "name": "approach_reach_candidate",
+        "start": 0,
+        "end": 25
+      },
+      {
+        "name": "contact_acquisition_candidate",
+        "start": 25,
+        "end": 55
+      },
+      {
+        "name": "lifting_candidate",
+        "start": 55,
+        "end": 95
+      },
+      {
+        "name": "loaded_carry_candidate",
+        "start": 95,
+        "end": 205
+      },
+      {
+        "name": "lowering_candidate",
+        "start": 205,
+        "end": 271
+      },
+      {
+        "name": "support_transfer_candidate",
+        "start": 271,
+        "end": 285
+      },
+      {
+        "name": "release_candidate",
+        "start": 285,
+        "end": 325
+      }
+    ],
+    "box_bottom_min_m": -0.0082587684071109,
+    "box_bottom_max_m": 0.6176703147928823,
+    "root_translation_m": 1.5856283158585431,
+    "missing": [
+      "carry_squat_walk_transition"
+    ],
+    "ambiguous": [
+      "approach is primarily reach/crouch; not a demonstrated long walking approach"
+    ]
+  },
+  {
+    "source": "movebox/sub3_largebox_003_mj_w_obj_reframed.npz",
+    "upstream_commit": "c353731999b3578c41ad5a00f896415b45e6a9f5",
+    "source_sha256": "827aced06e4111ade1bd38c9880cb76e870727438cc75fbcc2aee5b636edc5c9",
+    "upstream_byte_identical": true,
+    "frames": 325,
+    "fps": 50,
+    "duration_s": 6.48,
+    "original_body_fk_max_error_m": 0.010158450339606797,
+    "contact_candidate_frame": 25,
+    "liftoff_candidate_frame": 55,
+    "settled_candidate_frame": 271,
+    "release_candidate_frame": 285,
+    "annotation_status": "kinematic candidates, not measured contact or policy success",
+    "phases": [
+      {
+        "name": "approach_reach_candidate",
+        "start": 0,
+        "end": 25
+      },
+      {
+        "name": "contact_acquisition_candidate",
+        "start": 25,
+        "end": 55
+      },
+      {
+        "name": "lifting_candidate",
+        "start": 55,
+        "end": 95
+      },
+      {
+        "name": "loaded_carry_candidate",
+        "start": 95,
+        "end": 205
+      },
+      {
+        "name": "lowering_candidate",
+        "start": 205,
+        "end": 271
+      },
+      {
+        "name": "support_transfer_candidate",
+        "start": 271,
+        "end": 285
+      },
+      {
+        "name": "release_candidate",
+        "start": 285,
+        "end": 325
+      }
+    ],
+    "box_bottom_min_m": -0.008258768407110872,
+    "box_bottom_max_m": 0.6176703147928823,
+    "root_translation_m": 1.5856283158585434,
+    "missing": [
+      "carry_squat_walk_transition"
+    ],
+    "ambiguous": [
+      "approach is primarily reach/crouch; not a demonstrated long walking approach"
+    ]
+  },
+  {
+    "source": "movebox/sub3_largebox_003_mj_w_obj_reframed_mirrored.npz",
+    "upstream_commit": "c353731999b3578c41ad5a00f896415b45e6a9f5",
+    "source_sha256": "9b8fa055065e9df0892a2fbdd1aa6357b524b0cc0d851fc2ece3da954e26ab39",
+    "upstream_byte_identical": true,
+    "frames": 325,
+    "fps": 50,
+    "duration_s": 6.48,
+    "original_body_fk_max_error_m": 0.010158450339606797,
+    "contact_candidate_frame": 27,
+    "liftoff_candidate_frame": 55,
+    "settled_candidate_frame": 271,
+    "release_candidate_frame": 287,
+    "annotation_status": "kinematic candidates, not measured contact or policy success",
+    "phases": [
+      {
+        "name": "approach_reach_candidate",
+        "start": 0,
+        "end": 27
+      },
+      {
+        "name": "contact_acquisition_candidate",
+        "start": 27,
+        "end": 55
+      },
+      {
+        "name": "lifting_candidate",
+        "start": 55,
+        "end": 95
+      },
+      {
+        "name": "loaded_carry_candidate",
+        "start": 95,
+        "end": 205
+      },
+      {
+        "name": "lowering_candidate",
+        "start": 205,
+        "end": 271
+      },
+      {
+        "name": "support_transfer_candidate",
+        "start": 271,
+        "end": 287
+      },
+      {
+        "name": "release_candidate",
+        "start": 287,
+        "end": 325
+      }
+    ],
+    "box_bottom_min_m": -0.010665479906500186,
+    "box_bottom_max_m": 0.6199849601586814,
+    "root_translation_m": 1.5856283158585434,
+    "missing": [
+      "carry_squat_walk_transition"
+    ],
+    "ambiguous": [
+      "approach is primarily reach/crouch; not a demonstrated long walking approach"
+    ]
+  }
+]
