@@ -81,3 +81,28 @@ def test_single_environment_reset_samples_all_task_modes():
     for _ in range(120):
         _,_,t=cmd._sample_adaptive_reset_states(torch.tensor([0]),torch.tensor([0]));counts[cmd.phase_bank[t].item()]+=1
     assert (counts>10).all(),counts
+
+
+def test_wandb_receives_only_published_verified_export_files(tmp_path,monkeypatch):
+    import onnx
+    from onnx import helper,TensorProto
+    from holosoma.carry.unified_ppo import UnifiedCarryPPO
+    from holosoma.carry.fullbody_ppo import FullBodyCarryPPO
+    from holosoma.carry.checkpoints import validate_export
+    files=[]
+    def upload(path):
+        p=Path(path);assert p.exists() and not p.name.startswith('.')
+        files.append(p.name)
+    algo=UnifiedCarryPPO.__new__(UnifiedCarryPPO);algo.logging_helper=NS(save_to_wandb=upload)
+    def export_temporary(self,path):
+        graph=helper.make_graph([helper.make_node('Constant',[],['action'],value=helper.make_tensor('zeros',TensorProto.FLOAT,[1,29],[0.]*29))],
+            'test-export',[helper.make_tensor_value_info('actor_obs',TensorProto.FLOAT,[1,357])],
+            [helper.make_tensor_value_info('action',TensorProto.FLOAT,[1,29])])
+        onnx.save(helper.make_model(graph),path)
+        Path(path).with_suffix('.actor.json').write_text(json.dumps(dict(carry_schema_version=2,unified_schema=1,frame_dim=119,history_length=3,
+            commands=['vx','vy','yaw_rate','pelvis_height'],actor_dim=357,critic_dim=187,
+            task_modes=['pickup','carry','putdown'],action_parameterization='joint_delta_v1')))
+        self.logging_helper.save_to_wandb(path)  # reproduces the old early/temp upload
+    monkeypatch.setattr(FullBodyCarryPPO,'_export_actor',export_temporary)
+    path=tmp_path/'model_00001.onnx';algo.export(path);validate_export(path)
+    assert files==['model_00001.onnx','model_00001.actor.json','model_00001.export.json']

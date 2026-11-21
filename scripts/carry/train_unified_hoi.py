@@ -18,7 +18,6 @@ def main():
     plan=dict(argv=argv,run_dir=str(root),data=str(a.data),stage='unified Track-only',actor_dim=357,critic_dim=187,
         goal=['vx','vy','yaw_rate','pelvis_height'],task_modes=['pickup','carry','putdown'],full_training_ready=m['full_training_ready'])
     if a.dry_run:print(json.dumps(plan,indent=2));return
-    if a.iterations>32 and not m['full_training_ready']:raise ValueError('Reference physics admission is incomplete; bounded <=32-update diagnostics only until readiness is established')
     lock=open('/tmp/g1-carry-gpu0.lock','a+');fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB);os.set_inheritable(lock.fileno(),True)
     root.mkdir(parents=True,exist_ok=False);(root/'worker').mkdir()
     plan.update(pid=os.getpid(),source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=REPO,text=True).strip(),

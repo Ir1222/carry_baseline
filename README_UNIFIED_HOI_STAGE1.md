@@ -4,7 +4,7 @@ Base: `6c3eed6`; branch: `feature/unified-hoi-stage1`. This is a separate experi
 
 One HMI PPO Actor/Critic trains all six clips, Track-only, no Gen/AMP/world model. The free original LargeBox remains 1.1kg with gravity/collisions, original half-sphere-hand G1, torque limits, fixed materials, 1ms physics and 20ms policy. There is no attachment or object pose writing during an episode.
 
-**Current status:** exact Reset, phase interface, sensors, PPO, resume and ONNX work. Reference probes and the short policy fail physical acceptance. Do not treat the smoke model as usable. Long runs are blocked by the unready dataset admission flag, not by a timer/plateau supervisor. See [implementation report](UNIFIED_HOI_STAGE1_IMPLEMENTATION_REPORT.md).
+**Current status (2026-11-21 HMI launch revision):** original `train_agent.py` completed8192 environments ×2 updates, peak8702MiB, finite PPO/checkpoint/ONNX and family/phase logs verified. The user-authorized15000-update Track-only run uses the same direct entry. `full_training_ready=False` remains historical physical-validation information and no longer prohibits training. Physical source/policy failures are retained; they are not a learning early-stop rule. See [launch/config report](UNIFIED_HOI_HMI_STAGE1_RUN.md) and the [historical implementation audit](UNIFIED_HOI_STAGE1_IMPLEMENTATION_REPORT.md).
 
 ## Data and phases
 
@@ -43,6 +43,15 @@ Preparation refuses existing output directories. Reset eligibility means mechani
 
 ## Training and manual resume
 
+Primary direct HMI entry (all8192 environments, same six clips, no worker instrumentation):
+
+```bash
+WANDB_MODE=offline bash scripts/carry/train_unified_hmi_stage1.sh \
+  "../artifacts/unified_hoi_hmi_stage1/manual_$(date +%Y%m%d_%H%M%S)" 15000
+```
+
+For training followed by sequential10-seed independent evaluation, use `train_unified_hmi_then_evaluate.sh NEW_OUTPUT_DIRECTORY`. It runs the same single HMI process; no plateau, budget segmentation, reward edits, retries or Stage2. Existing diagnostic/recovery entry remains available:
+
 ```bash
 # Fresh one-process shared PPO smoke run; unique output, no old checkpoint loaded
 bash scripts/carry/train_unified_hoi.sh --num-envs 256 --iterations 4 --save-every 2
@@ -51,9 +60,9 @@ bash scripts/carry/train_unified_hoi.sh --num-envs 256 --iterations 4 --save-eve
 bash scripts/carry/train_unified_hoi.sh --num-envs 8192 --iterations 15000 --dry-run
 ```
 
-Supported training sizes are 256/1024/4096/8192; only 256 was exercised with this new experiment. Larger sizes need a capacity benchmark after physics admission. `--data /path/to/new_bundle` selects a separately versioned dataset. With a genuinely validated, ready bundle, the same entry supports `--iterations 15000 --save-every 500` as one uninterrupted `learn()` call. The current bundle refuses requests above32 updates; changing the flag alone is not physics evidence. No automatic Stage2, restart, time budget or plateau loop is invoked.
+The diagnostic entry supports256/1024/4096/8192; both256 and8192 were exercised. The new direct-entry script fixes8192, as requested. `--data /path/to/new_bundle` selects a separately versioned dataset. The diagnostic entry supports `--iterations 15000 --save-every 500` as one uninterrupted `learn()` call; the previous32-update/physical-readiness prohibition was removed. Source validation flags are unchanged. No automatic Stage2, restart, time budget or plateau loop is invoked. The direct HMI run keeps the base PPO hyperparameters:128 minibatches,5 epochs, std0.3,24 rollout steps; differences from upstream are explicitly audited, not silently tuned.
 
-Every run saves PID, exact argv, commit/dirty status, source archive/patch plus hashed worktree text snapshot, manifest, `holosoma_config.yaml`, durable per-update JSON, TensorBoard, checksummed full checkpoints and ONNX metadata. Outputs: `../artifacts/unified_hoi_stage1/run_*/`.
+The diagnostic entry saves PID, exact argv, commit/dirty status, source archive/patch plus hashed worktree text snapshot, manifest, `holosoma_config.yaml`, durable per-update JSON, TensorBoard, checksummed full checkpoints and ONNX metadata. Its outputs: `../artifacts/unified_hoi_stage1/run_*/`.
 
 This exact recovery pattern was tested: checkpoint00003 (4 completed updates) → total target5 performs **one** update, restoring model/optimizers/normalizers/sampler/configuration state:
 
@@ -72,7 +81,7 @@ Physical episodes restart on resume; this is not a bit-exact simulator-state con
   --logdir ../artifacts/unified_hoi_stage1 --host 127.0.0.1 --port 6014
 ```
 
-Open http://127.0.0.1:6014 (HTTP checked). Inspect `Env/hoi/family_fraction/*`, `mode_fraction/*`, `observed_steps/*`, `completed_episode_steps/*`, family/phase physical metrics and termination breakdowns. `Env/stage1/family/*/completed/*` contains completed-episode aggregates. Pickup/putdown force fractions differ legitimately from Carry, so do not average them together to claim grasp success.
+For the new HMI run use `--logdir ../artifacts/unified_hoi_hmi_stage1 --port 6015`. W&B is recorded offline because online authentication returned HTTP403; sync after restoring access. Open http://127.0.0.1:6014 for historical runs, or http://127.0.0.1:6015 for this training. Inspect `Env/hoi/family_fraction/*`, `mode_fraction/*`, `observed_steps/*`, `completed_episode_steps/*`, family/phase physical metrics and termination breakdowns. `Env/stage1/family/*/completed/*` contains completed-episode aggregates. Pickup/putdown force fractions differ legitimately from Carry, so do not average them together to claim grasp success.
 
 ## Independent probes, evaluation and viewer
 
