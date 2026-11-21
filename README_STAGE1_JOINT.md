@@ -1,5 +1,7 @@
 # Stage 1：一个 Policy 联合跟踪抱箱蹲起和抱箱行走
 
+2026-11-21长训前审查发现零噪声Reset仍按95%软限位裁剪参考姿态的初始化BLOCKER；详见 [STAGE1_PRETRAIN_AUDIT.md](STAGE1_PRETRAIN_AUDIT.md)。本次未修改控制或终止规则，建议先处理该问题再正式启动下面的15000次训练命令。
+
 新入口：`exp:g1-29dof-carry-stage1-joint`。单次调用现有 HMI PPO，默认从头连续更新 **15000 次**，每500次保存 Checkpoint/ONNX。没有资源时间预算、评估停滞早停、2000次切段、自动resume、自动改奖励或自动进入Stage 2。单个Episode的真实失败仍会终止并正常Reset，PPO训练继续。
 
 这次只修改、验证并交付训练入口，正式15000次训练由你手动开始。短训练验证不代表Policy已经收敛。
