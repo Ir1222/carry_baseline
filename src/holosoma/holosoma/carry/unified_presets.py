@@ -21,7 +21,7 @@ g1_29dof_unified_hoi_stage1=replace(base,env_class='holosoma.carry.unified.Unifi
     observation=ObservationManagerCfg(groups={'actor_obs':ObsGroupCfg(history_length=3,terms={'physical':ObsTermCfg(func='holosoma.carry.unified:actor_frame')}),
         'critic_obs':ObsGroupCfg(terms={'physical':ObsTermCfg(func='holosoma.carry.unified:actor_frame'),'reference':ObsTermCfg(func='holosoma.carry.observations:critic_reference')})}),
     simulator=replace(base.simulator,_target_='holosoma.carry.unified_simulator.IsaacSim'),
-    algo=replace(base.algo,_target_='holosoma.carry.unified_ppo.UnifiedCarryPPO'),
+    algo=replace(base.algo,_target_='holosoma.carry.unified_ppo.UnifiedCarryPPO',config=replace(base.algo.config,save_interval=2000)),
     command=replace(base.command,setup_terms={'motion_command':replace(term,func=target,params=params)},
         reset_terms={'motion_command':replace(base.command.reset_terms['motion_command'],func=target)},
         step_terms={'motion_command':replace(base.command.step_terms['motion_command'],func=target)}),

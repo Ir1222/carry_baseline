@@ -18,6 +18,6 @@ exec ../envs/g1_hmi_carry/bin/python -u src/holosoma/holosoma/train_agent.py \
   --logger.mode="$WANDB_MODE" --logger.video.enabled=False \
   --logger.base-dir="$run_dir/logs" \
   --training.num-envs=8192 --training.headless=True --training.seed=42 \
-  --algo.config.num-learning-iterations="$updates" --algo.config.save-interval=500 \
+  --algo.config.num-learning-iterations="$updates" --algo.config.save-interval=2000 \
   --simulator.config.scene.env-spacing=4.0 \
   --command.setup-terms.motion-command.params.motion-config.hybrid.track-ratio=1.0

@@ -15,6 +15,7 @@ def validate_run(root,updates):
     config_path=configs[0];config=yaml.safe_load(config_path.read_text());folder=config_path.parent
     if config['training']['num_envs']!=8192 or config['training']['checkpoint'] is not None:raise ValueError('Expected fresh 8192-env training')
     if config['algo']['config']['num_learning_iterations']!=updates:raise ValueError('Wrong update count')
+    if updates==15000 and config['algo']['config']['save_interval']!=2000:raise ValueError('Formal run must save every2000 updates')
     if config['simulator']['config']['scene']['env_spacing']!=4.:raise ValueError('Wrong spacing')
     motion=config['command']['setup_terms']['motion_command']['params']['motion_config']
     if motion['hybrid']['track_ratio']!=1.:raise ValueError('Gen is forbidden')

@@ -68,7 +68,7 @@
     },
     "save_interval": {
       "upstream_object_stage1": 3000,
-      "unified_actual": 500
+      "unified_actual": 2000
     },
     "latest_save_interval": {
       "upstream_object_stage1": 100,
@@ -666,7 +666,7 @@
   "actor_dim": 357,
   "critic_dim": 187,
   "manifest_sha256": "c3c5d8f41d10e3b5be339c797b90f1b723e6a1b9c8624502f1a49d0e5d26cd15",
-  "changes_to_ppo_hyperparameters": "None; existing Unified 128 minibatches and 0.3 noise retained explicitly",
+  "changes_to_ppo_hyperparameters": "Only user-requested checkpoint interval2000; existing Unified 128 minibatches and0.3 noise retained",
   "logger": {
     "type": "wandb",
     "mode": "offline",

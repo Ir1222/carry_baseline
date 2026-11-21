@@ -33,7 +33,7 @@ def main():
         unified_motion=motion,upstream_motion=old['command']['setup_terms']['motion_command']['params']['motion_config'],
         action=new['action'],robot_control=new['robot']['control'],reward=new['reward'],termination=new['termination'],
         actor_dim=357,critic_dim=187,manifest_sha256=digest(Path(motion['motion_dir']).parent/'manifest.json'),
-        changes_to_ppo_hyperparameters='None; existing Unified 128 minibatches and 0.3 noise retained explicitly',
+        changes_to_ppo_hyperparameters='Only user-requested checkpoint interval2000; existing Unified 128 minibatches and0.3 noise retained',
         logger=dict(type='wandb',mode='offline',video_enabled=False,reason='Online credential validation returned HTTP403; TensorBoard and offline W&B retained'))
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(rows,indent=2))

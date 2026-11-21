@@ -5,7 +5,7 @@ from train_stage1_joint import parser,build_argv,REPO
 from prepare_unified_hoi import verify,DEFAULT
 
 def main():
-    p=parser();p.set_defaults(num_envs=256,data=DEFAULT);a=p.parse_args();a.data=a.data.resolve();m=verify(a.data)
+    p=parser();p.set_defaults(num_envs=256,data=DEFAULT,save_every=2000);a=p.parse_args();a.data=a.data.resolve();m=verify(a.data)
     if a.num_envs not in (256,1024,4096,8192):p.error('Supported training sizes: 256,1024,4096,8192 (capacity is hardware-dependent)')
     os.environ['HMI_UNIFIED_DATA']=str(a.data);os.environ['HMI_CARRY_ACTION_MODE']='joint_delta'
     if a.resume:

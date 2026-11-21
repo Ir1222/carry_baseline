@@ -4,7 +4,7 @@ Base: `6c3eed6`; branch: `feature/unified-hoi-stage1`. This is a separate experi
 
 One HMI PPO Actor/Critic trains all six clips, Track-only, no Gen/AMP/world model. The free original LargeBox remains 1.1kg with gravity/collisions, original half-sphere-hand G1, torque limits, fixed materials, 1ms physics and 20ms policy. There is no attachment or object pose writing during an episode.
 
-**Current status (2026-11-21 HMI launch revision):** original `train_agent.py` completed8192 environments ×2 updates, peak8702MiB, finite PPO/checkpoint/ONNX and family/phase logs verified. The user-authorized15000-update Track-only run uses the same direct entry. `full_training_ready=False` remains historical physical-validation information and no longer prohibits training. Physical source/policy failures are retained; they are not a learning early-stop rule. See [launch/config report](UNIFIED_HOI_HMI_STAGE1_RUN.md) and the [historical implementation audit](UNIFIED_HOI_STAGE1_IMPLEMENTATION_REPORT.md).
+**Current status (2026-11-21 HMI launch revision):** original `train_agent.py` completed8192 environments ×2 updates, peak8702MiB, finite PPO/checkpoint/ONNX and family/phase logs verified. The user-authorized15000-update Track-only run uses the same direct entry, with the latest requested2000-update checkpoint interval. `full_training_ready=False` remains historical physical-validation information and no longer prohibits training. Physical source/policy failures are retained; they are not a learning early-stop rule. See [launch/config report](UNIFIED_HOI_HMI_STAGE1_RUN.md) and the [historical implementation audit](UNIFIED_HOI_STAGE1_IMPLEMENTATION_REPORT.md).
 
 ## Data and phases
 
@@ -60,7 +60,7 @@ bash scripts/carry/train_unified_hoi.sh --num-envs 256 --iterations 4 --save-eve
 bash scripts/carry/train_unified_hoi.sh --num-envs 8192 --iterations 15000 --dry-run
 ```
 
-The diagnostic entry supports256/1024/4096/8192; both256 and8192 were exercised. The new direct-entry script fixes8192, as requested. `--data /path/to/new_bundle` selects a separately versioned dataset. The diagnostic entry supports `--iterations 15000 --save-every 500` as one uninterrupted `learn()` call; the previous32-update/physical-readiness prohibition was removed. Source validation flags are unchanged. No automatic Stage2, restart, time budget or plateau loop is invoked. The direct HMI run keeps the base PPO hyperparameters:128 minibatches,5 epochs, std0.3,24 rollout steps; differences from upstream are explicitly audited, not silently tuned.
+The diagnostic entry supports256/1024/4096/8192; both256 and8192 were exercised. The new direct-entry script fixes8192, as requested. `--data /path/to/new_bundle` selects a separately versioned dataset. The diagnostic entry supports `--iterations 15000 --save-every 2000` as one uninterrupted `learn()` call; the previous32-update/physical-readiness prohibition was removed. Source validation flags are unchanged. No automatic Stage2, restart, time budget or plateau loop is invoked. The direct HMI run keeps the base PPO hyperparameters:128 minibatches,5 epochs, std0.3,24 rollout steps; differences from upstream are explicitly audited, not silently tuned.
 
 The diagnostic entry saves PID, exact argv, commit/dirty status, source archive/patch plus hashed worktree text snapshot, manifest, `holosoma_config.yaml`, durable per-update JSON, TensorBoard, checksummed full checkpoints and ONNX metadata. Its outputs: `../artifacts/unified_hoi_stage1/run_*/`.
 
