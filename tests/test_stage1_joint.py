@@ -54,12 +54,15 @@ def test_stage1_has_original_robot_object_imitation_and_no_gen_goals():
 def test_stage1_advances_each_clip_without_cross_clip_or_state_reset():
     cmd=Stage1TrackCommand.__new__(Stage1TrackCommand)
     cmd.device='cpu';cmd._env=NS(episode_length_buf=torch.tensor([1,1,0]))
+    cmd.reference_episode_step=torch.zeros(3,dtype=torch.long)
     cmd.motion_cfg=NS(use_adaptive_timesteps_sampler=False)
     cmd.motion_ids=torch.tensor([0,1,2]);cmd.time_steps=torch.tensor([349,459,500])
     cmd.motion=NS(motion_end_idx=torch.tensor([351,461,1112]))
     called=[];cmd._update_track_commands=lambda:called.append('reference')
     cmd._update_relative_reference=lambda:called.append('relative')
-    cmd.step();cmd.step()
+    cmd.advance_reference_to_post_action()
+    cmd._env.episode_length_buf[:2]+=1
+    cmd.advance_reference_to_post_action()
     assert cmd.time_steps.tolist()==[350,460,500]
     assert called==['reference','relative','reference','relative']
 

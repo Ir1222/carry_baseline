@@ -12,7 +12,7 @@ from pathlib import Path
 def static_audit():
     import numpy as np
     from scipy.spatial.transform import Rotation
-    from holosoma.carry.stage1_presets import DATA, g1_29dof_carry_stage1_joint as cfg
+    from holosoma.carry.stage1_presets import DATA, ACTION_MODE, g1_29dof_carry_stage1_joint as cfg
     reset=json.loads((DATA/'verified_side_grasp_reset.json').read_text())
     names=reset['joint_names'];default=np.array(reset['pd_target_joint_pos'])
     control=cfg.robot.control
@@ -49,7 +49,8 @@ def static_audit():
                 body_root_vs_qroot_ang_vel_max_rad_s=float(abs(omega-d['joint_vel'][:,3:6]).max()),
                 ref_object_one_frame_displacement_max_m=float(np.linalg.norm(np.diff(d['object_pos_w'],axis=0),axis=-1).max()),
                 ref_pelvis_one_frame_displacement_max_m=float(np.linalg.norm(np.diff(d['body_pos_w'][:,0],axis=0),axis=-1).max())))
-    return dict(joint_names=names,q_default=default.tolist(),kp=kp.tolist(),kd=kd.tolist(),
+    return dict(active_action_mode=ACTION_MODE,static_action_range_formula='Legacy fixed-default inverse; delta motion ranges are reported separately in repair validation',
+        joint_names=names,q_default=default.tolist(),kp=kp.tolist(),kd=kd.tolist(),
         torque_limits=effort.tolist(),action_scales=scales.tolist(),control=asdict(control),
         reset_noise=asdict(cfg.command.setup_terms['motion_command'].params['motion_config'].noise_to_initial_pose),
         initial_policy_std=cfg.algo.config.init_noise_std,
@@ -85,7 +86,7 @@ def run_rollouts(args):
             index=cmd.time_steps.clone()
             next_index=torch.minimum(index+1,cmd.motion.motion_end_idx[cmd.motion_ids]-1)
             box=simulator_box_state(env)
-            target=joint._actions_after_delay[:,None,:]*env.action_scales+env.default_dof_pos[:,None,:]
+            target=joint._actions_after_delay[:,None,:]*env.action_scales+joint._position_action_center()[:,None,:]
             raw=joint._kp_scale[:,None,:]*env.p_gains*(target-joint.dof_pos_substep)-joint._kd_scale[:,None,:]*env.d_gains*joint.dof_vel_substep
             expected=quat_rotate_inverse(yaw_quat(cmd.root_quat_w,w_last=True),cmd.root_lin_vel_w,w_last=True)
             goal=torch.cat([expected[:,:2],cmd.root_ang_vel_w[:,2:3],
@@ -105,6 +106,7 @@ def run_rollouts(args):
                 nonhand_force_by_link=env.simulator.scene.sensors['box_other'].data.force_matrix_w.norm(dim=-1).sum(1),
                 unsupported_s=env.termination_manager._term_instances['physical_failure'].unsupported,
                 raw_last_substep_bilateral=(env.simulator.raw_contacts()[0].norm(dim=-1)>.5).all(-1).float(),
+                hand_normal_world=env.simulator.carry_normal.clone(),
                 **m)
             snapshot.clear();snapshot.update({k:v.detach().cpu().numpy().copy() for k,v in fields.items()})
             snapshot['causes']={f'{term}/{cause}':v.detach().cpu().numpy().copy()
@@ -143,7 +145,8 @@ def run_rollouts(args):
                     if mode=='zero':action=torch.zeros(args.num_envs,29,device=env.device)
                     elif mode.startswith('reference'):
                         if mode=='reference_next':index=torch.minimum(index+1,cmd.motion.motion_end_idx[cmd.motion_ids]-1)
-                        action=(cmd.motion.joint_pos[index]-env.default_dof_pos)/env.action_scales
+                        center=env.simulator.dof_pos if getattr(joint,'parameterization','fixed_default_v1')=='joint_delta_v1' else env.default_dof_pos
+                        action=(cmd.motion.joint_pos[index]-center)/env.action_scales
                     else:
                         action=adapter.act(env.simulator.robot_root_states[:],env.simulator.dof_pos,env.simulator.dof_vel,
                             simulator_box_state(env),cmd.task_command,env.simulator.scene.env_origins[:,2])
@@ -155,10 +158,12 @@ def run_rollouts(args):
                     for i in np.where(alive & snapshot['failed'])[0]:
                         failures[i]=[k for k,v in snapshot['causes'].items() if v[i]]
                         failures[i]+=[k for k,v in snapshot['terms'].items() if v[i] and k not in ['physical_failure','track_failure','body_proximity']]
-                    # Confirm reward/termination used the same index as the pre-action command.
-                    assert np.array_equal(snapshot['ref_index'],before.cpu().numpy())
+                    # Snapshot includes the pre-reset motion IDs even if this step ended an episode.
+                    ends=cmd.motion.motion_end_idx[torch.as_tensor(snapshot['motion_id'],device=env.device)]
+                    expected_target=torch.minimum(before+1,ends-1) if hasattr(cmd,'reference_episode_step') else before
+                    assert np.array_equal(snapshot['ref_index'],expected_target.cpu().numpy())
                     continuing=~torch.as_tensor(snapshot['failed']|snapshot['timeout'],device=env.device)
-                    expected_after=torch.minimum(before+1,cmd.motion.motion_end_idx[cmd.motion_ids]-1)
+                    expected_after=expected_target
                     assert torch.equal(cmd.time_steps[continuing],expected_after[continuing])
                     alive &= ~(snapshot['failed']|snapshot['timeout'])
                     if not alive.any():break

@@ -5,6 +5,34 @@ from holosoma.managers.command.terms.wbt import MotionCommand
 
 
 class Stage1TrackCommand(FullBodyCommand):
+    def init_buffers(self):
+        super().init_buffers()
+        self.reference_episode_step=torch.zeros(self.num_envs,device=self.device,dtype=torch.long)
+
+    def reset(self,env_ids):
+        super().reset(env_ids)
+        self.reference_episode_step[self._ensure_index_tensor(env_ids)]=0
+
+    def _validate_hard_positions(self,values,label):
+        limits=self.reference_hard_limits
+        bad=(~torch.isfinite(values))|(values<limits[:,0]-1e-6)|(values>limits[:,1]+1e-6)
+        if bad.any():
+            import json
+            from pathlib import Path
+            locations=bad.nonzero()[:16].tolist()
+            evidence=dict(scope=label,tolerance_rad=1e-6,violations=[dict(row=i,joint=self._env.dof_names[j],
+                value=float(values[i,j]),lower=float(limits[j,0]),upper=float(limits[j,1])) for i,j in locations])
+            path=Path(self._env.stage1_diagnostic_dir)/'stage1_invalid_reference.json'
+            path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(evidence,indent=2)+'\n')
+            raise ValueError('Stage1 reference/reset exceeds actual hard limits; no pose was corrected: '+str(path))
+
+    def _prepare_reset_joint_positions(self,target,reference,env_ids):
+        self._validate_hard_positions(reference,'selected reference frames')
+        self._validate_hard_positions(target,'reset target')
+        if not torch.equal(target,reference):
+            raise ValueError('Stage1 exact-reference Reset requires zero joint initialization noise')
+        return target
+
     def _sample_motion_ids_for_reset(self,env_ids):
         rows=sorted(self.manifest['motions'],key=lambda r:r['name'])
         weights=self._weights()
@@ -34,6 +62,10 @@ class Stage1TrackCommand(FullBodyCommand):
         super().setup()
         if self.gen_env_mask.any() or not self.track_env_mask.all():
             raise ValueError('Stage1 partition must contain only Track environments')
+        sim=self._env.simulator
+        self.reference_hard_limits=sim._robot.root_physx_view.get_dof_limits()[0,sim.dof_ids].to(self.device)
+        torch.testing.assert_close(self.reference_hard_limits,sim.hard_dof_pos_limits,atol=2e-6,rtol=0)
+        self._validate_hard_positions(self.motion.joint_pos,'entire motion bank, concatenated frame index')
 
     def sample_gen_commands(self,ids):
         if ids.numel():raise RuntimeError('Stage1 must never sample random Gen goals')
@@ -41,12 +73,21 @@ class Stage1TrackCommand(FullBodyCommand):
     def set_command(self,*args,**kwargs):
         raise RuntimeError('Stage1 uses reference-derived commands; external Gen goals require Stage2')
 
-    def step(self):
-        if self.motion_cfg.use_adaptive_timesteps_sampler:
+    def advance_reference_to_post_action(self):
+        """Run after physics and before reward/termination, exactly once per control step."""
+        episode_step=self._env.episode_length_buf
+        delta=episode_step-self.reference_episode_step
+        if (delta<0).any() or (delta>1).any():raise RuntimeError('Stage1 reference/physics clock mismatch')
+        active=delta==1
+        if active.any() and self.motion_cfg.use_adaptive_timesteps_sampler:
             self._increment_adaptive_sampler_global_env_step()
-        active=self._env.episode_length_buf>0
         self.time_steps[active]=torch.minimum(self.time_steps[active]+1,
             self.motion.motion_end_idx[self.motion_ids[active]]-1)
+        self.reference_episode_step[active]=episode_step[active]
+        self.step()
+
+    def step(self):
+        # The post-reset callback refreshes observations without advancing time.
         self.last_clip_end_env_ids=torch.empty(0,dtype=torch.long,device=self.device)
         self._update_track_commands()
         self._update_relative_reference()

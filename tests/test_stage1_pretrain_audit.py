@@ -55,5 +55,7 @@ def test_diagnostic_hook_checks_real_termination_once(monkeypatch):
     calls=[]
     monkeypatch.setattr(FullBodyCarryEnv,'_check_termination',lambda self:calls.append('termination'))
     monkeypatch.setattr(diagnostics,'record_stage1_diagnostics',lambda env:calls.append('log'))
-    Stage1CarryEnv._check_termination(Stage1CarryEnv.__new__(Stage1CarryEnv))
-    assert calls==['termination','log']
+    env=Stage1CarryEnv.__new__(Stage1CarryEnv)
+    env.command_manager=NS(get_state=lambda name:NS(advance_reference_to_post_action=lambda:calls.append('reference')))
+    Stage1CarryEnv._check_termination(env)
+    assert calls==['reference','termination','log']

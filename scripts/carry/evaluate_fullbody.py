@@ -37,6 +37,10 @@ def main():
     if policy_meta.get('fullbody_schema')!=1:
         raise ValueError('Refusing a legacy palm-support ONNX policy in the FullBody scene')
     joint_stage1=policy_meta.get('reference_bundle_schema')=='carry_track_training_v2'
+    import os
+    mode=policy_meta.get('action_parameterization','fixed_default_v1')
+    if mode not in ('fixed_default_v1','joint_delta_v1'):raise ValueError('Unknown actor action parameterization')
+    os.environ['HMI_CARRY_ACTION_MODE']='joint_delta' if mode=='joint_delta_v1' else 'fixed'
     if joint_stage1:
         if a.suite!='stage1':p.error('Joint Stage1 actor is evaluated with --suite stage1; Gen command control is a Stage2 task')
         bundle=a.data or Path(policy_meta.get('reference_bundle',''))

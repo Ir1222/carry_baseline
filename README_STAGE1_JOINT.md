@@ -1,6 +1,6 @@
 # Stage 1：一个 Policy 联合跟踪抱箱蹲起和抱箱行走
 
-2026-11-21长训前审查发现零噪声Reset仍按95%软限位裁剪参考姿态的初始化BLOCKER；详见 [STAGE1_PRETRAIN_AUDIT.md](STAGE1_PRETRAIN_AUDIT.md)。本次未修改控制或终止规则，建议先处理该问题再正式启动下面的15000次训练命令。
+2026-11-21修复了95%软限位Reset裁剪和一帧参考滞后，Stage1候选动作改为reference-free小增量位置目标；详见 [STAGE1_REPAIR_VALIDATION.md](STAGE1_REPAIR_VALIDATION.md)。Forward短训虽改善，但原始行走参考与侧向抓持姿态的几何差异尚未解决，**当前不建议直接启动下面的15000次长训**。此前审查保留在 [STAGE1_PRETRAIN_AUDIT.md](STAGE1_PRETRAIN_AUDIT.md)。
 
 新入口：`exp:g1-29dof-carry-stage1-joint`。单次调用现有 HMI PPO，默认从头连续更新 **15000 次**，每500次保存 Checkpoint/ONNX。没有资源时间预算、评估停滞早停、2000次切段、自动resume、自动改奖励或自动进入Stage 2。单个Episode的真实失败仍会终止并正常Reset，PPO训练继续。
 
@@ -74,7 +74,7 @@ bash scripts/carry/train_stage1_joint.sh --dry-run
 
 原始29DoF半球手G1与原始LargeBox，实际名义质量1.1kg、惯量对角约0.022kg·m²。固定Robot摩擦1.0/0.9、Box摩擦0.6/0.6；保留重力、自碰撞、原始电机力矩限制。物理/PD为1ms，Policy为20ms，Reference为50FPS，decimation=20。没有绑定箱体、虚拟支撑、前馈WBC或逐步写物体位姿。
 
-与旧入口相比，还修正了初始Reset时序：旧 `reset_all()` 在Actor接管前先执行20ms零动作，新Stage1直接从初始化物理状态产生首个观测，与正常Episode Reset的控制时序一致。Checkpoint导出使用零张量示例输入，不Reset训练环境。
+与旧入口相比，还修正了初始Reset时序：旧 `reset_all()` 在Actor接管前先执行20ms零动作，新Stage1直接从初始化物理状态产生首个观测。合法硬限位内的参考关节角不再被95%软限位裁剪；post-action奖励/终止对齐k+1帧。默认 `joint_delta_v1` 目标是本次Policy调用时实测q加归一化动作乘原effort/Kp比例，在20个PD子步保持目标。Actor中的q_default仍用于观测居中。旧固定默认姿态动作可显式设置 `HMI_CARRY_ACTION_MODE=fixed`，两种模式不可混用Checkpoint。Checkpoint导出使用零张量示例输入，不Reset训练环境。
 
 ## 输出和可选恢复
 
@@ -104,7 +104,7 @@ bash scripts/carry/train_stage1_joint.sh --iterations 15000 \
   --resume /absolute/path/to/new_joint_stage1/model_05000.pt
 ```
 
-15000是总更新目标，恢复会扣除已完成更新。旧的只训练蹲起的Checkpoint因Reference Manifest不同，会被拒绝；新训练默认从头开始。
+15000是总更新目标，恢复会扣除已完成更新。旧的只训练蹲起的Checkpoint因Reference Manifest不同会被拒绝；d2281cf及更早的联合训练Checkpoint因Reset/时序协议不同也不能直接恢复本版训练。新训练默认从头开始。
 
 ## 训练后评估
 

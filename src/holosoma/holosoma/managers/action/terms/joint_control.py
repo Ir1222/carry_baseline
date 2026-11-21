@@ -185,7 +185,7 @@ class JointPositionActionTerm(ActionTermBase):
         if control_type == "P":
             # Position control
             torques = (
-                self._kp_scale * self.p_gains * (actions_scaled + self.env.default_dof_pos - self.env.simulator.dof_pos)
+                self._kp_scale * self.p_gains * (actions_scaled + self._position_action_center() - self.env.simulator.dof_pos)
                 - self._kd_scale * self.d_gains * self.env.simulator.dof_vel
             )
         elif control_type == "V":
@@ -212,6 +212,9 @@ class JointPositionActionTerm(ActionTermBase):
             torques = torch.clip(torques, -self.env.torque_limits, self.env.torque_limits)
 
         return torques
+
+    def _position_action_center(self):
+        return self.env.default_dof_pos
 
     def reset(self, env_ids: torch.Tensor | None = None) -> None:
         """Reset action term state.

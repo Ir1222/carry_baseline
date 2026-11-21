@@ -51,6 +51,7 @@ def main():
     root=(a.run_dir or BASE/('run_'+time.strftime('%Y%m%d_%H%M%S')+'_'+str(time.time_ns()%1000000))).resolve()
     argv=build_argv(a,root)
     plan=dict(stage='Stage1 Track-only joint squat/walk',total_updates=a.iterations,
+        action_mode=os.environ.get('HMI_CARRY_ACTION_MODE','joint_delta'),
         track_ratio=1.,gen_ratio=0.,resource_time_budget=None,plateau_stop=False,
         automatic_stage2=False,automatic_restarts=False,segmented_training=False,
         argv=argv,run_dir=str(root),data=str(a.data),motions=motions)

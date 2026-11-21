@@ -10,6 +10,15 @@ from holosoma.config_types.randomization import RandomizationManagerCfg, Randomi
 from holosoma.config_types.reward import RewardTermCfg
 from holosoma.config_types.termination import TerminationTermCfg
 
+# An explicit mode selects the same decoder for Track and future reference-free
+# deployment/Gen. Existing experiments keep their fixed-default decoder by default.
+_action_mode=os.environ.get('HMI_CARRY_ACTION_MODE','fixed')
+if _action_mode not in ('fixed','joint_delta'):raise ValueError('Unknown carry action mode')
+_action=legacy.action
+if _action_mode=='joint_delta':
+    _action=replace(_action,terms={**_action.terms,'joint_control':replace(_action.terms['joint_control'],
+        func='holosoma.carry.action:JointDeltaPositionActionTerm')})
+
 DATA=Path(os.environ.get('HMI_FULLBODY_DATA',Path(__file__).resolve().parents[5]/'artifacts/fullbody_goal_carry/reference_v1'))
 motion=legacy.command.setup_terms['motion_command'].params['motion_config']
 motion=replace(motion,motion_dir=str(DATA/'motions'),motion_file='',
@@ -34,6 +43,7 @@ terms['limits_dof_pos']=replace(terms['limits_dof_pos'],params={'soft_dof_pos_li
 termination=dict(legacy.termination.terms)
 termination['physical_failure']=TerminationTermCfg(func='holosoma.carry.fullbody_termination:FullBodyFailure')
 g1_29dof_fullbody_carry=replace(legacy,
+    action=_action,
     env_class='holosoma.carry.fullbody_environment.FullBodyCarryEnv',
     algo=replace(legacy.algo,_target_='holosoma.carry.fullbody_ppo.FullBodyCarryPPO'),
     training=replace(legacy.training,name='g1_fullbody_carry',num_envs=4096),

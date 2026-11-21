@@ -7,6 +7,12 @@ from holosoma.config_values.wbt.g1.reward import g1_29dof_wbt_reward_w_object as
 from holosoma.config_types.reward import RewardTermCfg
 
 DATA=Path(os.environ.get('HMI_STAGE1_DATA',Path(__file__).resolve().parents[4]/'datasets/fullbody_carry_track_v2'))
+ACTION_MODE=os.environ.get('HMI_CARRY_ACTION_MODE','joint_delta')
+if ACTION_MODE not in ('fixed','joint_delta'):raise ValueError('HMI_CARRY_ACTION_MODE must be fixed or joint_delta')
+action=physical.action
+if ACTION_MODE=='joint_delta':
+    action=replace(action,terms={**action.terms,'joint_control':replace(action.terms['joint_control'],
+        func='holosoma.carry.action:JointDeltaPositionActionTerm')})
 term=physical.command.setup_terms['motion_command'];motion=term.params['motion_config']
 motion=replace(motion,motion_dir=str(DATA/'motions'),motion_file='',start_at_timestep_zero_prob=.5,
     hybrid=replace(motion.hybrid,track_ratio=1.))
@@ -19,6 +25,7 @@ rewards.update(grasp=RewardTermCfg(func='holosoma.carry.fullbody_rewards:grasp',
     hand_slip=RewardTermCfg(func='holosoma.carry.fullbody_rewards:hand_slip',weight=.5),
     nonhand_contact=RewardTermCfg(func='holosoma.carry.fullbody_rewards:nonhand_contact',weight=-2.))
 g1_29dof_carry_stage1_joint=replace(physical,
+    action=action,
     env_class='holosoma.carry.stage1_environment.Stage1CarryEnv',
     training=replace(physical.training,name='stage1_joint_squat_walk',num_envs=8192),
     algo=replace(physical.algo,config=replace(physical.algo.config,num_learning_iterations=15000,

@@ -18,12 +18,16 @@ class FullBodyCarryEnv(CarryEnv):
         state=super().get_checkpoint_state()
         cmd=self.command_manager.get_state('motion_command')
         state['fullbody_schema']=1
+        state['carry_action_parameterization']=getattr(self.action_manager.get_term('joint_control'),'parameterization','fixed_default_v1')
         state['fullbody_limits']=cmd.limits
         state['fullbody_manifest_sha256']=digest(cmd.cfg.params['manifest_file'])
         return state
 
     def load_checkpoint_state(self,state):
         if not state:return
+        current=getattr(self.action_manager.get_term('joint_control'),'parameterization','fixed_default_v1')
+        saved=state.get('carry_action_parameterization',state.get('stage1_action_parameterization','fixed_default_v1'))
+        if saved!=current:raise ValueError('Checkpoint action decoder differs; Track and Gen must use the same parameterization')
         if state.get('fullbody_schema') != 1:
             raise ValueError('Refusing a legacy palm-support checkpoint in FullBody experiment')
         cmd=self.command_manager.get_state('motion_command')

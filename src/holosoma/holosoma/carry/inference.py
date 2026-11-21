@@ -27,6 +27,15 @@ class CarryActor:
         else:
             self.history[env_ids] = 0; self.previous_action[env_ids] = 0
 
+    def joint_position_target(self,actions,current_joint_pos):
+        # Tensor-only deployment decoding; no Reference Loader is needed.
+        mode=self.metadata.get('action_parameterization','fixed_default_v1')
+        if mode not in ('fixed_default_v1','joint_delta_v1'):raise ValueError('Unknown carry action parameterization')
+        center=current_joint_pos if mode=='joint_delta_v1' else self.default_joint_pos
+        scale=torch.as_tensor(self.metadata['action_scales'],device=current_joint_pos.device)
+        limit=self.metadata.get('action_clip_value',100.)
+        return center+actions.clamp(-limit,limit)*scale
+
     def act(self, root_xyzw, joint_pos, joint_vel, box_xyzw, commands, ground_height):
         frame = physical_frame(root_xyzw, joint_pos, joint_vel, self.default_joint_pos,
             self.previous_action, box_xyzw, commands, ground_height).clamp(-100, 100)

@@ -1414,8 +1414,7 @@ class MotionCommand(CommandTermBase):
         target_dof_pos = (
             dof_pos + (torch.rand(dof_pos.shape, device=self.device) - 0.5) * 2 * dof_pos_noise
         )  # (num_envs, num_dofs)
-        soft_joint_pos_limits = self._env.simulator.dof_pos_limits  # type: ignore[attr-defined]  # (num_dofs, 2)
-        target_dof_pos = torch.clip(target_dof_pos, soft_joint_pos_limits[:, 0], soft_joint_pos_limits[:, 1])
+        target_dof_pos = self._prepare_reset_joint_positions(target_dof_pos, dof_pos, env_ids)
 
         # 1.2.2 dof_vel no noise
         target_dof_vel = dof_vel
@@ -1462,6 +1461,11 @@ class MotionCommand(CommandTermBase):
         # 4. Set the object states in simulator
         if self.motion.has_object:
             self._env.simulator.set_actor_states([self.object_name], env_ids, self._object_reset_states(env_ids))
+
+    def _prepare_reset_joint_positions(self, target, reference, env_ids):
+        """Legacy initialization margin; specialized tasks may validate hard limits instead."""
+        limits = self._env.simulator.dof_pos_limits
+        return torch.clip(target, limits[:, 0], limits[:, 1])
 
     def step(self) -> None:
         """called in _update_tasks_callback of the environment. (after compute_reward, before compute_observations)"""

@@ -16,6 +16,11 @@ class FullBodyCarryPPO(CarryPPO):
         cmd=self.env.command_manager.get_state('motion_command')
         meta.update(fullbody_schema=1,goal_limits=cmd.limits,physics=self.env.fullbody_physics,
             reference_required_at_inference=False)
+        meta.update(action_parameterization=getattr(self.env.action_manager.get_term('joint_control'),'parameterization','fixed_default_v1'),
+            action_clip_value=self.env.robot_config.control.action_clip_value)
+        if meta['action_parameterization']=='joint_delta_v1':
+            meta['action_target_definition']='q_at_policy_step + action_scales * clipped_action; target held through PD substeps'
+            meta['default_joint_pos_role']='physical observation centering only; not the PD target center'
         if getattr(cmd,'manifest',{}).get('schema')=='carry_track_training_v2':
             from holosoma.carry.checkpoints import digest
             manifest_file=Path(cmd.cfg.params['manifest_file'])
@@ -23,6 +28,7 @@ class FullBodyCarryPPO(CarryPPO):
                 reference_bundle=str(manifest_file.parent.resolve()),
                 reference_manifest_sha256=digest(manifest_file),
                 training_mode='Track-only joint squat/stand and forward carry')
+            meta['stage1_reference_protocol']='hard_reset_post_action_v1' if hasattr(cmd,'reference_episode_step') else 'legacy_v1'
         session=ort.InferenceSession(str(path),providers=['CPUExecutionProvider'])
         wrapper=self.actor_onnx_wrapper
         errors=[]
