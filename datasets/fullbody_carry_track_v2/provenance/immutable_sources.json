@@ -1,0 +1,8 @@
+{
+  "src/holosoma/holosoma/data/motions/g1_29dof/whole_body_tracking/movebox/sub3_largebox_003_mj_w_obj_reframed.npz": "827aced06e4111ade1bd38c9880cb76e870727438cc75fbcc2aee5b636edc5c9",
+  "src/holosoma/holosoma/data/motions/g1_29dof/whole_body_tracking/movebox/sub3_largebox_003_mj_w_obj_reframed_mirrored.npz": "9b8fa055065e9df0892a2fbdd1aa6357b524b0cc0d851fc2ece3da954e26ab39",
+  "src/holosoma/holosoma/data/robots/g1/main_mesh_collision_halfspherehand.urdf": "1bbc2ee51ac0b70331bc871d5ca89f848c9246bc3be8a87880e5107fad8ccd81",
+  "src/holosoma/holosoma/data/motions/g1_29dof/whole_body_tracking/objects_largebox.urdf": "37b621e6a2d7e9e69ad17c7bd08a6328c79343238ff9bf2eba5297ebe10aed5e",
+  "src/holosoma/holosoma/data/motions/g1_29dof/whole_body_tracking/largebox.obj": "dbcc11281f62e9226f49165252375080d2e490e5a3f0ab6ba917acbd8f7abc1c",
+  "src/holosoma/holosoma/data/robots/g1/meshes/half_sphere.obj": "6ca2d56298812bde885043a7dd1e578192ec1ac0cf1255d00706c8ba2fc95517"
+}

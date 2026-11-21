@@ -1,6 +1,11 @@
 """Explicit policy gates: side friction grip must not be replaced by palm support."""
 
 
+def tracking_suite_passed(groups,expected_scenarios,seeds):
+    return bool(expected_scenarios and seeds>=10 and set(groups)==set(expected_scenarios)
+        and all(g['success_rate']>=.8 for g in groups.values()))
+
+
 def physical_failures(row):
     checks={
         'incomplete_episode':row['survived'],

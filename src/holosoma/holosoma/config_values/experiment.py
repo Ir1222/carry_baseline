@@ -15,8 +15,10 @@ from holosoma.config_values.wbt.g1.experiment import (
 )
 from holosoma.carry.presets import g1_29dof_wbt_hybrid_carry
 from holosoma.carry.fullbody_presets import g1_29dof_fullbody_carry
+from holosoma.carry.stage1_presets import g1_29dof_carry_stage1_joint
 
 DEFAULTS = {
+    "g1_29dof_carry_stage1_joint": g1_29dof_carry_stage1_joint,
     "g1_29dof_fullbody_carry": g1_29dof_fullbody_carry,
     "g1_29dof_wbt_hybrid_carry": g1_29dof_wbt_hybrid_carry,
     "g1_29dof": g1_29dof,

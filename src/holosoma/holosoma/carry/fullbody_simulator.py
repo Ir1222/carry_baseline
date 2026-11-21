@@ -65,6 +65,7 @@ def fixed_physics(env, data, **_):
     import numpy as np
     from scipy.spatial import ConvexHull
     from holosoma.carry.checkpoints import atomic_json
+    from holosoma.utils.path import resolve_data_file_path
     sim=env.simulator; contract=json.loads((Path(data)/'model_contract.json').read_text())
     ids=torch.arange(env.num_envs,dtype=torch.int32,device='cpu')
     for asset,material in [(sim._robot,[1.,.9,0.]),(sim._object,[.6,.6,0.])]:
@@ -77,7 +78,7 @@ def fixed_physics(env, data, **_):
     view.set_masses(masses,ids); view.set_inertias(inertia,ids)
     env.carry_box_mass=masses.to(env.device).flatten()
     assert torch.allclose(env.carry_box_mass,torch.full_like(env.carry_box_mass,1.1),atol=1e-6)
-    mesh=Path(contract['object_urdf']).parent/'largebox.obj'
+    mesh=Path(resolve_data_file_path(contract['object_urdf'])).parent/'largebox.obj'
     vertices=np.array([list(map(float,line.split()[1:4])) for line in mesh.read_text().splitlines() if line.startswith('v ')])
     vertices=vertices[ConvexHull(vertices).vertices]
     env.carry_box_vertices=torch.tensor(vertices,device=env.device,dtype=torch.float32)

@@ -31,11 +31,24 @@ def main():
     p.add_argument('--view',action='store_true')
     p.add_argument('--interactive',action='store_true')
     p.add_argument('--video',action='store_true')
+    p.add_argument('--data',type=Path,help='Optional reference bundle override, checked against actor metadata')
     a=p.parse_args();a.output.mkdir(parents=True,exist_ok=False)
     policy_meta=json.loads(a.policy.with_suffix('.actor.json').read_text())
     if policy_meta.get('fullbody_schema')!=1:
         raise ValueError('Refusing a legacy palm-support ONNX policy in the FullBody scene')
-    from holosoma.carry.fullbody_presets import g1_29dof_fullbody_carry as base,DATA
+    joint_stage1=policy_meta.get('reference_bundle_schema')=='carry_track_training_v2'
+    if joint_stage1:
+        if a.suite!='stage1':p.error('Joint Stage1 actor is evaluated with --suite stage1; Gen command control is a Stage2 task')
+        bundle=a.data or Path(policy_meta.get('reference_bundle',''))
+        if bundle.is_dir():
+            import os
+            os.environ['HMI_STAGE1_DATA']=str(bundle.resolve())
+        from holosoma.carry.stage1_presets import g1_29dof_carry_stage1_joint as base,DATA
+        from holosoma.carry.checkpoints import digest
+        if digest(DATA/'manifest.json')!=policy_meta['reference_manifest_sha256']:
+            raise ValueError('Evaluation references differ from the exported actor training bundle')
+    else:
+        from holosoma.carry.fullbody_presets import g1_29dof_fullbody_carry as base,DATA
     from holosoma.config_types.command import CommandManagerCfg,CommandTermCfg
     from holosoma.config_types.observation import ObservationManagerCfg
     from holosoma.config_types.termination import TerminationManagerCfg
@@ -76,7 +89,11 @@ def main():
             from holosoma.managers.command.terms import wbt
             def forbidden(*args,**kwargs):raise AssertionError('Motion loading forbidden during deployment')
             wbt.MotionLoader.__init__=forbidden;wbt.MultiMotionLoader.__init__=forbidden
-        env=FullBodyCarryEnv(get_tyro_env_config(config),device='cuda:0')
+        if joint_stage1:
+            from holosoma.carry.stage1_environment import Stage1CarryEnv
+            env=Stage1CarryEnv(get_tyro_env_config(config),device='cuda:0')
+        else:
+            env=FullBodyCarryEnv(get_tyro_env_config(config),device='cuda:0')
         env.set_is_evaluating()
         if abs(policy_meta['control_dt']-env.dt)>1e-9:
             raise ValueError('Policy action frequency differs from the physical scene')
@@ -88,6 +105,7 @@ def main():
         actor=CarryActor(a.policy,a.seeds,'cuda:0')
         if a.suite=='stage1':scenarios={f'clip_{i}':None for i in range(cmd.motion.num_motions)}
         else:scenarios=schedules(limits)
+        expected_scenarios=set(scenarios)
         if a.only:scenarios={a.only:scenarios[a.only]}
         pending=queue.SimpleQueue()
         if a.interactive:
@@ -228,11 +246,17 @@ def main():
         groups={name:dict(success_rate=float(np.mean([r['success'] for r in rows if r['scenario']==name])),
             trials=len([r for r in rows if r['scenario']==name])) for name in scenarios}
         score=float(np.mean([g['success_rate'] for g in groups.values()]))
-        passed=bool(a.seeds>=10 and all(g['success_rate']>=.8 for g in groups.values()))
+        complete_suite=set(groups)==expected_scenarios
+        from holosoma.carry.acceptance import tracking_suite_passed
+        passed=tracking_suite_passed(groups,expected_scenarios,a.seeds)
         if a.suite=='goal':passed &= limits['forward_admitted'] and limits['vx_high']>0 and len(groups)==10 and a.seconds>=20
         result=dict(passed=passed,score=score,suite=a.suite,groups=groups,trials=rows,goal_limits=limits,
             reference_free=a.suite=='goal',terminal_state_before_reset=True,physical_model=env.fullbody_physics,
+            complete_suite=complete_suite,expected_scenarios=sorted(expected_scenarios),joint_stage1=joint_stage1,
             accepted_policy=False if not passed else True)
+        if joint_stage1:
+            result['motion_families']={f'clip_{i}':r['family'] for i,r in
+                enumerate(sorted(cmd.manifest['motions'],key=lambda r:r['name']))}
         atomic_json(a.output/'evaluation.json',result)
         (a.output/'report.md').write_text('# Measured FullBody evaluation\n\n'+json.dumps(result,indent=2)+'\n')
         print(json.dumps(dict(passed=passed,score=score,groups=groups)),flush=True)

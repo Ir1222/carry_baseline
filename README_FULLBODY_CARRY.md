@@ -1,5 +1,7 @@
 # Full-Body Goal-Conditioned Carry
 
+**2026-11-21 Stage1修订：**当前手动训练请使用 [README_STAGE1_JOINT.md](README_STAGE1_JOINT.md)。新入口把抱箱蹲起与行走放入同一次Track-only PPO，连续15000次，无时间预算/停滞早停/分段resume。本文件下方的自动监督器、24小时预算和前进隔离描述保留为旧实验记录，不用于这次联合训练。
+
 这是独立的新实验 `exp:g1-29dof-fullbody-carry`。保留旧的小箱体 Carry 实验、P0 原文件和旧 Checkpoints。**当前是否获得可用 Policy，以 run 目录内的独立物理评估为准；Smoke Test 的模型不代表任务成功。**
 
 本地工作区 `/home/han/pyx/g1_carry_baseline_new`，仓库在 `HMI/`。P0 保存提交 `ed106a7`，开发分支 `feature/fullbody-goal-carry-autotrain`。

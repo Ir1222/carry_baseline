@@ -1,0 +1,11 @@
+{
+  "height_low": 0.6068800687789917,
+  "height_high": 0.7417492270469666,
+  "height_rate": 0.13555139303207397,
+  "vx_high": 0.7870750012831212,
+  "forward_admitted": false,
+  "forward_track_training_admitted": true,
+  "reference_fps": 50,
+  "episode_seconds": 30.0,
+  "scope": "Stage1 reference-derived values only; not Gen qualification"
+}

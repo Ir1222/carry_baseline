@@ -1,0 +1,77 @@
+{
+  "schema": "carry_track_training_v2",
+  "stage": 1,
+  "track_ratio": 1.0,
+  "motions": [
+    {
+      "name": "continuous_grasped_squat_stand",
+      "family": "squat_stand",
+      "path": "motions/continuous_grasped_squat_stand.npz",
+      "sha256": "412681d73670e24c4a32401970710513ba9e3c2dd8b3205e2bf4c4a6a4f33a90",
+      "source": "artifacts/carry_reference_synthesized/validated_motions/continuous_grasped_squat_stand.npz",
+      "sampling_weight": 0.2,
+      "training_admission": "HMI_track_target",
+      "physics_validation": "P0_controller_validated",
+      "frames": 351,
+      "fps": 50.0,
+      "duration_s": 7.0,
+      "pelvis_range_m": [
+        0.6068800687789917,
+        0.7268800735473633
+      ],
+      "forward_velocity_range_m_s": [
+        -0.015516818474774983,
+        0.01551193961348887
+      ]
+    },
+    {
+      "name": "repeated_grasped_squat_stand",
+      "family": "squat_stand",
+      "path": "motions/repeated_grasped_squat_stand.npz",
+      "sha256": "d6238a97fa785d94cdf9579f82c002f2b088c34267ba35465e0ed350932ca835",
+      "source": "artifacts/carry_reference_synthesized/validated_motions/repeated_grasped_squat_stand.npz",
+      "sampling_weight": 0.3,
+      "training_admission": "HMI_track_target",
+      "physics_validation": "P0_controller_validated",
+      "frames": 651,
+      "fps": 50.0,
+      "duration_s": 13.0,
+      "pelvis_range_m": [
+        0.6068800687789917,
+        0.7268800735473633
+      ],
+      "forward_velocity_range_m_s": [
+        -0.015516818474774983,
+        0.015511940558853148
+      ]
+    },
+    {
+      "name": "original_forward_carry",
+      "family": "forward_carry",
+      "path": "motions/original_forward_carry.npz",
+      "sha256": "fe03f9072560cc75096c5a0cbcd1ae781a1fe9607c23fa8781ed257ebed98550",
+      "source": "artifacts/carry_reference_synthesized/motions_kinematic/original_forward_carry.npz",
+      "sampling_weight": 0.5,
+      "training_admission": "HMI_track_target",
+      "physics_validation": "kinematic_only_controller_admission_failed",
+      "frames": 110,
+      "fps": 50.0,
+      "duration_s": 2.18,
+      "pelvis_range_m": [
+        0.723097562789917,
+        0.7417492270469666
+      ],
+      "forward_velocity_range_m_s": [
+        0.29337747603094405,
+        0.7870750012831212
+      ]
+    }
+  ],
+  "family_weights": {
+    "squat_stand": 0.5,
+    "forward_carry": 0.5
+  },
+  "admission_policy": "Track target admission requires format/FK/asset consistency, not prior success of the P0 controller. Forward is included under the user-authorized revised Track admission. Physics failures remain recorded. Neither reference admission nor training completion certifies a successful policy.",
+  "p0_reset_sha256": "bbc8cc369beab5017bd7bdb553da5cc3c73db379abb6754bff6245220bd422df",
+  "sampling_strategy": "Half of training environments track squat/stand, half track forward carry; conditional clip weights avoid short walking episodes losing their share of environment steps."
+}

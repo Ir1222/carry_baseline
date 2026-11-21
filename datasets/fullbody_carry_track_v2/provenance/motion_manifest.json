@@ -1,0 +1,64 @@
+{
+  "reference_statuses": [
+    {
+      "file": "motions_kinematic/original_forward_carry.npz",
+      "status": "Kinematic only",
+      "sha256": "fe03f9072560cc75096c5a0cbcd1ae781a1fe9607c23fa8781ed257ebed98550",
+      "source_frames_inclusive": [
+        95,
+        204
+      ],
+      "note": "Original full robot/root/object trajectory; body FK regenerated for collision URDF; no forward-carry physics test in this P0."
+    },
+    {
+      "file": "motions_kinematic/original_forward_carry_mirrored.npz",
+      "status": "Kinematic only",
+      "sha256": "ee8bd2d4d3734470c655f27e24c899fdc465e5569cd5ba7064426f6babeecae3",
+      "source_frames_inclusive": [
+        95,
+        204
+      ],
+      "note": "Original full robot/root/object trajectory; body FK regenerated for collision URDF; no forward-carry physics test in this P0."
+    },
+    {
+      "file": "motions_kinematic/continuous_grasped_squat_stand_10cm.npz",
+      "status": "Physics validation failed",
+      "sha256": "49200f2752b83e6ce0dc8d4669954e0c289dd0641bb88ebd5e48f23bb9c12b41",
+      "physical_evidence": "evidence/squat_10cm_001_data"
+    },
+    {
+      "file": "motions_kinematic/continuous_grasped_squat_stand_10cm_smooth.npz",
+      "status": "Physics validated",
+      "sha256": "2cf76888ceeb688c57ab25c48ea1edc93fd8aa45b2613144047cf262c2fef636",
+      "physical_evidence": "evidence/squat_10cm_002_data"
+    },
+    {
+      "file": "motions_kinematic/continuous_grasped_squat_stand_12cm.npz",
+      "status": "Physics validated",
+      "sha256": "412681d73670e24c4a32401970710513ba9e3c2dd8b3205e2bf4c4a6a4f33a90",
+      "physical_evidence": "evidence/squat_12cm_001_data"
+    },
+    {
+      "file": "motions_kinematic/repeated_grasped_squat_stand_12cm.npz",
+      "status": "Physics validated",
+      "sha256": "d6238a97fa785d94cdf9579f82c002f2b088c34267ba35465e0ed350932ca835",
+      "physical_evidence": "evidence/repeated_12cm_001_data"
+    },
+    {
+      "file": "validated_motions/continuous_grasped_squat_stand.npz",
+      "status": "Physics validated",
+      "sha256": "412681d73670e24c4a32401970710513ba9e3c2dd8b3205e2bf4c4a6a4f33a90",
+      "physical_evidence": "evidence/squat_12cm_001_data"
+    },
+    {
+      "file": "validated_motions/repeated_grasped_squat_stand.npz",
+      "status": "Physics validated",
+      "sha256": "d6238a97fa785d94cdf9579f82c002f2b088c34267ba35465e0ed350932ca835",
+      "physical_evidence": "evidence/repeated_12cm_001_data"
+    }
+  ],
+  "training_started": false,
+  "training_directory": "validated_motions",
+  "original_forward_directory": "motions_kinematic",
+  "warning": "Do not train from motions_kinematic/. The old small-box/palm-support task is not a matching scene."
+}

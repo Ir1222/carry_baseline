@@ -16,6 +16,13 @@ class FullBodyCarryPPO(CarryPPO):
         cmd=self.env.command_manager.get_state('motion_command')
         meta.update(fullbody_schema=1,goal_limits=cmd.limits,physics=self.env.fullbody_physics,
             reference_required_at_inference=False)
+        if getattr(cmd,'manifest',{}).get('schema')=='carry_track_training_v2':
+            from holosoma.carry.checkpoints import digest
+            manifest_file=Path(cmd.cfg.params['manifest_file'])
+            meta.update(training_stage=1,reference_bundle_schema='carry_track_training_v2',
+                reference_bundle=str(manifest_file.parent.resolve()),
+                reference_manifest_sha256=digest(manifest_file),
+                training_mode='Track-only joint squat/stand and forward carry')
         session=ort.InferenceSession(str(path),providers=['CPUExecutionProvider'])
         wrapper=self.actor_onnx_wrapper
         errors=[]

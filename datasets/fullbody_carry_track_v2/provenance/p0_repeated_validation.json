@@ -1,0 +1,333 @@
+{
+  "thresholds": {
+    "min_box_clearance_m": 0.03,
+    "max_box_tracking_error_m": 0.04,
+    "max_hand_slip_m": 0.025,
+    "max_foot_slip_m": 0.03,
+    "max_root_tilt_rad": 0.25,
+    "max_joint_tracking_error_rad": 0.18,
+    "min_side_normal_n": 0.5,
+    "min_upward_friction_weight_ratio": 0.8,
+    "max_contact_gap_s": 0.02,
+    "max_other_box_contact_n": 0.5,
+    "max_joint_limit_violation_rad": 0.005,
+    "min_squat_excursion_m": 0.08,
+    "max_pelvis_tracking_error_m": 0.03,
+    "max_root_horizontal_error_m": 0.04,
+    "max_hand_relative_rotation_error_rad": 0.2,
+    "max_box_rotation_error_rad": 0.2,
+    "max_total_contact_loss_fraction": 0.01,
+    "max_end_height_error_m": 0.02,
+    "max_contact_side_error_m": 0.025,
+    "max_normal_vertical_fraction": 0.35,
+    "min_contact_height_above_box_bottom_m": 0.05,
+    "max_torque_limit_fraction": 1.0001,
+    "max_joint_velocity_limit_fraction": 1.01
+  },
+  "acceptance_scope": "Full interval ground/limits/slip; first 0.1 s contact engagement recorded separately, then <=20ms contact gap; friction support is episode mean after engagement.",
+  "summary": {
+    "passed": 1,
+    "tested": 1,
+    "best_env": 0,
+    "best": {
+      "candidate_id": "hold_v4_014",
+      "squeeze_n": 28.0,
+      "duration_s": 15.0,
+      "min_box_clearance_m": 0.5317289344010693,
+      "max_box_tracking_error_m": 0.004843511618673801,
+      "max_hand_slip_m": 0.0011360111306957486,
+      "max_foot_slip_m": 0.0005445568822324276,
+      "max_root_tilt_rad": 0.12166313709989876,
+      "max_joint_tracking_error_rad": 0.05785417556762695,
+      "max_joint_limit_violation_rad": 2.7894973753106456e-07,
+      "contact_fraction": [
+        1.0,
+        1.0
+      ],
+      "max_contact_gap_s": [
+        0.0,
+        0.0
+      ],
+      "min_side_normal_n": [
+        26.410125732421882,
+        25.8576889038086
+      ],
+      "mean_upward_friction_weight_ratio": 0.963615357875824,
+      "min_upward_friction_weight_ratio": 0.847185492515564,
+      "max_other_box_contact_n": 0.0,
+      "root_height_min_m": 0.6054366230964661,
+      "root_height_max_m": 0.7268723249435425,
+      "pelvis_excursion_m": 0.12143570184707642,
+      "torque_limit_fraction_max": 1.0,
+      "max_torque_limit_fraction": 1.0,
+      "max_joint_velocity_limit_fraction": 0.47557518698952417,
+      "max_pelvis_tracking_error_m": 0.0027634501457214355,
+      "max_root_horizontal_error_m": 0.0005790964213560643,
+      "max_hand_relative_rotation_error_rad": 0.04684056343565276,
+      "max_box_rotation_error_rad": 0.012278946263682455,
+      "max_total_contact_loss_fraction": 0.0,
+      "max_end_height_error_m": 0.0016193389892578125,
+      "max_contact_side_error_m": 0.009827920422817354,
+      "max_normal_vertical_fraction": 0.03135089576244354,
+      "min_contact_height_above_box_bottom_m": 0.11960338091182166,
+      "foot_ground_contact_fraction": [
+        1.0,
+        1.0
+      ],
+      "initial_transient": {
+        "seconds": 0.1,
+        "contact_fraction": [
+          0.9797979797979798,
+          1.0
+        ]
+      },
+      "final_box_velocity_m_s": 0.014652817510068417,
+      "final_root_velocity_m_s": 0.0006416425458155572,
+      "phases": [
+        {
+          "phase": "Warmup",
+          "start_s": 0.001,
+          "end_s": 2.0,
+          "pelvis_start_m": 0.7268723249435425,
+          "pelvis_end_m": 0.7252682447433472,
+          "height_range_m": 0.0016515851020812988,
+          "box_bottom_min_m": 0.6500767844262821
+        },
+        {
+          "phase": "A",
+          "start_s": 2.001,
+          "end_s": 2.989,
+          "pelvis_start_m": 0.7252681255340576,
+          "pelvis_end_m": 0.7252680063247681,
+          "height_range_m": 4.231929779052734e-06,
+          "box_bottom_min_m": 0.6514416104608105
+        },
+        {
+          "phase": "B",
+          "start_s": 2.99,
+          "end_s": 4.989,
+          "pelvis_start_m": 0.7252679467201233,
+          "pelvis_end_m": 0.6054512858390808,
+          "height_range_m": 0.11982840299606323,
+          "box_bottom_min_m": 0.5317289344010693
+        },
+        {
+          "phase": "C",
+          "start_s": 4.99,
+          "end_s": 5.989,
+          "pelvis_start_m": 0.6054520606994629,
+          "pelvis_end_m": 0.6054940223693848,
+          "height_range_m": 7.772445678710938e-05,
+          "box_bottom_min_m": 0.5321236143907357
+        },
+        {
+          "phase": "D",
+          "start_s": 5.99,
+          "end_s": 7.989,
+          "pelvis_start_m": 0.6054940223693848,
+          "pelvis_end_m": 0.7252543568611145,
+          "height_range_m": 0.11976128816604614,
+          "box_bottom_min_m": 0.5325261568343228
+        },
+        {
+          "phase": "E",
+          "start_s": 7.99,
+          "end_s": 8.989,
+          "pelvis_start_m": 0.725254237651825,
+          "pelvis_end_m": 0.7252636551856995,
+          "height_range_m": 9.083747863769531e-05,
+          "box_bottom_min_m": 0.6504968390124786
+        },
+        {
+          "phase": "B",
+          "start_s": 8.99,
+          "end_s": 10.989,
+          "pelvis_start_m": 0.7252636551856995,
+          "pelvis_end_m": 0.6054493188858032,
+          "height_range_m": 0.1198270320892334,
+          "box_bottom_min_m": 0.5317639206180789
+        },
+        {
+          "phase": "C",
+          "start_s": 10.99,
+          "end_s": 11.989,
+          "pelvis_start_m": 0.6054502725601196,
+          "pelvis_end_m": 0.6054894924163818,
+          "height_range_m": 7.843971252441406e-05,
+          "box_bottom_min_m": 0.5321334764732423
+        },
+        {
+          "phase": "D",
+          "start_s": 11.99,
+          "end_s": 13.989,
+          "pelvis_start_m": 0.6054895520210266,
+          "pelvis_end_m": 0.7252494096755981,
+          "height_range_m": 0.1197614073753357,
+          "box_bottom_min_m": 0.532610038587962
+        },
+        {
+          "phase": "E",
+          "start_s": 13.99,
+          "end_s": 15.0,
+          "pelvis_start_m": 0.7252494692802429,
+          "pelvis_end_m": 0.7252607345581055,
+          "height_range_m": 9.459257125854492e-05,
+          "box_bottom_min_m": 0.6505340251933851
+        }
+      ],
+      "failures": [],
+      "status": "Physics validated"
+    }
+  },
+  "results": [
+    {
+      "candidate_id": "hold_v4_014",
+      "squeeze_n": 28.0,
+      "duration_s": 15.0,
+      "min_box_clearance_m": 0.5317289344010693,
+      "max_box_tracking_error_m": 0.004843511618673801,
+      "max_hand_slip_m": 0.0011360111306957486,
+      "max_foot_slip_m": 0.0005445568822324276,
+      "max_root_tilt_rad": 0.12166313709989876,
+      "max_joint_tracking_error_rad": 0.05785417556762695,
+      "max_joint_limit_violation_rad": 2.7894973753106456e-07,
+      "contact_fraction": [
+        1.0,
+        1.0
+      ],
+      "max_contact_gap_s": [
+        0.0,
+        0.0
+      ],
+      "min_side_normal_n": [
+        26.410125732421882,
+        25.8576889038086
+      ],
+      "mean_upward_friction_weight_ratio": 0.963615357875824,
+      "min_upward_friction_weight_ratio": 0.847185492515564,
+      "max_other_box_contact_n": 0.0,
+      "root_height_min_m": 0.6054366230964661,
+      "root_height_max_m": 0.7268723249435425,
+      "pelvis_excursion_m": 0.12143570184707642,
+      "torque_limit_fraction_max": 1.0,
+      "max_torque_limit_fraction": 1.0,
+      "max_joint_velocity_limit_fraction": 0.47557518698952417,
+      "max_pelvis_tracking_error_m": 0.0027634501457214355,
+      "max_root_horizontal_error_m": 0.0005790964213560643,
+      "max_hand_relative_rotation_error_rad": 0.04684056343565276,
+      "max_box_rotation_error_rad": 0.012278946263682455,
+      "max_total_contact_loss_fraction": 0.0,
+      "max_end_height_error_m": 0.0016193389892578125,
+      "max_contact_side_error_m": 0.009827920422817354,
+      "max_normal_vertical_fraction": 0.03135089576244354,
+      "min_contact_height_above_box_bottom_m": 0.11960338091182166,
+      "foot_ground_contact_fraction": [
+        1.0,
+        1.0
+      ],
+      "initial_transient": {
+        "seconds": 0.1,
+        "contact_fraction": [
+          0.9797979797979798,
+          1.0
+        ]
+      },
+      "final_box_velocity_m_s": 0.014652817510068417,
+      "final_root_velocity_m_s": 0.0006416425458155572,
+      "phases": [
+        {
+          "phase": "Warmup",
+          "start_s": 0.001,
+          "end_s": 2.0,
+          "pelvis_start_m": 0.7268723249435425,
+          "pelvis_end_m": 0.7252682447433472,
+          "height_range_m": 0.0016515851020812988,
+          "box_bottom_min_m": 0.6500767844262821
+        },
+        {
+          "phase": "A",
+          "start_s": 2.001,
+          "end_s": 2.989,
+          "pelvis_start_m": 0.7252681255340576,
+          "pelvis_end_m": 0.7252680063247681,
+          "height_range_m": 4.231929779052734e-06,
+          "box_bottom_min_m": 0.6514416104608105
+        },
+        {
+          "phase": "B",
+          "start_s": 2.99,
+          "end_s": 4.989,
+          "pelvis_start_m": 0.7252679467201233,
+          "pelvis_end_m": 0.6054512858390808,
+          "height_range_m": 0.11982840299606323,
+          "box_bottom_min_m": 0.5317289344010693
+        },
+        {
+          "phase": "C",
+          "start_s": 4.99,
+          "end_s": 5.989,
+          "pelvis_start_m": 0.6054520606994629,
+          "pelvis_end_m": 0.6054940223693848,
+          "height_range_m": 7.772445678710938e-05,
+          "box_bottom_min_m": 0.5321236143907357
+        },
+        {
+          "phase": "D",
+          "start_s": 5.99,
+          "end_s": 7.989,
+          "pelvis_start_m": 0.6054940223693848,
+          "pelvis_end_m": 0.7252543568611145,
+          "height_range_m": 0.11976128816604614,
+          "box_bottom_min_m": 0.5325261568343228
+        },
+        {
+          "phase": "E",
+          "start_s": 7.99,
+          "end_s": 8.989,
+          "pelvis_start_m": 0.725254237651825,
+          "pelvis_end_m": 0.7252636551856995,
+          "height_range_m": 9.083747863769531e-05,
+          "box_bottom_min_m": 0.6504968390124786
+        },
+        {
+          "phase": "B",
+          "start_s": 8.99,
+          "end_s": 10.989,
+          "pelvis_start_m": 0.7252636551856995,
+          "pelvis_end_m": 0.6054493188858032,
+          "height_range_m": 0.1198270320892334,
+          "box_bottom_min_m": 0.5317639206180789
+        },
+        {
+          "phase": "C",
+          "start_s": 10.99,
+          "end_s": 11.989,
+          "pelvis_start_m": 0.6054502725601196,
+          "pelvis_end_m": 0.6054894924163818,
+          "height_range_m": 7.843971252441406e-05,
+          "box_bottom_min_m": 0.5321334764732423
+        },
+        {
+          "phase": "D",
+          "start_s": 11.99,
+          "end_s": 13.989,
+          "pelvis_start_m": 0.6054895520210266,
+          "pelvis_end_m": 0.7252494096755981,
+          "height_range_m": 0.1197614073753357,
+          "box_bottom_min_m": 0.532610038587962
+        },
+        {
+          "phase": "E",
+          "start_s": 13.99,
+          "end_s": 15.0,
+          "pelvis_start_m": 0.7252494692802429,
+          "pelvis_end_m": 0.7252607345581055,
+          "height_range_m": 9.459257125854492e-05,
+          "box_bottom_min_m": 0.6505340251933851
+        }
+      ],
+      "failures": [],
+      "status": "Physics validated"
+    }
+  ]
+}
