@@ -3,8 +3,9 @@
 # No plateau/time budget/retry/reward editing/Stage2, no concurrent Isaac jobs.
 set -euo pipefail
 cd "$(dirname "$0")/../.."
-: "${1:?Usage: train_unified_hmi_then_evaluate.sh NEW_OUTPUT_DIRECTORY}"
+: "${1:?Usage: train_unified_hmi_then_evaluate.sh NEW_OUTPUT_DIRECTORY [VERIFIED_CHECKPOINT]}"
 run_dir=$(realpath -m "$1")
+resume=${2:-}
 if [[ -e "$run_dir" ]]; then echo "Refusing existing output: $run_dir" >&2; exit 1; fi
 mkdir -p "$run_dir"
 exec 9>/tmp/g1-carry-gpu0.lock
@@ -21,7 +22,7 @@ printf 'running\n' > "$run_dir/status.txt"
 nvidia-smi --query-gpu=timestamp,memory.used,utilization.gpu --format=csv -l 10 > "$run_dir/gpu.csv" &
 gpu_pid=$!
 trap 'kill "$gpu_pid" 2>/dev/null || true; if [[ $(cat "$run_dir/status.txt") != complete ]]; then printf "stopped_or_failed\n" > "$run_dir/status.txt"; fi' EXIT
-bash scripts/carry/train_unified_hmi_stage1.sh "$run_dir/training" 15000 > "$run_dir/training.console.log" 2>&1 &
+bash scripts/carry/train_unified_hmi_stage1.sh "$run_dir/training" 15000 "$resume" > "$run_dir/training.console.log" 2>&1 &
 training_pid=$!
 echo "$training_pid" > "$run_dir/training.pid"
 wait "$training_pid"

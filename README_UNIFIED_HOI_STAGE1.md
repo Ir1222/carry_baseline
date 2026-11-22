@@ -114,3 +114,15 @@ Actor frame = existing116 physical/4D-goal features + three-way mode one-hot; hi
 `UnifiedActor.act(..., commands=goal4, task_mode='pickup'/'carry'/'putdown')` requires explicit intention. It does not load a motion or infer mode from a reference clock. `joint_position_target(action,q_measured)` uses the retained `joint_delta_v1`; sample once per20ms and hold target for20 PD substeps. Changing mode does not reset history, robot or box. This API passed a separate no-MotionLoader inference test.
 
 Metadata uses carry schema2/unified schema1, records dimensions/modes/decoder/manifest fingerprint and ONNX parity. The legacy `CarryActor` refuses this model. Future Stage2 must retain this explicit mode and357D interface; using the old348D Stage2 unmodified is incompatible. No Stage2/Gen training is implemented or started here.
+
+## Resume after the 2026-11-22 host reboot
+
+The latest user instruction explicitly requests checkpoint resume for this interruption. The verified source is `model_02000.pt` (2001 completed updates). The direct HMI entry now accepts an optional third argument, subtracts those completed updates from the total target, restores optimizers/normalizers/learned action noise/sampler, and runs12999 additional updates to finish at index14999. Physics episodes restart; this is not restoration of unsaved simulator state. Original logs reached index3782; unsaved progress after2000 is lost, not fabricated.
+
+```bash
+CHECKPOINT=/home/han/pyx/g1_carry_baseline_new/artifacts/unified_hoi_hmi_stage1/formal_8192_15000_002_save2000/training/logs/WholeBodyTracking/20261121_110128-unified_hoi_stage1-locomotion/model_02000.pt
+WANDB_MODE=offline bash scripts/carry/train_unified_hmi_then_evaluate.sh \
+  ../artifacts/unified_hoi_hmi_stage1/NEW_RESUME_RUN "$CHECKPOINT"
+```
+
+This explicitly requested recovery is one HMI invocation, not an automatic resume/retry loop. It preserves8192 environments, six references, Track-only,4m spacing and2000-update checkpoint cadence. A new run directory preserves all old files; post-training validation understands total versus remaining updates before independent evaluation. Current recovery output is `../artifacts/unified_hoi_hmi_stage1/formal_8192_15000_003_resume02000_20261122/`.

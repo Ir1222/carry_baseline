@@ -104,3 +104,9 @@ Outputs: `final_evaluation/evaluation.json`, per-case logs and rollout NPZ. Orig
 ## Save-frequency correction
 
 The first formal attempt (source7d456e6, learner3413459) was stopped very early at the user's request to change checkpoint interval500→2000. Its outputs remain in `formal_8192_15000_001/`, with `stop_reason.json`; no physical performance gate caused this stop. The replacement starts from scratch in `formal_8192_15000_002_save2000/` and runs one continuous15000-update invocation. There are no2000-update training segments or automatic resumes. Source/actual PID/config paths are recorded in that directory.
+
+## 2026-11-22 reboot recovery
+
+Host reboot interrupted the old run after its last logged iteration3782. Latest verified complete state is `model_02000.pt`, SHA256 `f8a5447bb85dbca02e0fc8623dcd14c5d7e888c7d6c13b669b8b0a07323b9451`. At the user's explicit latest instruction, recover this checkpoint rather than starting from scratch. Its2001 completed updates leave12999 additional updates to the total15000 target. The first resumed iteration must be2001; final must be14999. The unsaved1782 updates are not recovered or counted as retained learning.
+
+Only launch/recovery accounting changed: optional explicit checkpoint argument, checksum/schema/manifest/protocol checks, optimizer/noise preservation, and resumed completion verification. PPO, action, data, physics, rewards and physical acceptance remain unchanged. The new output is `formal_8192_15000_003_resume02000_20261122/`. The training controller and TensorBoard run as user-level systemd units independent of the chat. No automatic retry/Stage2 is enabled; a future host reboot still interrupts the running simulator and requires a new explicit recovery.

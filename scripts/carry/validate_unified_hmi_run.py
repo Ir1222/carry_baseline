@@ -13,8 +13,13 @@ def validate_run(root,updates):
     configs=[p for p in root.rglob('holosoma_config.yaml') if '.wandb' not in p.parts]
     if len(configs)!=1:raise ValueError(f'Expected one HMI run, got {configs}')
     config_path=configs[0];config=yaml.safe_load(config_path.read_text());folder=config_path.parent
-    if config['training']['num_envs']!=8192 or config['training']['checkpoint'] is not None:raise ValueError('Expected fresh 8192-env training')
-    if config['algo']['config']['num_learning_iterations']!=updates:raise ValueError('Wrong update count')
+    if config['training']['num_envs']!=8192:raise ValueError('Expected 8192-env training')
+    resumed_from=config['training']['checkpoint'];completed_before=0
+    if resumed_from:
+        completed_before=validate(Path(resumed_from))['completed_updates']
+        if not config['algo']['config']['load_optimizer'] or config['algo']['config']['reset_policy_std_on_resume']:
+            raise ValueError('Resume must preserve optimizers and learned action noise')
+    if config['algo']['config']['num_learning_iterations']!=updates-completed_before:raise ValueError('Wrong remaining/total update count')
     if updates==15000 and config['algo']['config']['save_interval']!=2000:raise ValueError('Formal run must save every2000 updates')
     if config['simulator']['config']['scene']['env_spacing']!=4.:raise ValueError('Wrong spacing')
     motion=config['command']['setup_terms']['motion_command']['params']['motion_config']
@@ -45,7 +50,7 @@ def validate_run(root,updates):
         expected=[path.name,path.with_suffix('.ready.json').name,path.with_suffix('.onnx').name,path.with_suffix('.actor.json').name,path.with_suffix('.export.json').name]
         wandb_files_verified=bool(files and all(any((f/name).is_file() for f in files) for name in expected))
     return dict(passed=True,scope='capacity/interface/numerical completion only, NOT physical policy success',
-        updates=updates,num_envs=8192,log_dir=str(folder.resolve()),wandb_files_verified=wandb_files_verified,checkpoint=checkpoint,manifest_sha256=digest(data/'manifest.json'),
+        updates=updates,resumed_from=resumed_from,completed_before=completed_before,num_envs=8192,log_dir=str(folder.resolve()),wandb_files_verified=wandb_files_verified,checkpoint=checkpoint,manifest_sha256=digest(data/'manifest.json'),
         reference_physics_status_unchanged=True,family_fractions=fractions,
         phase_fractions={name:scalars['Env/hoi/mode_fraction/'+name] for name in ['pickup','carry','putdown']},
         onnx_parity_max_abs_error=metadata['onnx_parity_max_abs_error'],last_scalars=scalars)
