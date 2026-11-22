@@ -1,0 +1,1276 @@
+{
+  "scope": "Read-only diagnosis; no new physics evaluation, no training/config changes",
+  "upstream_commit": "c353731999b3578c41ad5a00f896415b45e6a9f5",
+  "latest_analyzed_step": 2444,
+  "current_cumulative": {
+    "full_sequence": {
+      "episodes_cumulative_tboard_mean": 246430.375,
+      "episode_length_s_cumulative": 2.1087472438812256,
+      "physical_failure": 0.5654319524765015,
+      "track_failure": 0.36067748069763184,
+      "clip_timeout": 0.10457468032836914,
+      "body_proximity": 0.006975262425839901
+    },
+    "loaded_locomotion": {
+      "episodes_cumulative_tboard_mean": 442751.125,
+      "episode_length_s_cumulative": 1.3729009628295898,
+      "physical_failure": 0.07051083445549011,
+      "track_failure": 0.03760042041540146,
+      "clip_timeout": 0.8983165621757507,
+      "body_proximity": 0.005260293837636709
+    },
+    "loaded_squat_stand": {
+      "episodes_cumulative_tboard_mean": 100423.125,
+      "episode_length_s_cumulative": 5.957472801208496,
+      "physical_failure": 0.052705325186252594,
+      "track_failure": 0.004093925468623638,
+      "clip_timeout": 0.9433202147483826,
+      "body_proximity": 3.9831480535212904e-05
+    }
+  },
+  "current_recent_window": [
+    "2401..2444",
+    {
+      "full_sequence": {
+        "approx_episodes": 24361.375,
+        "physical_failure": 0.6023601368187778,
+        "track_failure": 0.32756458209309885,
+        "clip_timeout": 0.10397782880702038,
+        "body_proximity": 0.007918921831499929
+      },
+      "loaded_locomotion": {
+        "approx_episodes": 43940.03125,
+        "physical_failure": 0.07211918934030427,
+        "track_failure": 0.029590564234924382,
+        "clip_timeout": 0.9027461652019392,
+        "body_proximity": 0.005288480114983942
+      },
+      "loaded_squat_stand": {
+        "approx_episodes": 10089.25,
+        "physical_failure": 0.05891176059332198,
+        "track_failure": 0.006083222000827162,
+        "clip_timeout": 0.9349053241876508,
+        "body_proximity": 0.00019823087316155942
+      }
+    }
+  ],
+  "pre_reboot_recent_window": [
+    "3501..3782",
+    {
+      "full_sequence": {
+        "approx_episodes": 127012.75,
+        "physical_failure": 0.44972970945472157,
+        "track_failure": 0.25259939571331674,
+        "clip_timeout": 0.29096712607609043,
+        "body_proximity": 0.015628349524472132
+      },
+      "loaded_locomotion": {
+        "approx_episodes": 315694.5,
+        "physical_failure": 0.02412213892796587,
+        "track_failure": 0.00388308506435875,
+        "clip_timeout": 0.9697216089667711,
+        "body_proximity": 0.0031450475144480603
+      },
+      "loaded_squat_stand": {
+        "approx_episodes": 66533.875,
+        "physical_failure": 0.0798146974084313,
+        "track_failure": 0.0140766279418933,
+        "clip_timeout": 0.9064094867986674,
+        "body_proximity": 0.00042083800493110174
+      }
+    }
+  ],
+  "current_phase_metrics": {
+    "Env/hoi/phase/pickup/bilateral_contact": {
+      "step": 2444,
+      "value": 0.7649151682853699
+    },
+    "Env/hoi/phase/pickup/left_hand_normal_n": {
+      "step": 2444,
+      "value": 31.737035751342773
+    },
+    "Env/hoi/phase/pickup/right_hand_normal_n": {
+      "step": 2444,
+      "value": 32.25666046142578
+    },
+    "Env/hoi/phase/pickup/upward_friction_weight_ratio": {
+      "step": 2444,
+      "value": 0.7133324146270752
+    },
+    "Env/hoi/phase/pickup/hand_slip_speed_m_s": {
+      "step": 2444,
+      "value": 0.38291019201278687
+    },
+    "Env/hoi/phase/pickup/box_clearance_m": {
+      "step": 2444,
+      "value": 0.1658564805984497
+    },
+    "Env/hoi/phase/pickup/normal_vertical_fraction": {
+      "step": 2444,
+      "value": 0.03284064680337906
+    },
+    "Env/hoi/phase/pickup/min_contact_height_above_bottom_m": {
+      "step": 2444,
+      "value": 0.11247216910123825
+    },
+    "Env/hoi/phase/pickup/nonhand_box_contact_n": {
+      "step": 2444,
+      "value": 0.09814592450857162
+    },
+    "Env/hoi/phase/pickup/ground_support_weight_ratio": {
+      "step": 2444,
+      "value": 0.43005985021591187
+    },
+    "Env/hoi/phase/pickup/object_speed_m_s": {
+      "step": 2444,
+      "value": 0.39208173751831055
+    },
+    "Env/hoi/phase/pickup/object_angular_speed": {
+      "step": 2444,
+      "value": 0.8312644958496094
+    },
+    "Env/hoi/phase/pickup/stable_support_sample": {
+      "step": 2444,
+      "value": 0.13050708174705505
+    },
+    "Env/hoi/phase/pickup/raw_carry_fall_flag": {
+      "step": 2444,
+      "value": 0.3861657381057739
+    },
+    "Env/hoi/phase/pickup/raw_carry_drop_flag": {
+      "step": 2444,
+      "value": 0.3477083146572113
+    },
+    "Env/hoi/phase/pickup/raw_carry_loss_of_grasp_flag": {
+      "step": 2444,
+      "value": 0.16989082098007202
+    },
+    "Env/hoi/phase/pickup/raw_carry_body_support_flag": {
+      "step": 2444,
+      "value": 0.0005693857092410326
+    },
+    "Env/hoi/phase/pickup/grasp_acquired": {
+      "step": 2444,
+      "value": 0.6355798244476318
+    },
+    "Env/hoi/phase/pickup/stable_support": {
+      "step": 2444,
+      "value": 0.014483104459941387
+    },
+    "Env/hoi/phase/pickup/released": {
+      "step": 2444,
+      "value": 0.15820980072021484
+    },
+    "Env/hoi/phase/pickup/foot_support": {
+      "step": 2444,
+      "value": 0.9630980491638184
+    },
+    "Env/hoi/phase/pickup/raw_undesired_contact": {
+      "step": 2444,
+      "value": 0.002487742342054844
+    },
+    "Env/hoi/phase/pickup/release_stable_s": {
+      "step": 2444,
+      "value": 0.0006129567045718431
+    },
+    "Env/hoi/phase/pickup/putdown_stable_success": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/pickup/robot_error_m": {
+      "step": 2444,
+      "value": 0.06255269795656204
+    },
+    "Env/hoi/phase/pickup/object_error_m": {
+      "step": 2444,
+      "value": 0.06702210754156113
+    },
+    "Env/hoi/phase/pickup/object_orientation_error_rad": {
+      "step": 2444,
+      "value": 0.09538127481937408
+    },
+    "Env/hoi/phase/pickup/joint_hard_limit_violation": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/pickup/joint_acceleration_rms": {
+      "step": 2444,
+      "value": 154.968017578125
+    },
+    "Env/hoi/phase/pickup/torque_clip_fraction": {
+      "step": 2444,
+      "value": 0.004644821397960186
+    },
+    "Env/hoi/phase/pickup/foot_sliding_m_s": {
+      "step": 2444,
+      "value": 0.11392255872488022
+    },
+    "Env/hoi/phase/pickup/termination/timeout": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/pickup/termination/clip_timeout": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/pickup/termination/physical_failure": {
+      "step": 2444,
+      "value": 0.0020453569013625383
+    },
+    "Env/hoi/phase/pickup/termination/track_failure": {
+      "step": 2444,
+      "value": 0.0008597776759415865
+    },
+    "Env/hoi/phase/pickup/termination/body_proximity": {
+      "step": 2444,
+      "value": 0.00011262928455835208
+    },
+    "Env/hoi/phase/pickup/termination/physical_failure/fall": {
+      "step": 2444,
+      "value": 0.0014212903333827853
+    },
+    "Env/hoi/phase/pickup/termination/physical_failure/drop": {
+      "step": 2444,
+      "value": 5.468066592584364e-05
+    },
+    "Env/hoi/phase/pickup/termination/physical_failure/separation": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/pickup/termination/physical_failure/loss_of_grasp": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/pickup/termination/physical_failure/body_support": {
+      "step": 2444,
+      "value": 0.0005693857092410326
+    },
+    "Env/hoi/phase/pickup/termination/physical_failure/nonfinite": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/pickup/termination/physical_failure/severe_floor_penetration": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/pickup/termination/track_failure/ref_pos_z": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/pickup/termination/track_failure/ref_ori": {
+      "step": 2444,
+      "value": 5.5187640100484714e-05
+    },
+    "Env/hoi/phase/pickup/termination/track_failure/body_pos_z": {
+      "step": 2444,
+      "value": 0.00011590530630201101
+    },
+    "Env/hoi/phase/pickup/termination/track_failure/object_pos": {
+      "step": 2444,
+      "value": 0.0006886847550049424
+    },
+    "Env/hoi/phase/pickup/termination/track_failure/object_ori": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/pickup/termination/body_proximity/group_0": {
+      "step": 2444,
+      "value": 0.00011262928455835208
+    },
+    "Env/hoi/phase/carry/bilateral_contact": {
+      "step": 2444,
+      "value": 0.9795330762863159
+    },
+    "Env/hoi/phase/carry/left_hand_normal_n": {
+      "step": 2444,
+      "value": 45.083595275878906
+    },
+    "Env/hoi/phase/carry/right_hand_normal_n": {
+      "step": 2444,
+      "value": 44.87651824951172
+    },
+    "Env/hoi/phase/carry/upward_friction_weight_ratio": {
+      "step": 2444,
+      "value": 0.9301395416259766
+    },
+    "Env/hoi/phase/carry/hand_slip_speed_m_s": {
+      "step": 2444,
+      "value": 0.1358121633529663
+    },
+    "Env/hoi/phase/carry/box_clearance_m": {
+      "step": 2444,
+      "value": 0.597814679145813
+    },
+    "Env/hoi/phase/carry/normal_vertical_fraction": {
+      "step": 2444,
+      "value": 0.04715244099497795
+    },
+    "Env/hoi/phase/carry/min_contact_height_above_bottom_m": {
+      "step": 2444,
+      "value": 0.1172642633318901
+    },
+    "Env/hoi/phase/carry/nonhand_box_contact_n": {
+      "step": 2444,
+      "value": 0.0221097394824028
+    },
+    "Env/hoi/phase/carry/ground_support_weight_ratio": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/object_speed_m_s": {
+      "step": 2444,
+      "value": 0.3880387246608734
+    },
+    "Env/hoi/phase/carry/object_angular_speed": {
+      "step": 2444,
+      "value": 1.0054101943969727
+    },
+    "Env/hoi/phase/carry/stable_support_sample": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/raw_carry_fall_flag": {
+      "step": 2444,
+      "value": 0.000414510490372777
+    },
+    "Env/hoi/phase/carry/raw_carry_drop_flag": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/raw_carry_loss_of_grasp_flag": {
+      "step": 2444,
+      "value": 0.0001201626582769677
+    },
+    "Env/hoi/phase/carry/raw_carry_body_support_flag": {
+      "step": 2444,
+      "value": 0.00040250353049486876
+    },
+    "Env/hoi/phase/carry/grasp_acquired": {
+      "step": 2444,
+      "value": 0.9720475673675537
+    },
+    "Env/hoi/phase/carry/stable_support": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/released": {
+      "step": 2444,
+      "value": 0.010729412548244
+    },
+    "Env/hoi/phase/carry/foot_support": {
+      "step": 2444,
+      "value": 0.6711055636405945
+    },
+    "Env/hoi/phase/carry/raw_undesired_contact": {
+      "step": 2444,
+      "value": 0.0005766999674960971
+    },
+    "Env/hoi/phase/carry/release_stable_s": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/putdown_stable_success": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/robot_error_m": {
+      "step": 2444,
+      "value": 0.06592030823230743
+    },
+    "Env/hoi/phase/carry/object_error_m": {
+      "step": 2444,
+      "value": 0.07569429278373718
+    },
+    "Env/hoi/phase/carry/object_orientation_error_rad": {
+      "step": 2444,
+      "value": 0.11486443132162094
+    },
+    "Env/hoi/phase/carry/joint_hard_limit_violation": {
+      "step": 2444,
+      "value": 7.415480649797246e-05
+    },
+    "Env/hoi/phase/carry/joint_acceleration_rms": {
+      "step": 2444,
+      "value": 156.84939575195312
+    },
+    "Env/hoi/phase/carry/torque_clip_fraction": {
+      "step": 2444,
+      "value": 0.0017504239222034812
+    },
+    "Env/hoi/phase/carry/foot_sliding_m_s": {
+      "step": 2444,
+      "value": 0.13546255230903625
+    },
+    "Env/hoi/phase/carry/termination/timeout": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/termination/clip_timeout": {
+      "step": 2444,
+      "value": 0.00645796163007617
+    },
+    "Env/hoi/phase/carry/termination/physical_failure": {
+      "step": 2444,
+      "value": 0.0009131354163400829
+    },
+    "Env/hoi/phase/carry/termination/track_failure": {
+      "step": 2444,
+      "value": 0.0006487348582595587
+    },
+    "Env/hoi/phase/carry/termination/body_proximity": {
+      "step": 2444,
+      "value": 2.401017991360277e-05
+    },
+    "Env/hoi/phase/carry/termination/physical_failure/fall": {
+      "step": 2444,
+      "value": 0.000414510490372777
+    },
+    "Env/hoi/phase/carry/termination/physical_failure/drop": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/termination/physical_failure/separation": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/termination/physical_failure/loss_of_grasp": {
+      "step": 2444,
+      "value": 0.0001201626582769677
+    },
+    "Env/hoi/phase/carry/termination/physical_failure/body_support": {
+      "step": 2444,
+      "value": 0.00040250353049486876
+    },
+    "Env/hoi/phase/carry/termination/physical_failure/nonfinite": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/termination/physical_failure/severe_floor_penetration": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/termination/track_failure/ref_pos_z": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/termination/track_failure/ref_ori": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/carry/termination/track_failure/body_pos_z": {
+      "step": 2444,
+      "value": 3.0030481866560876e-05
+    },
+    "Env/hoi/phase/carry/termination/track_failure/object_pos": {
+      "step": 2444,
+      "value": 0.0005946664605289698
+    },
+    "Env/hoi/phase/carry/termination/track_failure/object_ori": {
+      "step": 2444,
+      "value": 2.403789221716579e-05
+    },
+    "Env/hoi/phase/carry/termination/body_proximity/group_0": {
+      "step": 2444,
+      "value": 2.401017991360277e-05
+    },
+    "Env/hoi/phase/putdown/bilateral_contact": {
+      "step": 2444,
+      "value": 0.7824046015739441
+    },
+    "Env/hoi/phase/putdown/left_hand_normal_n": {
+      "step": 2444,
+      "value": 34.10662841796875
+    },
+    "Env/hoi/phase/putdown/right_hand_normal_n": {
+      "step": 2444,
+      "value": 34.261688232421875
+    },
+    "Env/hoi/phase/putdown/upward_friction_weight_ratio": {
+      "step": 2444,
+      "value": 0.8806471824645996
+    },
+    "Env/hoi/phase/putdown/hand_slip_speed_m_s": {
+      "step": 2444,
+      "value": 0.3190689980983734
+    },
+    "Env/hoi/phase/putdown/box_clearance_m": {
+      "step": 2444,
+      "value": 0.2558111548423767
+    },
+    "Env/hoi/phase/putdown/normal_vertical_fraction": {
+      "step": 2444,
+      "value": 0.05835451930761337
+    },
+    "Env/hoi/phase/putdown/min_contact_height_above_bottom_m": {
+      "step": 2444,
+      "value": 0.09821148961782455
+    },
+    "Env/hoi/phase/putdown/nonhand_box_contact_n": {
+      "step": 2444,
+      "value": 0.3013039827346802
+    },
+    "Env/hoi/phase/putdown/ground_support_weight_ratio": {
+      "step": 2444,
+      "value": 0.37497395277023315
+    },
+    "Env/hoi/phase/putdown/object_speed_m_s": {
+      "step": 2444,
+      "value": 0.5720205307006836
+    },
+    "Env/hoi/phase/putdown/object_angular_speed": {
+      "step": 2444,
+      "value": 0.9909457564353943
+    },
+    "Env/hoi/phase/putdown/stable_support_sample": {
+      "step": 2444,
+      "value": 0.1654866635799408
+    },
+    "Env/hoi/phase/putdown/raw_carry_fall_flag": {
+      "step": 2444,
+      "value": 0.29228419065475464
+    },
+    "Env/hoi/phase/putdown/raw_carry_drop_flag": {
+      "step": 2444,
+      "value": 0.2610683739185333
+    },
+    "Env/hoi/phase/putdown/raw_carry_loss_of_grasp_flag": {
+      "step": 2444,
+      "value": 0.16470853984355927
+    },
+    "Env/hoi/phase/putdown/raw_carry_body_support_flag": {
+      "step": 2444,
+      "value": 0.005722603760659695
+    },
+    "Env/hoi/phase/putdown/grasp_acquired": {
+      "step": 2444,
+      "value": 0.8181065917015076
+    },
+    "Env/hoi/phase/putdown/stable_support": {
+      "step": 2444,
+      "value": 0.11577129364013672
+    },
+    "Env/hoi/phase/putdown/released": {
+      "step": 2444,
+      "value": 0.20472590625286102
+    },
+    "Env/hoi/phase/putdown/foot_support": {
+      "step": 2444,
+      "value": 0.7175385355949402
+    },
+    "Env/hoi/phase/putdown/raw_undesired_contact": {
+      "step": 2444,
+      "value": 0.007243867963552475
+    },
+    "Env/hoi/phase/putdown/release_stable_s": {
+      "step": 2444,
+      "value": 0.05059102177619934
+    },
+    "Env/hoi/phase/putdown/putdown_stable_success": {
+      "step": 2444,
+      "value": 0.045346468687057495
+    },
+    "Env/hoi/phase/putdown/robot_error_m": {
+      "step": 2444,
+      "value": 0.09953001141548157
+    },
+    "Env/hoi/phase/putdown/object_error_m": {
+      "step": 2444,
+      "value": 0.10847222805023193
+    },
+    "Env/hoi/phase/putdown/object_orientation_error_rad": {
+      "step": 2444,
+      "value": 0.18853417038917542
+    },
+    "Env/hoi/phase/putdown/joint_hard_limit_violation": {
+      "step": 2444,
+      "value": 0.00019725073070731014
+    },
+    "Env/hoi/phase/putdown/joint_acceleration_rms": {
+      "step": 2444,
+      "value": 160.64227294921875
+    },
+    "Env/hoi/phase/putdown/torque_clip_fraction": {
+      "step": 2444,
+      "value": 0.006831706967204809
+    },
+    "Env/hoi/phase/putdown/foot_sliding_m_s": {
+      "step": 2444,
+      "value": 0.13001492619514465
+    },
+    "Env/hoi/phase/putdown/termination/timeout": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/putdown/termination/clip_timeout": {
+      "step": 2444,
+      "value": 0.00448513962328434
+    },
+    "Env/hoi/phase/putdown/termination/physical_failure": {
+      "step": 2444,
+      "value": 0.022782202810049057
+    },
+    "Env/hoi/phase/putdown/termination/track_failure": {
+      "step": 2444,
+      "value": 0.006408500485122204
+    },
+    "Env/hoi/phase/putdown/termination/body_proximity": {
+      "step": 2444,
+      "value": 0.00015828493633307517
+    },
+    "Env/hoi/phase/putdown/termination/physical_failure/fall": {
+      "step": 2444,
+      "value": 0.01155295129865408
+    },
+    "Env/hoi/phase/putdown/termination/physical_failure/drop": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/putdown/termination/physical_failure/separation": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/putdown/termination/physical_failure/loss_of_grasp": {
+      "step": 2444,
+      "value": 0.006056926213204861
+    },
+    "Env/hoi/phase/putdown/termination/physical_failure/body_support": {
+      "step": 2444,
+      "value": 0.005645155906677246
+    },
+    "Env/hoi/phase/putdown/termination/physical_failure/nonfinite": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/putdown/termination/physical_failure/severe_floor_penetration": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/putdown/termination/track_failure/ref_pos_z": {
+      "step": 2444,
+      "value": 0.0
+    },
+    "Env/hoi/phase/putdown/termination/track_failure/ref_ori": {
+      "step": 2444,
+      "value": 0.0009566913358867168
+    },
+    "Env/hoi/phase/putdown/termination/track_failure/body_pos_z": {
+      "step": 2444,
+      "value": 0.0011048692977055907
+    },
+    "Env/hoi/phase/putdown/termination/track_failure/object_pos": {
+      "step": 2444,
+      "value": 0.003783391322940588
+    },
+    "Env/hoi/phase/putdown/termination/track_failure/object_ori": {
+      "step": 2444,
+      "value": 0.0007995780324563384
+    },
+    "Env/hoi/phase/putdown/termination/body_proximity/group_0": {
+      "step": 2444,
+      "value": 0.00015828493633307517
+    },
+    "Env/hoi/mode_fraction/pickup": {
+      "step": 2444,
+      "value": 0.089447021484375
+    },
+    "Env/hoi/mode_fraction/carry": {
+      "step": 2444,
+      "value": 0.8467051386833191
+    },
+    "Env/hoi/mode_fraction/putdown": {
+      "step": 2444,
+      "value": 0.0638478621840477
+    }
+  },
+  "historical_fullbody": {
+    "root": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333",
+    "completed_updates_status": 5500,
+    "last_iteration": 5742,
+    "stop_reason": "Job timeout/budget reached: stage1_training",
+    "evaluations": [
+      {
+        "completed_updates": 500,
+        "checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/stage1/WholeBodyTracking/20261120_054835-stage1-locomotion/model_00499.pt",
+        "groups": {
+          "clip_0": {
+            "success_rate": 0.0,
+            "trials": 10
+          },
+          "clip_1": {
+            "success_rate": 0.0,
+            "trials": 10
+          }
+        },
+        "survival_s_mean": 0.10000000000000002,
+        "contact_mean": 0.13100001811981202,
+        "failures": {
+          "contact_interruption": 20,
+          "physical_failure/loss_of_grasp": 20,
+          "insufficient_friction_support": 20,
+          "hand_slip": 20,
+          "incomplete_episode": 20,
+          "nonhand_support": 20,
+          "physical_failure/body_support": 20,
+          "contact_near_box_bottom": 20
+        }
+      },
+      {
+        "completed_updates": 1000,
+        "checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/stage1/WholeBodyTracking/20261120_075709-stage1-locomotion/model_00999.pt",
+        "groups": {
+          "clip_0": {
+            "success_rate": 0.0,
+            "trials": 10
+          },
+          "clip_1": {
+            "success_rate": 0.0,
+            "trials": 10
+          }
+        },
+        "survival_s_mean": 0.10000000000000002,
+        "contact_mean": 0.10600001513957977,
+        "failures": {
+          "contact_interruption": 20,
+          "physical_failure/loss_of_grasp": 20,
+          "insufficient_friction_support": 20,
+          "hand_slip": 20,
+          "incomplete_episode": 20,
+          "nonhand_support": 20,
+          "physical_failure/body_support": 20,
+          "contact_near_box_bottom": 20
+        }
+      },
+      {
+        "completed_updates": 1500,
+        "checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/stage1/WholeBodyTracking/20261120_100628-stage1-locomotion/model_01499.pt",
+        "groups": {
+          "clip_0": {
+            "success_rate": 0.0,
+            "trials": 10
+          },
+          "clip_1": {
+            "success_rate": 0.0,
+            "trials": 10
+          }
+        },
+        "survival_s_mean": 0.10000000000000002,
+        "contact_mean": 0.08700000867247581,
+        "failures": {
+          "contact_interruption": 20,
+          "physical_failure/loss_of_grasp": 20,
+          "insufficient_friction_support": 20,
+          "hand_slip": 20,
+          "incomplete_episode": 20,
+          "contact_near_box_bottom": 20
+        }
+      },
+      {
+        "completed_updates": 2000,
+        "checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/stage1/WholeBodyTracking/20261120_121653-stage1-locomotion/model_01999.pt",
+        "groups": {
+          "clip_0": {
+            "success_rate": 0.0,
+            "trials": 10
+          },
+          "clip_1": {
+            "success_rate": 0.0,
+            "trials": 10
+          }
+        },
+        "survival_s_mean": 0.10000000000000002,
+        "contact_mean": 0.12600001618266105,
+        "failures": {
+          "contact_interruption": 20,
+          "physical_failure/loss_of_grasp": 20,
+          "insufficient_friction_support": 20,
+          "hand_slip": 20,
+          "incomplete_episode": 20,
+          "contact_near_box_bottom": 20
+        }
+      },
+      {
+        "completed_updates": 2500,
+        "checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/stage1/WholeBodyTracking/20261120_142731-stage1-locomotion/model_02499.pt",
+        "groups": {
+          "clip_0": {
+            "success_rate": 0.0,
+            "trials": 10
+          },
+          "clip_1": {
+            "success_rate": 0.0,
+            "trials": 10
+          }
+        },
+        "survival_s_mean": 0.10000000000000002,
+        "contact_mean": 0.10600001588463784,
+        "failures": {
+          "contact_interruption": 20,
+          "physical_failure/loss_of_grasp": 20,
+          "insufficient_friction_support": 20,
+          "hand_slip": 20,
+          "incomplete_episode": 20,
+          "contact_near_box_bottom": 20
+        }
+      },
+      {
+        "completed_updates": 3000,
+        "checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/stage1/WholeBodyTracking/20261120_163703-stage1-locomotion/model_02999.pt",
+        "groups": {
+          "clip_0": {
+            "success_rate": 0.0,
+            "trials": 10
+          },
+          "clip_1": {
+            "success_rate": 0.0,
+            "trials": 10
+          }
+        },
+        "survival_s_mean": 0.10000000000000002,
+        "contact_mean": 0.12300001680850983,
+        "failures": {
+          "contact_interruption": 20,
+          "physical_failure/loss_of_grasp": 20,
+          "insufficient_friction_support": 20,
+          "hand_slip": 20,
+          "incomplete_episode": 20,
+          "contact_near_box_bottom": 20
+        }
+      },
+      {
+        "completed_updates": 3500,
+        "checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/stage1/WholeBodyTracking/20261120_184153-stage1-locomotion/model_03499.pt",
+        "groups": {
+          "clip_0": {
+            "success_rate": 0.0,
+            "trials": 10
+          },
+          "clip_1": {
+            "success_rate": 0.0,
+            "trials": 10
+          }
+        },
+        "survival_s_mean": 0.10000000000000002,
+        "contact_mean": 0.08500000853091479,
+        "failures": {
+          "contact_interruption": 20,
+          "physical_failure/loss_of_grasp": 20,
+          "insufficient_friction_support": 20,
+          "hand_slip": 20,
+          "incomplete_episode": 20,
+          "contact_near_box_bottom": 20
+        }
+      },
+      {
+        "completed_updates": 4000,
+        "checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/stage1/WholeBodyTracking/20261120_204522-stage1-locomotion/model_03999.pt",
+        "groups": {
+          "clip_0": {
+            "success_rate": 0.0,
+            "trials": 10
+          },
+          "clip_1": {
+            "success_rate": 0.0,
+            "trials": 10
+          }
+        },
+        "survival_s_mean": 0.10000000000000002,
+        "contact_mean": 0.09200000986456872,
+        "failures": {
+          "contact_interruption": 20,
+          "physical_failure/loss_of_grasp": 20,
+          "insufficient_friction_support": 20,
+          "hand_slip": 20,
+          "incomplete_episode": 20,
+          "contact_near_box_bottom": 20
+        }
+      },
+      {
+        "completed_updates": 4500,
+        "checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/stage1/WholeBodyTracking/20261120_224707-stage1-locomotion/model_04499.pt",
+        "groups": {
+          "clip_0": {
+            "success_rate": 0.0,
+            "trials": 10
+          },
+          "clip_1": {
+            "success_rate": 0.0,
+            "trials": 10
+          }
+        },
+        "survival_s_mean": 0.10000000000000002,
+        "contact_mean": 0.08450000863522292,
+        "failures": {
+          "contact_interruption": 20,
+          "physical_failure/loss_of_grasp": 20,
+          "insufficient_friction_support": 20,
+          "hand_slip": 20,
+          "incomplete_episode": 20,
+          "contact_near_box_bottom": 20
+        }
+      },
+      {
+        "completed_updates": 5000,
+        "checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/stage1/WholeBodyTracking/20261121_004805-stage1-locomotion/model_04999.pt",
+        "groups": {
+          "clip_0": {
+            "success_rate": 0.0,
+            "trials": 10
+          },
+          "clip_1": {
+            "success_rate": 0.0,
+            "trials": 10
+          }
+        },
+        "survival_s_mean": 0.10000000000000002,
+        "contact_mean": 0.08800000883638859,
+        "failures": {
+          "contact_interruption": 20,
+          "physical_failure/loss_of_grasp": 20,
+          "insufficient_friction_support": 20,
+          "hand_slip": 20,
+          "incomplete_episode": 20,
+          "contact_near_box_bottom": 20
+        }
+      },
+      {
+        "completed_updates": 5500,
+        "checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/fullbody_goal_carry/run_20261120_133333/dashboard/stage1/WholeBodyTracking/20261121_024914-stage1-locomotion/model_05499.pt",
+        "groups": {
+          "clip_0": {
+            "success_rate": 0.0,
+            "trials": 10
+          },
+          "clip_1": {
+            "success_rate": 0.0,
+            "trials": 10
+          }
+        },
+        "survival_s_mean": 0.10000000000000002,
+        "contact_mean": 0.06450000423938036,
+        "failures": {
+          "contact_interruption": 20,
+          "physical_failure/loss_of_grasp": 20,
+          "insufficient_friction_support": 20,
+          "hand_slip": 20,
+          "incomplete_episode": 20,
+          "contact_near_box_bottom": 20
+        }
+      }
+    ]
+  },
+  "core_source_identity": {
+    "src/holosoma/holosoma/train_agent.py": {
+      "identical": true,
+      "upstream_sha256": "945befabe5433c31e3b88ad985a5ca2f26785d522bc221369a5d657ca0a2084e",
+      "current_sha256": "945befabe5433c31e3b88ad985a5ca2f26785d522bc221369a5d657ca0a2084e"
+    },
+    "src/holosoma/holosoma/agents/ppo/ppo.py": {
+      "identical": true,
+      "upstream_sha256": "6e26ce37c9dbe4872434874ce7bbfd487aa3199b2b2dd39c135811bf5345f34e",
+      "current_sha256": "6e26ce37c9dbe4872434874ce7bbfd487aa3199b2b2dd39c135811bf5345f34e"
+    },
+    "src/holosoma/holosoma/agents/modules/logging_utils.py": {
+      "identical": true,
+      "upstream_sha256": "b105c22feb21d88bd37447bf562183a88aba446302c7ef75e1bd2e587a185403",
+      "current_sha256": "b105c22feb21d88bd37447bf562183a88aba446302c7ef75e1bd2e587a185403"
+    },
+    "src/holosoma/holosoma/managers/reward/terms/wbt.py": {
+      "identical": true,
+      "upstream_sha256": "35f9505cc730370b19fca2234ca22921ce1e8a7af1ec92afde8e60109428a98e",
+      "current_sha256": "35f9505cc730370b19fca2234ca22921ce1e8a7af1ec92afde8e60109428a98e"
+    },
+    "src/holosoma/holosoma/managers/termination/terms/wbt.py": {
+      "identical": true,
+      "upstream_sha256": "05f4d6b5612ff2294ba009ccef70dd39bc00222cbae0e54ba423f61901214e65",
+      "current_sha256": "05f4d6b5612ff2294ba009ccef70dd39bc00222cbae0e54ba423f61901214e65"
+    },
+    "src/holosoma/holosoma/config_values/wbt/g1/experiment.py": {
+      "identical": true,
+      "upstream_sha256": "295e9091b5d6d9142ea66682142b9f88dad4b31d333192d748b3a19a0ca16a7a",
+      "current_sha256": "295e9091b5d6d9142ea66682142b9f88dad4b31d333192d748b3a19a0ca16a7a"
+    },
+    "src/holosoma/holosoma/config_values/wbt/g1/observation.py": {
+      "identical": true,
+      "upstream_sha256": "4b04f99128ab5051874d401011c8f887245f3158772f261c2e3a18b1c237f6b1",
+      "current_sha256": "4b04f99128ab5051874d401011c8f887245f3158772f261c2e3a18b1c237f6b1"
+    }
+  },
+  "ideal_delta_actions": {
+    "full_sequence": {
+      "max_abs_ideal_delta_action": 2.4687945474863864,
+      "elements_exceeding_clip100": 0,
+      "pelvis_height_min": 0.49003392457962036,
+      "root_up_min": 0.33688026595686044,
+      "max_delta_by_joint": {
+        "left_hip_pitch_joint": 1.0920472276886923,
+        "left_hip_roll_joint": 0.6718563701747889,
+        "left_hip_yaw_joint": 0.8773594086676407,
+        "left_knee_joint": 1.8035416050674442,
+        "left_ankle_pitch_joint": 1.9444858738111575,
+        "left_ankle_roll_joint": 0.7952143133399738,
+        "right_hip_pitch_joint": 1.208547592470793,
+        "right_hip_roll_joint": 0.42409274597074154,
+        "right_hip_yaw_joint": 0.6607202067947661,
+        "right_knee_joint": 1.9583229894799932,
+        "right_ankle_pitch_joint": 2.4687945474863864,
+        "right_ankle_roll_joint": 0.7977382719853778,
+        "waist_yaw_joint": 0.2451122355384199,
+        "waist_roll_joint": 0.1830531525368077,
+        "waist_pitch_joint": 0.4496597358070134,
+        "left_shoulder_pitch_joint": 0.762848483019951,
+        "left_shoulder_roll_joint": 0.41425497267911066,
+        "left_shoulder_yaw_joint": 0.2605366788681761,
+        "left_elbow_joint": 0.819223316434963,
+        "left_wrist_roll_joint": 0.1424727708461933,
+        "left_wrist_pitch_joint": 1.5046956108494383,
+        "left_wrist_yaw_joint": 0.9267487507673008,
+        "right_shoulder_pitch_joint": 0.8331217299669236,
+        "right_shoulder_roll_joint": 0.5223314260490404,
+        "right_shoulder_yaw_joint": 0.3670721106763072,
+        "right_elbow_joint": 0.502611133897772,
+        "right_wrist_roll_joint": 0.263525559430647,
+        "right_wrist_pitch_joint": 1.0582204541940676,
+        "right_wrist_yaw_joint": 1.1412827529182432
+      }
+    },
+    "full_sequence_mirrored": {
+      "max_abs_ideal_delta_action": 2.4687945474863864,
+      "elements_exceeding_clip100": 0,
+      "pelvis_height_min": 0.49003392457962036,
+      "root_up_min": 0.33688026595686044,
+      "max_delta_by_joint": {
+        "left_hip_pitch_joint": 1.208547592470793,
+        "left_hip_roll_joint": 0.42409274597074154,
+        "left_hip_yaw_joint": 0.6607202067947661,
+        "left_knee_joint": 1.9583229894799932,
+        "left_ankle_pitch_joint": 2.4687945474863864,
+        "left_ankle_roll_joint": 0.7977382719853778,
+        "right_hip_pitch_joint": 1.0920472276886923,
+        "right_hip_roll_joint": 0.6718563701747889,
+        "right_hip_yaw_joint": 0.8773594086676407,
+        "right_knee_joint": 1.8035416050674442,
+        "right_ankle_pitch_joint": 1.9444858738111575,
+        "right_ankle_roll_joint": 0.7952143133399738,
+        "waist_yaw_joint": 0.2451122355384199,
+        "waist_roll_joint": 0.1830531525368077,
+        "waist_pitch_joint": 0.4496597358070134,
+        "left_shoulder_pitch_joint": 0.8331217299669236,
+        "left_shoulder_roll_joint": 0.5223314260490404,
+        "left_shoulder_yaw_joint": 0.3670721106763072,
+        "left_elbow_joint": 0.502611133897772,
+        "left_wrist_roll_joint": 0.263525559430647,
+        "left_wrist_pitch_joint": 1.0582204541940676,
+        "left_wrist_yaw_joint": 1.1412827529182432,
+        "right_shoulder_pitch_joint": 0.762848483019951,
+        "right_shoulder_roll_joint": 0.41425497267911066,
+        "right_shoulder_yaw_joint": 0.2605366788681761,
+        "right_elbow_joint": 0.819223316434963,
+        "right_wrist_roll_joint": 0.1424727708461933,
+        "right_wrist_pitch_joint": 1.5046956108494383,
+        "right_wrist_yaw_joint": 0.9267487507673008
+      }
+    },
+    "loaded_locomotion": {
+      "max_abs_ideal_delta_action": 2.4687945474863864,
+      "elements_exceeding_clip100": 0,
+      "pelvis_height_min": 0.723097562789917,
+      "root_up_min": 0.9694228194930594,
+      "max_delta_by_joint": {
+        "left_hip_pitch_joint": 0.6217913925358027,
+        "left_hip_roll_joint": 0.43491344351346695,
+        "left_hip_yaw_joint": 0.6487338871576889,
+        "left_knee_joint": 1.326922339808097,
+        "left_ankle_pitch_joint": 1.520129121540053,
+        "left_ankle_roll_joint": 0.7252946387932503,
+        "right_hip_pitch_joint": 0.4570705569790512,
+        "right_hip_roll_joint": 0.42409274597074154,
+        "right_hip_yaw_joint": 0.6607202067947661,
+        "right_knee_joint": 1.777427245917921,
+        "right_ankle_pitch_joint": 2.4687945474863864,
+        "right_ankle_roll_joint": 0.7977382719853778,
+        "waist_yaw_joint": 0.218144349861631,
+        "waist_roll_joint": 0.1830531525368077,
+        "waist_pitch_joint": 0.4496597358070134,
+        "left_shoulder_pitch_joint": 0.12276338503413786,
+        "left_shoulder_roll_joint": 0.15689635349096628,
+        "left_shoulder_yaw_joint": 0.1617773649903929,
+        "left_elbow_joint": 0.1407791624638188,
+        "left_wrist_roll_joint": 6.25160876997423e-06,
+        "left_wrist_pitch_joint": 0.4498505801084032,
+        "left_wrist_yaw_joint": 0.402866669773539,
+        "right_shoulder_pitch_joint": 0.156373936445058,
+        "right_shoulder_roll_joint": 0.11980392780424745,
+        "right_shoulder_yaw_joint": 0.11116936885660522,
+        "right_elbow_joint": 0.23022500627199446,
+        "right_wrist_roll_joint": 0.0445280347959108,
+        "right_wrist_pitch_joint": 1.6001059270123683e-06,
+        "right_wrist_yaw_joint": 4.000264817530921e-07
+      }
+    },
+    "continuous_grasped_squat_stand": {
+      "max_abs_ideal_delta_action": 0.13760309468261206,
+      "elements_exceeding_clip100": 0,
+      "pelvis_height_min": 0.6068800687789917,
+      "root_up_min": 0.9927165776438676,
+      "max_delta_by_joint": {
+        "left_hip_pitch_joint": 0.04767879493672429,
+        "left_hip_roll_joint": 0.001405078441749523,
+        "left_hip_yaw_joint": 0.0014012977577711869,
+        "left_knee_joint": 0.1367681640543497,
+        "left_ankle_pitch_joint": 0.10762691337426136,
+        "left_ankle_roll_joint": 0.0016696750868905323,
+        "right_hip_pitch_joint": 0.04805282994056588,
+        "right_hip_roll_joint": 0.0011213856040927918,
+        "right_hip_yaw_joint": 0.0009002598541786002,
+        "right_knee_joint": 0.13760309468261206,
+        "right_ankle_pitch_joint": 0.10803758937064425,
+        "right_ankle_roll_joint": 0.002357065642519807,
+        "waist_yaw_joint": 0.00185398924224819,
+        "waist_roll_joint": 0.0015117850979586324,
+        "waist_pitch_joint": 0.00015547479201848954,
+        "left_shoulder_pitch_joint": 0.010833222571134475,
+        "left_shoulder_roll_joint": 0.005546536024351918,
+        "left_shoulder_yaw_joint": 0.005099138283683328,
+        "left_elbow_joint": 0.0042130406928087205,
+        "left_wrist_roll_joint": 0.0037520524982923593,
+        "left_wrist_pitch_joint": 0.08790341920635146,
+        "left_wrist_yaw_joint": 0.0004032266936071168,
+        "right_shoulder_pitch_joint": 0.009201280873094245,
+        "right_shoulder_roll_joint": 0.0068028375780397835,
+        "right_shoulder_yaw_joint": 0.005124144718763225,
+        "right_elbow_joint": 0.005074131848603431,
+        "right_wrist_roll_joint": 0.003774884460756613,
+        "right_wrist_pitch_joint": 0.08625851031338275,
+        "right_wrist_yaw_joint": 0.0003712245750668694
+      }
+    },
+    "repeated_grasped_squat_stand": {
+      "max_abs_ideal_delta_action": 0.13760309468261206,
+      "elements_exceeding_clip100": 0,
+      "pelvis_height_min": 0.6068800687789917,
+      "root_up_min": 0.9927165776438676,
+      "max_delta_by_joint": {
+        "left_hip_pitch_joint": 0.04767879493672429,
+        "left_hip_roll_joint": 0.0014050996889662438,
+        "left_hip_yaw_joint": 0.0014013113649817457,
+        "left_knee_joint": 0.1367681640543497,
+        "left_ankle_pitch_joint": 0.10762691337426136,
+        "left_ankle_roll_joint": 0.0016696750868905323,
+        "right_hip_pitch_joint": 0.04805282994056588,
+        "right_hip_roll_joint": 0.0011213962277011522,
+        "right_hip_yaw_joint": 0.0009002598541786002,
+        "right_knee_joint": 0.13760309468261206,
+        "right_ankle_pitch_joint": 0.10803758937064425,
+        "right_ankle_roll_joint": 0.002357065642519807,
+        "waist_yaw_joint": 0.00185398924224819,
+        "waist_roll_joint": 0.001511802086025942,
+        "waist_pitch_joint": 0.00015547479201848954,
+        "left_shoulder_pitch_joint": 0.010833222571134475,
+        "left_shoulder_roll_joint": 0.005546536024351918,
+        "left_shoulder_yaw_joint": 0.005099138283683328,
+        "left_elbow_joint": 0.0042130406928087205,
+        "left_wrist_roll_joint": 0.003753139734600181,
+        "left_wrist_pitch_joint": 0.08790341920635146,
+        "left_wrist_yaw_joint": 0.0004032266936071168,
+        "right_shoulder_pitch_joint": 0.009201280873094245,
+        "right_shoulder_roll_joint": 0.0068028375780397835,
+        "right_shoulder_yaw_joint": 0.005124144718763225,
+        "right_elbow_joint": 0.005074131848603431,
+        "right_wrist_roll_joint": 0.003774884460756613,
+        "right_wrist_pitch_joint": 0.08625851031338275,
+        "right_wrist_yaw_joint": 0.0003712245750668694
+      }
+    }
+  },
+  "reference_foot_proximity": {
+    "full_sequence": {
+      "min_foot_distance_m": 0.06934687590587706,
+      "reference_frames_below_5cm": []
+    },
+    "full_sequence_mirrored": {
+      "min_foot_distance_m": 0.06934687590587706,
+      "reference_frames_below_5cm": []
+    },
+    "continuous_grasped_squat_stand": {
+      "min_foot_distance_m": 0.2600086933907972,
+      "reference_frames_below_5cm": []
+    }
+  },
+  "putdown_gate_logic_probe": {
+    "scope": "Pure logical counterexample, NOT observed PhysX jitter or causal proof",
+    "before": {
+      "terminated": false,
+      "putdown_success": true
+    },
+    "after_one_support_predicate_false": {
+      "terminated": true,
+      "loss_of_grasp": true
+    },
+    "finding": "After supported release, unsupported timer already exceeds grace. One false support sample reactivates load/grasp termination even if hands were intentionally released.",
+    "caveat": "Actual contribution requires trained-policy terminal-frame ground-force/velocity histories; current aggregate TensorBoard cannot establish this."
+  },
+  "window_caveat": "Approximate: TensorBoard logs mean cumulative counters/ratios over24 steps; endpoint product ignores within-update covariance. Causes can overlap.",
+  "raw_evidence_root": "/home/han/pyx/g1_carry_baseline_new/artifacts/unified_hoi_hmi_stage1/diagnosis_full_sequence_20261122",
+  "reference_hand_box_drift": {
+    "full_sequence": {
+      "interval": [
+        95,
+        205
+      ],
+      "max_hand_link_center_displacement_in_box_m": [
+        0.01816782435616291,
+        0.01984598058355267
+      ],
+      "max_all": 0.01984598058355267,
+      "metric_note": "Kinematic hand-frame drift, same geometry proxy as evaluator; NOT measured material contact slip"
+    },
+    "full_sequence_mirrored": {
+      "interval": [
+        95,
+        205
+      ],
+      "max_hand_link_center_displacement_in_box_m": [
+        0.019855330173381917,
+        0.017632231802444893
+      ],
+      "max_all": 0.019855330173381917,
+      "metric_note": "Kinematic hand-frame drift, same geometry proxy as evaluator; NOT measured material contact slip"
+    },
+    "loaded_locomotion": {
+      "interval": [
+        0,
+        110
+      ],
+      "max_hand_link_center_displacement_in_box_m": [
+        0.01816782435616291,
+        0.01984598058355267
+      ],
+      "max_all": 0.01984598058355267,
+      "metric_note": "Kinematic hand-frame drift, same geometry proxy as evaluator; NOT measured material contact slip"
+    },
+    "continuous_grasped_squat_stand": {
+      "interval": [
+        0,
+        351
+      ],
+      "max_hand_link_center_displacement_in_box_m": [
+        2.6115705422106623e-05,
+        2.4742821587497228e-05
+      ],
+      "max_all": 2.6115705422106623e-05,
+      "metric_note": "Kinematic hand-frame drift, same geometry proxy as evaluator; NOT measured material contact slip"
+    },
+    "repeated_grasped_squat_stand": {
+      "interval": [
+        0,
+        651
+      ],
+      "max_hand_link_center_displacement_in_box_m": [
+        2.6115705422106623e-05,
+        2.4742821587497228e-05
+      ],
+      "max_all": 2.6115705422106623e-05,
+      "metric_note": "Kinematic hand-frame drift, same geometry proxy as evaluator; NOT measured material contact slip"
+    }
+  }
+}
