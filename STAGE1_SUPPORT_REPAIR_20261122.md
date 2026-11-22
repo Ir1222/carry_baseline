@@ -1,5 +1,7 @@
 # Stage1 support repair — 2026-11-22
 
+> 后续更新：Bool日志错误已修复，真实GPU容量、保存／导出、恢复与中断验证完成。见[最新验证记录](STAGE1_LOGGING_GPU_VALIDATION_20261122.md)。用户要求自行启动正式训练，当前未启动；下文早期沙箱阻塞状态保留为历史记录。
+
 状态：旧任务已停止；代码和 CPU 验证已完成；PhysX 诊断、8192/4 容量验证和新正式训练尚未执行。不能据此宣称新训练已启动或 policy 可用。
 
 基准：`60c91c1d8371037bc71fa002f5541e9001554fce`，分支 `feature/unified-hoi-stage1`。开始时 Git worktree clean，未 reset。上游 `c353731999b3578c41ad5a00f896415b45e6a9f5` 的共享 PPO、WBT tracking reward/termination 文件与当前逐文件 Git diff 相同。本轮仅 Unified 专用编排改变保存/停止；rollout、GAE、loss、KL 和 optimizer 数学仍调用原 PPO。

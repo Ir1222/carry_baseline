@@ -120,5 +120,11 @@ class FullBodyCommand(CarryCommand):
         for i,name in enumerate(('vx','vy','yaw_rate','pelvis_height')):
             self.metrics[f'carry/error_{name}']=errors[:,i].abs()
             self.metrics[f'carry/command_{name}']=self.task_command[:,i]
-        for key,value in metrics.items(): self.metrics['carry/'+key]=value
+        # PPO's scalar meters average floating tensors. Keep physical predicates
+        # bool in the shared cache, and convert only their logging views.
+        # Per-link vectors have named diagnostics in UnifiedCarryEnv; forwarding
+        # them here would also retain large [env,link,xyz] tensors every rollout.
+        for key,value in metrics.items():
+            if value.ndim == 1:
+                self.metrics['carry/'+key]=value.float()
         self.metrics['carry/curriculum_level']=torch.tensor(float(self.carry_level),device=self.device)

@@ -30,6 +30,10 @@ echo "$training_pid" > "$run_dir/training.pid"
 set +e
 wait "$training_pid"
 training_exit=$?
+# Isaac Kit shutdown can replace Python SystemExit with process status0.
+# The atomic status written after a complete PPO save is authoritative.
+"$python_bin" -m holosoma.carry.run_status "$run_dir/training" "$training_exit"
+training_exit=$?
 set -e
 if [[ $training_exit -eq 130 || $training_exit -eq 143 ]]; then
   printf 'interrupted\n' > "$run_dir/status.txt"

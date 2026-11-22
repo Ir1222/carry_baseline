@@ -164,3 +164,42 @@ def test_legacy_training_checkpoint_rejected_before_model_loading():
     algo=UnifiedCarryPPO.__new__(UnifiedCarryPPO)
     algo.env=NS(task_contract=lambda:{})
     with pytest.raises(ValueError,match="matching v2"):algo.load(old)
+
+
+def test_command_physics_metrics_pass_real_ppo_log_aggregation(monkeypatch):
+    import holosoma.carry.fullbody_rewards as rewards
+    import holosoma.carry.rewards as goals
+    from holosoma.utils.average_meters import TensorAverageMeterDict
+
+    env=NS(episode_length_buf=torch.ones(2,dtype=torch.long))
+    cmd=UnifiedCommand.__new__(UnifiedCommand)
+    cmd._env=env;cmd.device="cpu";cmd.metrics={};cmd.carry_level=0
+    cmd.episode_control_steps=torch.zeros(2,dtype=torch.long)
+    cmd.episode_good_steps=torch.zeros(2,dtype=torch.long)
+    cmd.task_command=torch.zeros(2,4)
+    cmd.rows=[dict(family="full_sequence"),dict(family="loaded_locomotion")]
+    cmd.motion_ids=torch.tensor([0,1]);cmd.task_mode=torch.tensor([0,2])
+    supported=torch.tensor([True,False])
+    physics=dict(bilateral_contact=torch.ones(2),stable_support_sample=supported,
+        nonhand_link_force_w=torch.ones(2,3,3),object_speed_m_s=torch.tensor([.02,.04]))
+    monkeypatch.setattr(rewards,"physical_metrics",lambda _:physics)
+    monkeypatch.setattr(goals,"task_errors",lambda _:torch.zeros(2,4))
+    meter=TensorAverageMeterDict()
+    for _ in range(2):
+        cmd.update_metrics()
+        meter.add(cmd.metrics)
+    averaged=meter.mean_and_clear()
+    assert averaged["carry/stable_support_sample"].item()==pytest.approx(.5)
+    assert averaged["carry/object_speed_m_s"].item()==pytest.approx(.03)
+    assert "carry/nonhand_link_force_w" not in averaged
+    assert supported.dtype==torch.bool  # logging must not change physical predicates
+    assert not meter.data
+
+
+@pytest.mark.parametrize("status,process_exit,expected",[
+    ("interrupted",0,130),("interrupted",130,130),("running",0,1),
+    ("complete",0,0),("complete",1,1)])
+def test_wrapper_exit_guard_uses_durable_status(tmp_path,status,process_exit,expected):
+    from holosoma.carry.run_status import training_exit_code
+    (tmp_path/"training_status.json").write_text(json.dumps(dict(status=status)))
+    assert training_exit_code(tmp_path,process_exit)==expected
