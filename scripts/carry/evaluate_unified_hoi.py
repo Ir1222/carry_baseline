@@ -84,7 +84,7 @@ def main():
             if actor:cmd.reset=seeded_reset
             obs=env.reset_all();cmd.reset=original_reset
             torch.testing.assert_close(env.simulator.dof_pos,cmd.joint_pos,atol=2e-6,rtol=0)
-            assert obs['actor_obs'].shape==(a.seeds,357) and obs['critic_obs'].shape==(a.seeds,187)
+            assert obs['actor_obs'].shape==(a.seeds,357) and obs['critic_obs'].shape==(a.seeds,env.critic_dim)
             reset_rows.append(dict(case=name,q_error=float((env.simulator.dof_pos-cmd.joint_pos).abs().max()),root_error=float((cmd.root_pos_w-cmd.robot_root_pos_w).abs().max()),
                 box_error=float((simulator_box_state(env)[:,:3]-cmd.object_pos_w).abs().max())))
             if actor:actor.reset()
@@ -132,6 +132,8 @@ def main():
             groups=groups,trials=rows,resets=reset_rows,physics=env.fullbody_physics,
             unavailable={'F_walk_squat_walk':'No validated continuous transition reference; not silently concatenated'},
             ground_filter_paths=env.simulator.hoi_ground_filter_paths,
+            nonhand_link_names=env.simulator.carry_other_links,
+            contact_statistics='mean over all 20 physics substeps; continuous no-contact timer advances by sim_dt',
             initial_joint_velocity_perturbation_std_rad_s=.001 if actor else 0.,
             ground_sensor_verified=any(r['phases']['putdown']['metrics'].get('ground_support_weight_ratio',0)>.5 for r in rows))
         result['policy_success_claim']=result['passed']

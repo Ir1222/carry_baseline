@@ -16,6 +16,7 @@ class IsaacSim(UpstreamIsaacSim):
                 update_period=0.,history_length=1,track_contact_points=True,max_contact_data_count_per_prim=64))
         others=[name for name in self.robot_config.body_names if
                 'sphere_hand' not in name and 'foot_contact_point' not in name]
+        self.carry_other_links=others
         self.scene.sensors['box_other']=ContactSensor(ContactSensorCfg(
             prim_path='/World/envs/env_.*/Object/baseLink',
             filter_prim_paths_expr=[f'/World/envs/env_.*/Robot/{name}' for name in others],
@@ -41,15 +42,26 @@ class IsaacSim(UpstreamIsaacSim):
             raise RuntimeError('Virtual gantry is forbidden in the free-box FullBody experiment')
         super().simulate_at_each_physics_step()
         normal,friction=self.raw_contacts()
-        both=(torch.linalg.vector_norm(normal,dim=-1)>.5).all(-1).float()
+        from holosoma.carry.support import advance_contact_gap
+        both=(torch.linalg.vector_norm(normal,dim=-1)>.5).all(-1)
+        other=self.scene.sensors['box_other'].data.force_matrix_w[:,0]
         if not hasattr(self,'carry_normal'):
             self.carry_normal=torch.zeros_like(normal); self.carry_friction=torch.zeros_like(friction)
-            self.carry_bilateral=torch.zeros_like(both); self.carry_substep=0
-        if self.carry_substep % self.simulator_config.sim.control_decimation == 0:
-            self.carry_normal.zero_(); self.carry_friction.zero_(); self.carry_bilateral.zero_()
+            self.carry_bilateral=torch.zeros_like(both,dtype=torch.float32); self.carry_substep=0
+            self.carry_gap=torch.zeros_like(self.carry_bilateral)
+            self.carry_support_required=torch.zeros_like(both)
+            self.carry_other_force=torch.zeros_like(other)
+            self.carry_ground=torch.zeros_like(normal[:,0])
         decimation=self.simulator_config.sim.control_decimation
+        if self.carry_substep % decimation == 0:
+            self.carry_normal.zero_(); self.carry_friction.zero_(); self.carry_bilateral.zero_()
+            self.carry_other_force.zero_(); self.carry_ground.zero_()
         self.carry_normal+=normal/decimation; self.carry_friction+=friction/decimation
-        self.carry_bilateral+=both/decimation
+        self.carry_bilateral+=both.float()/decimation
+        self.carry_other_force+=other/decimation
+        if 'box_ground' in self.scene.sensors:
+            self.carry_ground+=self.scene.sensors['box_ground'].data.force_matrix_w.sum((1,2))/decimation
+        self.carry_gap=advance_contact_gap(self.carry_gap,both,self.carry_support_required,self.sim_dt)
         self.carry_substep+=1
 
     def hand_box_forces(self):
@@ -59,6 +71,8 @@ class IsaacSim(UpstreamIsaacSim):
     def clear_carry_contacts(self, ids):
         if hasattr(self,'carry_normal'):
             self.carry_normal[ids]=0; self.carry_friction[ids]=0; self.carry_bilateral[ids]=0
+            self.carry_gap[ids]=0; self.carry_support_required[ids]=False
+            self.carry_ground[ids]=0; self.carry_other_force[ids]=0
 
 
 def fixed_physics(env, data, **_):

@@ -4,6 +4,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from holosoma.carry.ppo import CarryPPO
+from holosoma.carry.support import PRIVILEGED_FIELDS
 
 
 class FullBodyCarryPPO(CarryPPO):
@@ -32,7 +33,8 @@ class FullBodyCarryPPO(CarryPPO):
         if getattr(cmd,'manifest',{}).get('schema')=='unified_hoi_v1':
             from holosoma.carry.checkpoints import digest
             file=Path(cmd.cfg.params['manifest_file'])
-            meta.update(carry_schema_version=2,unified_schema=1,actor_dim=357,critic_dim=187,
+            meta.update(carry_schema_version=2,unified_schema=2,actor_dim=self.env.actor_dim,critic_dim=self.env.critic_dim,
+                support_protocol='measured_support_v2',privileged_support_fields=list(PRIVILEGED_FIELDS),
                 task_modes=['pickup','carry','putdown'],task_mode_encoding='three-way one-hot appended to each physical history frame',
                 reference_bundle=str(file.parent.resolve()),reference_manifest_sha256=digest(file),
                 reference_bundle_schema='unified_hoi_v1',training_stage=1,reference_required_at_inference=False,

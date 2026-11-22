@@ -17,7 +17,8 @@ def parser():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--num-envs',type=int,default=8192)
     p.add_argument('--iterations',type=int,default=15000,help='Total desired PPO updates; default 15000')
-    p.add_argument('--save-every',type=int,default=500)
+    p.add_argument('--save-every',type=int,default=2000)
+    p.add_argument('--num-mini-batches',type=int,default=4)
     p.add_argument('--seed',type=int,default=42)
     p.add_argument('--data',type=Path,default=REPO/'datasets/fullbody_carry_track_v2')
     p.add_argument('--run-dir',type=Path)
@@ -39,7 +40,7 @@ def build_argv(a,root):
         f'--training.num-envs={a.num_envs}','--training.headless=True',f'--training.seed={a.seed}',
         '--training.name=stage1_joint_squat_walk',f'--logger.base-dir={root/"tensorboard"}',
         f'--algo.config.num-learning-iterations={additional}',f'--algo.config.save-interval={a.save_every}',
-        '--algo.config.latest-save-interval=0',f'--algo.config.num-mini-batches={max(1,a.num_envs//64)}',
+        '--algo.config.latest-save-interval=100',f'--algo.config.num-mini-batches={getattr(a,"num_mini_batches",4)}',
         '--algo.config.num-learning-epochs=5']
     if a.resume:argv.append('--training.checkpoint='+str(a.resume.resolve()))
     return argv

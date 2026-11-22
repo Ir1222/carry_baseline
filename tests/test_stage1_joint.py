@@ -70,8 +70,8 @@ def test_stage1_advances_each_clip_without_cross_clip_or_state_reset():
 def test_default_launch_is_one_15000_update_ppo_run():
     args=parser().parse_args([]);argv=build_argv(args,Path('/tmp/example_stage1'))
     assert '--algo.config.num-learning-iterations=15000' in argv
-    assert '--algo.config.save-interval=500' in argv
-    assert '--algo.config.num-mini-batches=128' in argv
+    assert '--algo.config.save-interval=2000' in argv
+    assert '--algo.config.num-mini-batches=4' in argv
     assert not any('checkpoint=' in v or 'auto_train' in v or 'timeout' in v for v in argv)
 
 

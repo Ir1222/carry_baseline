@@ -19,6 +19,7 @@ def relative_box(env):
 
 
 def physical_metrics(env):
+    if getattr(env,'hoi_metrics_valid',False): return env.hoi_metrics
     sim=env.simulator
     if hasattr(sim,'carry_normal'):
         normal=sim.carry_normal; friction=sim.carry_friction
@@ -33,7 +34,7 @@ def physical_metrics(env):
         pos=sim._robot.data.body_pos_w[:,index]
         velocity=sim._robot.data.body_lin_vel_w[:,index]-box[:,7:10]-torch.linalg.cross(box[:,10:13],pos-box[:,:3])
         slip.append(torch.linalg.vector_norm(velocity,dim=-1))
-    other=sim.scene.sensors['box_other'].data.force_matrix_w
+    other=getattr(sim,'carry_other_force',sim.scene.sensors['box_other'].data.force_matrix_w[:,0])
     bottom=box_bottom(env)
     points=torch.stack([sim.scene.sensors[s+'_box_contact'].data.contact_pos_w[:,0,0] for s in ('left','right')],1)
     contact_height=points[:,:,2]-env.simulator.scene.env_origins[:,2:3]-bottom[:,None]
@@ -45,7 +46,9 @@ def physical_metrics(env):
         hand_slip_speed_m_s=torch.stack(slip,-1).max(-1).values,
         box_clearance_m=bottom,normal_vertical_fraction=vertical,
         min_contact_height_above_bottom_m=contact_height.min(-1).values,
-        nonhand_box_contact_n=torch.linalg.vector_norm(other,dim=-1).sum((1,2)))
+        nonhand_box_contact_n=torch.linalg.vector_norm(other,dim=-1).sum(1),
+        nonhand_upward_force_n=other[:,:,2].clamp_min(0).sum(1),
+        nonhand_link_force_w=other.clone(),continuous_no_contact_s=getattr(sim,'carry_gap',torch.zeros_like(bottom)).clone())
 
 
 def carrying_gate(env):

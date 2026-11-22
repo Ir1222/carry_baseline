@@ -1,5 +1,7 @@
 # Unified HOI Stage1 — direct HMI launch, 8192 environments
 
+> 本文件保留历史运行语义。2026-11-22新修复与当前执行状态以[Stage1支撑修复记录](STAGE1_SUPPORT_REPAIR_20261122.md)为准；历史full_training_ready或未训练策略成功率不作为开训门禁。
+
 Base `38109772247c4498b93252500a79218bb52f5583`, branch `feature/unified-hoi-stage1`. This launch revision supersedes the earlier audit's decision to prohibit long training. Earlier physics failures and source validation labels remain true, preserved evidence. An untrained Actor failing reference probes is not used as a prohibition on Track-only learning.
 
 ## What changed

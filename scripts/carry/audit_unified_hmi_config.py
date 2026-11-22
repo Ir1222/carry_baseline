@@ -6,7 +6,7 @@ from pathlib import Path
 from holosoma.config_values.wbt.g1.experiment import g1_29dof_wbt_hybrid_object
 from holosoma.carry.unified_presets import g1_29dof_unified_hoi_stage1
 from holosoma.envs.wbt.config_utils import apply_wbt_robot_defaults
-from holosoma.carry.checkpoints import digest
+from holosoma.carry.checkpoints import digest,UNIFIED_CRITIC_DIM
 
 FIELDS=('num_mini_batches','num_learning_epochs','init_noise_std','num_steps_per_env','actor_learning_rate',
  'critic_learning_rate','schedule','desired_kl','gamma','lam','clip_param','entropy_coef','max_grad_norm',
@@ -26,14 +26,14 @@ def snapshot(cfg,upstream=False):
 def main():
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
     old=snapshot(g1_29dof_wbt_hybrid_object,True);new=snapshot(g1_29dof_unified_hoi_stage1)
-    rows={k:dict(upstream_object_stage1=old['algo']['config'][k],unified_actual=new['algo']['config'][k]) for k in FIELDS}
+    rows={k:dict(upstream_object_stage1=old['algo']['config'][k],unified_preset_target=new['algo']['config'][k]) for k in FIELDS}
     motion=new['command']['setup_terms']['motion_command']['params']['motion_config']
     result=dict(base_commit='38109772247c4498b93252500a79218bb52f5583',entry='src/holosoma/holosoma/train_agent.py',
         ppo_comparison=rows,num_envs=8192,env_spacing=4.,track_ratio=motion['hybrid']['track_ratio'],
         unified_motion=motion,upstream_motion=old['command']['setup_terms']['motion_command']['params']['motion_config'],
         action=new['action'],robot_control=new['robot']['control'],reward=new['reward'],termination=new['termination'],
-        actor_dim=357,critic_dim=187,manifest_sha256=digest(Path(motion['motion_dir']).parent/'manifest.json'),
-        changes_to_ppo_hyperparameters='Only user-requested checkpoint interval2000; existing Unified 128 minibatches and0.3 noise retained',
+        actor_dim=357,critic_dim=UNIFIED_CRITIC_DIM,manifest_sha256=digest(Path(motion['motion_dir']).parent/'manifest.json'),
+        changes_to_ppo_hyperparameters='Repaired target:4 minibatches,latest100,archive2000;learnable0.3 noise retained; preset audit is not a runtime capacity result',
         logger=dict(type='wandb',mode='offline',video_enabled=False,reason='Online credential validation returned HTTP403; TensorBoard and offline W&B retained'))
     a.output.parent.mkdir(parents=True,exist_ok=True);a.output.write_text(json.dumps(result,indent=2)+'\n')
     print(json.dumps(rows,indent=2))

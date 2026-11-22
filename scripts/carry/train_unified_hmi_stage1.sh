@@ -14,6 +14,7 @@ export CUDA_VISIBLE_DEVICES=0
 export HMI_UNIFIED_DATA="$PWD/datasets/unified_hoi_v1"
 checkpoint_args=()
 remaining=$updates
+case "${HMI_MINI_BATCHES:-4}" in 4|8|16) ;; *) echo 'Only measured4/8/16 minibatch configurations are supported' >&2; exit 1 ;; esac
 if [[ -n "$resume" ]]; then
   resume=$(realpath "$resume")
   remaining=$(../envs/g1_hmi_carry/bin/python - "$resume" "$updates" "$HMI_UNIFIED_DATA" <<'PYRESUME'
@@ -22,7 +23,7 @@ from pathlib import Path
 from holosoma.carry.checkpoints import validate,digest
 checkpoint,total,data=sys.argv[1],int(sys.argv[2]),Path(sys.argv[3])
 info=validate(checkpoint);state=torch.load(checkpoint,map_location='cpu',weights_only=True)['env_state']
-if state.get('unified_schema')!=1 or state.get('fullbody_manifest_sha256')!=digest(data/'manifest.json'):
+if state.get('unified_schema')!=2 or state.get('fullbody_manifest_sha256')!=digest(data/'manifest.json'):
     raise ValueError('Resume requires an identical verified Unified HOI checkpoint/dataset')
 if state.get('stage1_reference_protocol')!='hard_reset_post_action_v1' or state.get('stage1_action_parameterization')!='joint_delta_v1':
     raise ValueError('Incompatible reference timing/action protocol')
@@ -42,6 +43,7 @@ exec ../envs/g1_hmi_carry/bin/python -u src/holosoma/holosoma/train_agent.py \
   --logger.base-dir="$run_dir/logs" \
   --training.num-envs=8192 --training.headless=True --training.seed=42 \
   --algo.config.num-learning-iterations="$remaining" --algo.config.save-interval=2000 \
+  --algo.config.latest-save-interval=100 --algo.config.num-mini-batches="${HMI_MINI_BATCHES:-4}" \
   --simulator.config.scene.env-spacing=4.0 \
   --command.setup-terms.motion-command.params.motion-config.hybrid.track-ratio=1.0 \
   "${checkpoint_args[@]}"

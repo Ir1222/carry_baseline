@@ -6,7 +6,19 @@ from holosoma.carry.fullbody_rewards import box_bottom,physical_metrics
 from holosoma.utils.rotations import quaternion_to_matrix
 
 
+def pose_failure_diagnostics(env):
+    """Absolute pose checks; Unified Stage1 only terminates obvious inversion."""
+    sim=env.simulator;root=sim.robot_root_states[:]
+    up=quaternion_to_matrix(root[:,3:7],w_last=True)[:,2,2]
+    feet=[sim.body_names.index(side+'_ankle_roll_link') for side in ('left','right')]
+    foot_support=(sim.contact_forces[:,feet,2]>5).all(-1)
+    return dict(root_up=up,root_too_low=root[:,2]-sim.scene.env_origins[:,2]<.45,
+        upside_down=up<0,deep_lean_without_foot_support=(up<.5)&~foot_support,
+        foot_support=foot_support)
+
+
 class FullBodyFailure(TerminationTermBase):
+    # Legacy FullBody-only experiment. UnifiedFailure overrides __call__ completely.
     def __init__(self,cfg,env):
         super().__init__(cfg,env)
         self.unsupported=torch.zeros(env.num_envs,device=env.device)

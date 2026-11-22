@@ -4,6 +4,8 @@ import json
 import os
 from pathlib import Path
 import tempfile
+from holosoma.carry.support import PRIVILEGED_FIELDS
+UNIFIED_CRITIC_DIM=119+68+len(PRIVILEGED_FIELDS)
 
 
 def atomic_json(path, value):
@@ -74,9 +76,19 @@ def validate(path, require_manifest=True):
         raise ValueError(f'Invalid iteration or nonfinite checkpoint: {path}')
     matrices = [v for v in state['actor_model_state_dict'].values()
                 if isinstance(v, torch.Tensor) and v.ndim == 2]
-    expected=357 if state.get('env_state',{}).get('unified_schema')==1 else 348
+    expected=357 if state.get('env_state',{}).get('unified_schema') in (1,2) else 348
     if not matrices or matrices[0].shape[1] != expected or matrices[-1].shape[0] != 29:
         raise ValueError(f'Actor must be {expected}D -> 29D: {path}')
+    schema=state.get('env_state',{}).get('unified_schema')
+    if schema:
+        expected_critic=187 if schema==1 else UNIFIED_CRITIC_DIM if schema==2 else None
+        matrices=[v for v in state['critic_model_state_dict'].values() if isinstance(v,torch.Tensor) and v.ndim==2]
+        if not matrices or matrices[0].shape[1]!=expected_critic:
+            raise ValueError('Incompatible privileged critic schema')
+        if schema==2 and state.get('completed_updates')!=state['iter']+1:
+            raise ValueError('Incomplete completed-update accounting')
+        if schema==2 and not state['env_state'].get('task_contract'):
+            raise ValueError('Missing repaired task contract')
     if path.stat().st_mtime_ns != stat.st_mtime_ns or path.stat().st_size != stat.st_size:
         raise ValueError(f'Checkpoint changed during validation: {path}')
     return dict(path=str(path.resolve()), sha256=checksum, bytes=stat.st_size,
@@ -108,11 +120,13 @@ def validate_export(path):
     import onnx
     path = Path(path)
     metadata = json.loads(path.with_suffix('.actor.json').read_text())
-    expected=119 if metadata.get('unified_schema')==1 else 116
+    if metadata.get('unified_schema') not in (None,1,2):raise ValueError('Unknown unified export schema')
+    if metadata.get('unified_schema')==2 and metadata.get('support_protocol')!='measured_support_v2':raise ValueError('Missing measured support protocol')
+    expected=119 if metadata.get('unified_schema') in (1,2) else 116
     if metadata.get('frame_dim') != expected or metadata.get('history_length') != 3 or metadata.get('commands') != ['vx','vy','yaw_rate','pelvis_height']:
         raise ValueError('Incompatible Actor metadata')
-    if metadata.get('unified_schema')==1 and (metadata.get('carry_schema_version')!=2 or metadata.get('actor_dim')!=357
-        or metadata.get('critic_dim')!=187 or metadata.get('task_modes')!=['pickup','carry','putdown']
+    if metadata.get('unified_schema') in (1,2) and (metadata.get('carry_schema_version')!=2 or metadata.get('actor_dim')!=357
+        or metadata.get('critic_dim')!=(187 if metadata.get('unified_schema')==1 else UNIFIED_CRITIC_DIM) or metadata.get('task_modes')!=['pickup','carry','putdown']
         or metadata.get('action_parameterization')!='joint_delta_v1'):
         raise ValueError('Incompatible unified task-mode/action metadata')
     onnx.checker.check_model(str(path))
@@ -124,16 +138,18 @@ def validate_export(path):
 
 
 def newest_valid(root, require_export=False):
-    candidates = list(Path(root).rglob('model_*.pt'))
-    candidates.sort(key=lambda p: (int(p.stem.split('_')[-1]), p.stat().st_mtime_ns), reverse=True)
+    candidates = set(Path(root).rglob('model_*.pt')) | set(Path(root).rglob('model.pt'))
     rejected = []
+    valid = []
     for path in candidates:
         try:
-            if require_export and not all(path.with_suffix(ext).is_file() for ext in ('.onnx', '.actor.json')):
-                raise ValueError('Adjacent ONNX/metadata missing')
+            info=validate(path)
             if require_export:
                 validate_export(path.with_suffix('.onnx'))
-            return validate(path), rejected
+            valid.append(info)
         except Exception as error:
             rejected.append(dict(path=str(path), error=str(error)))
+    if valid:
+        # The verified internal completed count is authoritative. Latest wins ties.
+        return max(valid,key=lambda x:(x['completed_updates'],Path(x['path']).name=='model.pt')),rejected
     raise ValueError(f'No valid full checkpoint in {root}; rejected={rejected}')

@@ -1,5 +1,7 @@
 # Hybrid Motion Imitation
 
+> 2026-11-22 Unified Stage1修复：旧训练已主动中断，保留2001次完整更新；支持状态、预紧奖励、自适应采样、207D critic、4 minibatches及安全保存已修改。49项CPU回归通过，PhysX/8192容量和新正式训练仍待执行环境修复。见[本轮修复与运行记录](STAGE1_SUPPORT_REPAIR_20261122.md)。Actor仍为四维command＋额外任务意图。
+
 <table>
   <tr>
     <td align="center" width="50%">

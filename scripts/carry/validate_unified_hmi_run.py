@@ -5,7 +5,7 @@ import math
 from pathlib import Path
 import yaml
 from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
-from holosoma.carry.checkpoints import validate,validate_export,digest
+from holosoma.carry.checkpoints import validate,validate_export,digest,UNIFIED_CRITIC_DIM
 
 REPO=Path(__file__).resolve().parents[2]
 
@@ -21,6 +21,8 @@ def validate_run(root,updates):
             raise ValueError('Resume must preserve optimizers and learned action noise')
     if config['algo']['config']['num_learning_iterations']!=updates-completed_before:raise ValueError('Wrong remaining/total update count')
     if updates==15000 and config['algo']['config']['save_interval']!=2000:raise ValueError('Formal run must save every2000 updates')
+    if config['algo']['config']['num_mini_batches'] not in (4,8,16):raise ValueError('Unexpected minibatch fallback')
+    if config['algo']['config']['latest_save_interval']!=100:raise ValueError('Latest snapshots disabled')
     if config['simulator']['config']['scene']['env_spacing']!=4.:raise ValueError('Wrong spacing')
     motion=config['command']['setup_terms']['motion_command']['params']['motion_config']
     if motion['hybrid']['track_ratio']!=1.:raise ValueError('Gen is forbidden')
@@ -30,7 +32,7 @@ def validate_run(root,updates):
         if digest(data/row['path'])!=row['sha256']:raise ValueError('Reference bytes changed')
     path=folder/f'model_{updates-1:05d}.pt';checkpoint=validate(path);validate_export(path.with_suffix('.onnx'))
     metadata=json.loads(path.with_suffix('.actor.json').read_text())
-    if metadata['actor_dim']!=357 or metadata['critic_dim']!=187 or metadata['action_parameterization']!='joint_delta_v1':raise ValueError('Wrong HOI interface')
+    if metadata['actor_dim']!=357 or metadata['critic_dim']!=UNIFIED_CRITIC_DIM or metadata['action_parameterization']!='joint_delta_v1':raise ValueError('Wrong HOI interface')
     if metadata['reference_manifest_sha256']!=digest(data/'manifest.json'):raise ValueError('Manifest mismatch')
     events=EventAccumulator(str(folder),size_guidance={'scalars':0});events.Reload();scalars={}
     for tag in events.Tags()['scalars']:

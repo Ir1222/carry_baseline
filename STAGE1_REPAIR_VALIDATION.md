@@ -1,5 +1,7 @@
 # Stage 1 修复与短训练对照
 
+> 本文件保留历史运行语义。2026-11-22新修复与当前执行状态以[Stage1支撑修复记录](STAGE1_SUPPORT_REPAIR_20261122.md)为准；历史full_training_ready或未训练策略成功率不作为开训门禁。
+
 日期：2026-11-21。基线：`feature/fullbody-goal-carry-autotrain` / `d2281cf9c404c823cb4f457be6dd4e0fa8dcbd20`。本报告对应修复提交可由 `git log -1` 查询。
 
 ## 结论

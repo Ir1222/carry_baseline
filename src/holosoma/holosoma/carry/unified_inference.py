@@ -7,7 +7,7 @@ from holosoma.carry.observations import physical_frame
 class UnifiedActor(CarryActor):
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
-        if self.metadata.get('unified_schema')!=1:raise ValueError('Unified actor checkpoint required')
+        if self.metadata.get('unified_schema') not in (1,2):raise ValueError('Unified actor checkpoint required')
         self.history=torch.zeros(len(self.previous_action),3,119,device=self.previous_action.device)
     def act(self,root_xyzw,joint_pos,joint_vel,box_xyzw,commands,ground_height,task_mode):
         if isinstance(task_mode,str):
