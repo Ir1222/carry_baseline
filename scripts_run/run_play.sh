@@ -2,6 +2,10 @@
 
 source scripts/source_isaacsim_setup.sh
 
+# Unified HOI native checkpoint play (checks the carry GPU lock):
+# bash scripts/carry/play_unified_hoi.sh /absolute/path/to/model.pt
+# PPO progress is plain text; no Rich Live renderer is used.
+#
 # Copy or uncomment one command. eval_agent.py restores the experiment from
 # the checkpoint, so do not add an exp:... alias. Every command explicitly
 # keeps the default evaluation behavior: start at motion timestep 0 on every

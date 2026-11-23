@@ -1,5 +1,7 @@
 # Hybrid Motion Imitation
 
+> 2026-11-23：已确认并修复新增诊断负载触发的Rich Live渲染停滞。控制台改为有界纯文本，完整指标保留；原生play加载和Viser导入兼容已验证。恢复从1300完整更新接续到总15000。见[故障、原版对照与验证记录](RICH_LIVE_STALL_REPAIR_20261123.md)。
+
 > 2026-11-22：已修复Bool日志均值错误，正式HMI环境55项回归通过，8192环境／4 minibatches真实GPU训练、导出、恢复及中断保存验证完成。依用户要求尚未启动正式训练。见[最新GPU验证记录](STAGE1_LOGGING_GPU_VALIDATION_20261122.md)及[Stage1支撑修复](STAGE1_SUPPORT_REPAIR_20261122.md)。Actor仍为四维command＋额外任务意图。
 
 <table>

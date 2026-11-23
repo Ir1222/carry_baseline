@@ -11,14 +11,9 @@ from typing import Any, Generator, TypedDict
 import torch
 import wandb
 from loguru import logger
-from rich.console import Console
-from rich.live import Live
-from rich.panel import Panel
 from torch.utils.tensorboard import SummaryWriter
 
 from holosoma.utils.average_meters import TensorAverageMeterDict
-
-console = Console()
 
 
 class LogDict(TypedDict):
@@ -211,7 +206,7 @@ class LoggingHelper:
         iteration_time = self.collection_time + self.learn_time
 
         # Log episode info
-        ep_string, ep_scalars_to_log = self._log_episode_info()
+        _, ep_scalars_to_log = self._log_episode_info()
 
         env_log_dict = self.episode_env_tensors.mean_and_clear()
         env_log_dict = {self._format_scalar_key("Env", k): v for k, v in env_log_dict.items()}
@@ -230,28 +225,33 @@ class LoggingHelper:
             ep_scalars_to_log=ep_scalars_to_log,
         )
 
-        # Create console output
-        log_string = self._create_console_output(
-            it=it,
-            loss_dict=loss_dict,
-            env_log_dict=env_log_dict,
-            extra_log_dicts=extra_log_dicts,
-            ep_string=ep_string,
-            width=width,
-            pad=pad,
-            iteration_time=iteration_time,
-            fps=fps,
-        )
-
-        # Use rich Live to update console
-        with Live(Panel(log_string, title=self.title), refresh_per_second=4, console=console):
-            pass
+        # Console rendering must not own a Rich refresh thread or traverse all
+        # diagnostics. Full metrics above still go to TensorBoard and W&B.
+        self._write_console_summary(it, loss_dict, iteration_time, fps)
 
         # Clear episode infos after logging
         self.ep_infos.clear()
         self.raw_ep_infos.clear()
         self.learn_time = 0.0
         self.collection_time = 0.0
+
+    def _write_console_summary(self, it, loss_dict, iteration_time, fps):
+        target = self.run_start_learning_iteration + self.num_learning_iterations
+        parts = [
+            f"Learning iteration {it}/{target}",
+            f"completed_updates={it + 1}",
+            f"fps={fps}",
+            f"iteration_s={iteration_time:.2f}",
+        ]
+        if self.rewbuffer:
+            parts.append(f"reward={statistics.mean(self.rewbuffer):.4f}")
+        if self.lenbuffer:
+            parts.append(f"episode_steps={statistics.mean(self.lenbuffer):.2f}")
+        for key in ("Value", "Surrogate", "KL", "actor_learning_rate", "critic_learning_rate"):
+            if key in loss_dict:
+                parts.append(f"{key}={float(loss_dict[key]):.6g}")
+        # Plain text on both terminals and redirected files. No Rich render path.
+        print(" | ".join(parts), flush=True)
 
     def _log_episode_info(self) -> tuple[str, dict[str, float]]:
         """Log episode information and return formatted string.

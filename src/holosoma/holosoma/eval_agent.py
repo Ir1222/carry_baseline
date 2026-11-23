@@ -104,6 +104,9 @@ def run_eval_with_tyro(
     saved_wandb_path: str | None,
     eval_cbs_cfg: EvalCallbacksConfig | None = None,
 ):
+    if eval_cbs_cfg is not None and eval_cbs_cfg.viser.config.enabled:
+        from holosoma.utils.viser_helper import prepare_viser_imports
+        prepare_viser_imports()
     # Use shared simulation environment setup
     env, device, simulation_app = setup_simulation_environment(tyro_config)
 
@@ -133,7 +136,9 @@ def run_eval_with_tyro(
     )
     algo.setup()
     algo.attach_checkpoint_metadata(saved_config, saved_wandb_path)
-    algo.load(checkpoint_path)
+    # Carry has a separate inference contract; generic PPO keeps its load path.
+    load_for_evaluation=getattr(algo,"load_for_evaluation",algo.load)
+    load_for_evaluation(checkpoint_path)
 
     checkpoint_dir = os.path.dirname(checkpoint_path)
 

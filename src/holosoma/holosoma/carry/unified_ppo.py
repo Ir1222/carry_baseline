@@ -34,7 +34,36 @@ class UnifiedCarryPPO(FullBodyCarryPPO):
             self.optimizer_steps=saved['optimizer_steps']
         return result
 
+    def load_for_evaluation(self, ckpt_path):
+        # Evaluation can change reset sampling, episode limits and termination
+        # display settings. It must keep the actor/control/data protocol.
+        from holosoma.carry.checkpoints import validate
+        validate(ckpt_path)
+        saved=torch.load(ckpt_path,map_location=self.device,weights_only=True)
+        state=saved['env_state'];current=self.env.get_checkpoint_state()
+        if state.get('unified_schema')!=2:
+            raise ValueError('Native Unified playback requires v2 checkpoint')
+        for key in ('actor_dim','critic_dim','fullbody_manifest_sha256','fullbody_limits',
+                    'stage1_reference_protocol','stage1_action_parameterization'):
+            if state.get(key)!=current.get(key):
+                raise ValueError('Playback protocol mismatch: '+key)
+        control_keys=('protocol','actor_dim','critic_dim','physics','p_gains','d_gains','action_scales','action')
+        for key in control_keys:
+            if state['task_contract'].get(key)!=current['task_contract'].get(key):
+                raise ValueError('Playback control mismatch: '+key)
+        self.actor.load_state_dict(saved['actor_model_state_dict'])
+        self.critic.load_state_dict(saved['critic_model_state_dict'])
+        if self.empirical_normalization:
+            self.actor_obs_normalizer.load_state_dict(saved['actor_obs_normalizer_state_dict'])
+            self.critic_obs_normalizer.load_state_dict(saved['critic_obs_normalizer_state_dict'])
+        self.current_learning_iteration=saved['iter']
+        self._evaluation_only_loaded=True
+        self._eval_mode()
+        return saved.get('infos')
+
     def learn(self):
+        if getattr(self,'_evaluation_only_loaded',False):
+            raise ValueError('Evaluation-only load cannot resume PPO; use strict training load')
         # Only orchestration differs from PPO.learn(). Rollout, GAE, losses,
         # minibatch ordering, KL adaptation and optimizer operations are inherited.
         from holosoma.carry.checkpoints import atomic_json
@@ -77,18 +106,20 @@ class UnifiedCarryPPO(FullBodyCarryPPO):
                 self._notify_rollout_end(it)
                 with self.logging_helper.record_learn_time():
                     loss_dict=self._training_step()
-                if self.is_main_process:self._post_epoch_logging(it,loss_dict)
                 # The index becomes completed only after both optimizers finish.
                 completed=it+1
                 self.training_status='interrupted' if self.stop_requested else ('complete' if completed==end else 'running')
                 if self.is_main_process:
                     latest=self.config.latest_save_interval>0 and completed%self.config.latest_save_interval==0
                     archive=completed%self.config.save_interval==0 or completed==end
-                    if latest or archive:self.save(Path(self.log_dir)/'model.pt')
+                    if latest or archive or self.stop_requested:self.save(Path(self.log_dir)/'model.pt')
                     if archive and not self.stop_requested:
                         path=Path(self.log_dir)/f'model_{it:05d}.pt'
                         self.save(path);self.export(path.with_suffix('.onnx'))
+                    # Durable completion / scheduled snapshots precede external
+                    # logging so a logger cannot hide a completed optimizer update.
                     status()
+                    self._post_epoch_logging(it,loss_dict)
                 if self.stop_requested:
                     self.training_status='interrupted'
                     if self.is_main_process:

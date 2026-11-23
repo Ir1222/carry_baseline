@@ -15,6 +15,15 @@ logging.getLogger("websockets").setLevel(logging.WARNING)
 logging.getLogger("viser").setLevel(logging.WARNING)
 
 
+def prepare_viser_imports():
+    """Resolve optional web dependencies before Isaac Kit prepends vendored paths."""
+    # Kit bundles an older websockets package. Import the installed compatible
+    # distribution before SimulationApp starts; do not mutate sys.path/modules.
+    import importlib
+    importlib.import_module("websockets.asyncio.server")
+    return importlib.import_module("viser")
+
+
 class ViserHelper:
     """Thin wrapper over ``viser`` with a handful of extras (lights, materials, etc.)."""
 
