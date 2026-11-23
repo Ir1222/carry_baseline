@@ -68,7 +68,9 @@ systemd服务没有退出，也没有训练时长限制触发。Restart=no只表
 
 ## 恢复与播放
 
-正式恢复将从保全的1300权重继续，剩余13700更新达到总15000；短测1303分支不用作正式初始化。输出：/home/han/pyx/g1_carry_baseline_new/artifacts/unified_hoi_hmi_stage1/formal_recovery_1300_richfix_20261123080108；unit：hmi-stage1-richfix-20261123080108.service。实际PID、resolved config与完成更新数由恢复后的runtime_verified.json记录。旧曲线单独保留，不拼接未保全更新。
+首次运行故障修复时从保全的1300权重继续，配置剩余13700更新达到总15000；短测1303分支不用作正式初始化。输出：/home/han/pyx/g1_carry_baseline_new/artifacts/unified_hoi_hmi_stage1/formal_recovery_1300_richfix_20261123080108；unit：hmi-stage1-richfix-20261123080108.service。实际PID、resolved config与完成更新数由恢复后的runtime_verified.json记录。旧曲线单独保留，不拼接未保全更新。
+
+后续学习退化诊断在2010、2014、2021完整update后安全保存并串行测量，当前正式进程从2021状态恢复。最新service、run目录、std变化、配对结果与尚未解决的均值策略回退见[最新学习退化报告](STAGE1_LEARNING_REGRESSION_20261123.md)。上述1300恢复点与unit保留为历史证据。
 
 完成训练或安全停止训练后，原生play：
 ```bash

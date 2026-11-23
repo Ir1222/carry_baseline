@@ -1,0 +1,134 @@
+{
+  "continuous_grasped_squat_stand": {
+    "family": "loaded_squat_stand",
+    "reset_distribution_total_variation": 0.03794010728597641,
+    "before": {
+      "phase_reset_probability": {
+        "pickup": 0.0,
+        "carry": 1.0000001192092896,
+        "putdown": 0.0
+      },
+      "expected_local_frame": 134.07424926757812,
+      "fail_ema_mean": 0.3111242651939392
+    },
+    "after": {
+      "phase_reset_probability": {
+        "pickup": 0.0,
+        "carry": 1.0,
+        "putdown": 0.0
+      },
+      "expected_local_frame": 142.6025390625,
+      "fail_ema_mean": 0.22088374197483063
+    }
+  },
+  "full_sequence": {
+    "family": "full_sequence",
+    "reset_distribution_total_variation": 0.05342210829257965,
+    "before": {
+      "phase_reset_probability": {
+        "pickup": 0.4454922676086426,
+        "carry": 0.28220370411872864,
+        "putdown": 0.27230411767959595
+      },
+      "expected_local_frame": 124.88720703125,
+      "fail_ema_mean": 0.5400623083114624
+    },
+    "after": {
+      "phase_reset_probability": {
+        "pickup": 0.4572441279888153,
+        "carry": 0.3105792701244354,
+        "putdown": 0.23217664659023285
+      },
+      "expected_local_frame": 119.3680419921875,
+      "fail_ema_mean": 0.43265676498413086
+    }
+  },
+  "full_sequence_mirrored": {
+    "family": "full_sequence",
+    "reset_distribution_total_variation": 0.017895130440592766,
+    "before": {
+      "phase_reset_probability": {
+        "pickup": 0.43307340145111084,
+        "carry": 0.2797204256057739,
+        "putdown": 0.28720617294311523
+      },
+      "expected_local_frame": 127.93334197998047,
+      "fail_ema_mean": 0.5471565127372742
+    },
+    "after": {
+      "phase_reset_probability": {
+        "pickup": 0.43466800451278687,
+        "carry": 0.28502577543258667,
+        "putdown": 0.28030624985694885
+      },
+      "expected_local_frame": 127.36930084228516,
+      "fail_ema_mean": 0.49532708525657654
+    }
+  },
+  "loaded_locomotion": {
+    "family": "loaded_locomotion",
+    "reset_distribution_total_variation": 0.011497335508465767,
+    "before": {
+      "phase_reset_probability": {
+        "pickup": 0.0,
+        "carry": 1.0000001192092896,
+        "putdown": 0.0
+      },
+      "expected_local_frame": 44.30808639526367,
+      "fail_ema_mean": 0.5625199675559998
+    },
+    "after": {
+      "phase_reset_probability": {
+        "pickup": 0.0,
+        "carry": 0.9999999403953552,
+        "putdown": 0.0
+      },
+      "expected_local_frame": 44.934696197509766,
+      "fail_ema_mean": 0.48723557591438293
+    }
+  },
+  "loaded_locomotion_mirrored": {
+    "family": "loaded_locomotion",
+    "reset_distribution_total_variation": 0.022070251405239105,
+    "before": {
+      "phase_reset_probability": {
+        "pickup": 0.0,
+        "carry": 1.0,
+        "putdown": 0.0
+      },
+      "expected_local_frame": 42.90824890136719,
+      "fail_ema_mean": 0.5760862827301025
+    },
+    "after": {
+      "phase_reset_probability": {
+        "pickup": 0.0,
+        "carry": 0.9999999403953552,
+        "putdown": 0.0
+      },
+      "expected_local_frame": 41.70541763305664,
+      "fail_ema_mean": 0.5630584955215454
+    }
+  },
+  "repeated_grasped_squat_stand": {
+    "family": "loaded_squat_stand",
+    "reset_distribution_total_variation": 0.02594343200325966,
+    "before": {
+      "phase_reset_probability": {
+        "pickup": 0.0,
+        "carry": 1.0000001192092896,
+        "putdown": 0.0
+      },
+      "expected_local_frame": 250.27764892578125,
+      "fail_ema_mean": 0.32690033316612244
+    },
+    "after": {
+      "phase_reset_probability": {
+        "pickup": 0.0,
+        "carry": 1.0,
+        "putdown": 0.0
+      },
+      "expected_local_frame": 257.8010559082031,
+      "fail_ema_mean": 0.25046464800834656
+    }
+  }
+}

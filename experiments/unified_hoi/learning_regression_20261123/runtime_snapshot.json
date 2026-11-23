@@ -1,0 +1,36 @@
+{
+  "observed_local": "2026-11-23T21:18:49.461410",
+  "run": "/home/han/pyx/g1_carry_baseline_new/artifacts/unified_hoi_hmi_stage1/formal_recovery_after_probe_20261123_2050",
+  "unit": "hmi-stage1-after-probe-20261123-2050.service",
+  "controller_pid": 758663,
+  "learner_pid": 760010,
+  "active_source_commit": "5756defebd5fcd08e7ec683e20221abd7e02c958",
+  "status": {
+    "status": "running",
+    "completed_updates": 2078,
+    "optimizer_steps": {
+      "actor": 41560,
+      "critic": 41560
+    },
+    "gpu_peak_allocated_bytes": 1941839360,
+    "gpu_peak_reserved_bytes": 2428502016
+  },
+  "latest_logged_std": {
+    "iteration": 2077,
+    "completed_updates": 2078,
+    "mean_noise_std": 0.8074495792388916
+  },
+  "actual_config": "/home/han/pyx/g1_carry_baseline_new/artifacts/unified_hoi_hmi_stage1/formal_recovery_after_probe_20261123_2050/training/logs/WholeBodyTracking/20261123_125742-unified_hoi_stage1-locomotion/holosoma_config.yaml",
+  "training_checkpoint": "/home/han/pyx/g1_carry_baseline_new/artifacts/unified_hoi_hmi_stage1/causal_probe_20261123_2050/retained_for_resume.pt",
+  "num_envs": 8192,
+  "remaining_updates_config": 12979,
+  "total_updates_target": 15000,
+  "num_steps_per_env": 24,
+  "num_mini_batches": 4,
+  "num_learning_epochs": 5,
+  "init_noise_std": 0.3,
+  "entropy_coef": 0.002,
+  "reset_policy_std_on_resume": false,
+  "tensorboard_unit": "hmi-stage1-history-20261123-tensorboard.service",
+  "tensorboard_url": "http://127.0.0.1:6016"
+}

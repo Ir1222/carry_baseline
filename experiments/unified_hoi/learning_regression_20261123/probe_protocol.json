@@ -1,0 +1,24 @@
+{
+  "source_commit": "5756defebd5fcd08e7ec683e20221abd7e02c958",
+  "num_envs": 8192,
+  "seed": 314159,
+  "rollouts": 3,
+  "policy_steps": 72,
+  "policy_dt": 0.02,
+  "actor_dim": 357,
+  "critic_dim": 207,
+  "mode": "Track only; four commands plus 3-way task intention",
+  "checkpoint_completed_updates": {
+    "old": 1300,
+    "current_frozen_for_comparison": 2014,
+    "formal_resume": 2021
+  },
+  "required_environment": {
+    "HMI_CAUSAL_OUT": "new output directory",
+    "HMI_CAUSAL_CURRENT": "/home/han/pyx/g1_carry_baseline_new/artifacts/unified_hoi_hmi_stage1/causal_probe_20261123_2044/retained_for_resume.pt",
+    "HMI_CAUSAL_OLD": "/home/han/pyx/g1_carry_baseline_new/artifacts/unified_hoi_hmi_stage1/rich_live_repair_20261123080108/retained/model_01299.pt",
+    "HMI_CAUSAL_ARM": "one of current_native/current_std1300/current_mean/old_mean",
+    "HMI_CAUSAL_EXPECT_REF": "63d1b9c848852f96e599c1dba7393b6c4efca4ebb379fb1d71e581fa028e8f17"
+  },
+  "note": "Snapshot replaces learn only inside a separate diagnostic process; no optimizer updates. Use independent Isaac processes serially, with the carry GPU lock. Production entry is unchanged."
+}

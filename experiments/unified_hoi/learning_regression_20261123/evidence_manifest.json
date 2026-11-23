@@ -1,0 +1,35 @@
+{
+  "source_code_commit": "5756defebd5fcd08e7ec683e20221abd7e02c958",
+  "files": {
+    "training_windows.json": {
+      "bytes": 17526,
+      "sha256": "63a64361f2383fae8ef8fde53b8b280ebb8e1074649b763a129b781619e3bb30"
+    },
+    "probe_snapshot.py": {
+      "bytes": 10520,
+      "sha256": "35a772c40b77686600b245d4cbba83edd58ce1ef8f2c76576337087c914c1ace"
+    },
+    "causal_summary.json": {
+      "bytes": 29907,
+      "sha256": "347066ff3d0a1bc677448b2b30d80a7d0f654cceaed7e337e4dcda2ae2c59eb9"
+    },
+    "runtime_snapshot.json": {
+      "bytes": 1476,
+      "sha256": "943986ee0912d7c4bb5b4c49b4f0452d9b8f6f88ce02bc774c1a454d5fabf9d9"
+    },
+    "sampler_checkpoint_comparison.json": {
+      "bytes": 3770,
+      "sha256": "83392e75694a4531319da6990005c0e175cb7d99da7072b7ae863f5ba9f57e58"
+    },
+    "probe_protocol.json": {
+      "bytes": 1155,
+      "sha256": "2741cd6ad63e94983abdfe69677b7b41431200f092efe713e87f1b34c24b43af"
+    },
+    "learning_regression.png": {
+      "bytes": 184190,
+      "sha256": "fe5a7179a5f11c18d888288b7dee9834f24270256e94746ae1450f871faf9c89"
+    }
+  },
+  "large_checkpoints_and_full_logs": "Retained in sibling artifacts; excluded from Git",
+  "probe_snapshot": "Exact source of successful independent-process diagnostic. Four arm names supported; selected by HMI_CAUSAL_ARM. Requires existing simulator environment and verified local checkpoints."
+}
